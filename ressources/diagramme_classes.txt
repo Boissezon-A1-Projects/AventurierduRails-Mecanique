@@ -1,0 +1,126 @@
+@startuml
+skinparam nodesep 100
+skinparam ranksep 100
+
+package rails.data <<Folder>> {
+
+class CarteTransport {
+- type : TypeCarteTransport
+- couleur : Couleur
+- estDouble : boolean
+- ancre : boolean
+}
+
+together {
+enum TypeCarteTransport {
+  WAGON
+  BATEAU
+  JOKER
+}
+
+enum Couleur {
+  NOIR
+  BLANC
+  JAUNE
+  ROUGE
+  VERT
+  VIOLET
+  GRIS
+}
+
+class Ville {
+- nom : String
+}
+}
+
+
+CarteTransport -[hidden]-> TypeCarteTransport
+
+
+class Destination {
+- nom : String
+- valeurSimple: int
+- valeurMax : int
+- penalite : int
+}
+}
+
+package rails <<Folder>> {
+
+
+class Jeu {
++ run() : void
+}
+
+
+note right of Jeu::run()
+Classe principale qui gère la partie.
+Cette classe référence la plupart des entités de l'application -- la plupart
+des associations sont donc omises dans le diagramme de classes.
+La méthode run() est la méthode principale qui déclenche la partie.
+end note
+
+class Joueur {
+- couleur : CouleurJoueur
+- nom : String
+- nbPionsWagon : int
+- nbPionsWagonEnReserve : int
+- nbPionsBateau : int
+- nbPionsBateauEnReserve : int
+- score : int
+
++ jouerTour() : void
++ destinationEstComplete(Destination) : boolean
++ calculerScoreFinal() : int
+}
+
+note right of Joueur::couleur
+Type enum prédéfinie dans la classe Joueur.
+À ne pas confondre avec le type Couleur.
+end note
+
+abstract class Route {
+- nom : String
+- longueur : int
+- couleur : Couleur
+}
+
+class RouteMaritime {
+}
+
+class RouteTerrestre {
+}
+
+class RoutePaire {
+}
+
+class PilesCartesTransport {
+
+piocher() : CarteTransport
+defausser(CarteTransport) : void
+estVide() : boolean
+}
+}
+
+
+
+Route <|-- RoutePaire
+Route <|-- RouteTerrestre
+Route <|-- RouteMaritime
+
+Joueur "2..5  "--* Jeu
+Joueur "joueurCourant"<-- Jeu
+Joueur -right->"*" CarteTransport
+Joueur -->"*" Destination
+Joueur -> Route
+
+PilesCartesTransport -->"2" CarteTransport
+
+Ville "*"<--"0..1"  Joueur
+
+
+Destination -->"*" Ville
+
+Route -right->"1" Ville
+Route -right->"1" Ville
+@enduml
