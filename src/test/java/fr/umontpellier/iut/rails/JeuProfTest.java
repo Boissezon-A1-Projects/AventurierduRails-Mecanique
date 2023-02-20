@@ -72,7 +72,7 @@ public class JeuProfTest {
     void testInitialisationCartesVisibles() {
         try {
             jeu.run();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         int nbWagon = 0;
         int nbBateau = 0;
@@ -95,7 +95,7 @@ public class JeuProfTest {
         jeu.setInput("", "10", "", "10", "", "10", "", "10");
         try {
             jeu.run();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         // on vérifie que chaque joueur a 5 destinations
         for (Joueur j : joueurs) {
@@ -117,7 +117,7 @@ public class JeuProfTest {
         jeu.setInput(instructions);
         try {
             jeu.run();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         // on vérifie que chaque joueur a 3 destinations
         for (Joueur j : joueurs) {
@@ -140,7 +140,7 @@ public class JeuProfTest {
                 "25"); // j4 prend 25 pions wagon
         try {
             jeu.run();
-        } catch (IndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException ignored) {
         }
         // on vérifie que chaque joueur a 5 destinations
         Joueur joueur;
