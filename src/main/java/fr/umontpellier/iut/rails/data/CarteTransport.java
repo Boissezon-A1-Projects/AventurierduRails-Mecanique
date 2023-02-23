@@ -1,6 +1,6 @@
 package fr.umontpellier.iut.rails.data;
 
-public final class CarteTransport {
+public final class CarteTransport implements Comparable<CarteTransport> {
 
     /**
      * Compteur du nombre de routes instanciées (utilisé pour donner automatiquement
@@ -76,5 +76,22 @@ public final class CarteTransport {
         return String.format(
                 "<img class=\"couleur\" src=\"images/symbole-%s.png\"><span class=\"nom-carte %s %s\">%s</span>",
                 couleur.name(), type.name().toLowerCase(), couleur.name().toLowerCase(), label);
+    }
+
+    @Override
+    public int compareTo(CarteTransport carte) {
+        if (getType() != carte.getType()) {
+            return getType().compareTo(carte.getType());
+        }
+        if (getCouleur() != carte.getCouleur()) {
+            return getCouleur().compareTo(carte.getCouleur());
+        }
+        if (estDouble() != carte.estDouble()) {
+            return Boolean.compare(estDouble(), carte.estDouble());
+        }
+        if (getAncre() != carte.getAncre()) {
+            return Boolean.compare(getAncre(), carte.getAncre());
+        }
+        return getNom().compareTo(carte.getNom());
     }
 }
