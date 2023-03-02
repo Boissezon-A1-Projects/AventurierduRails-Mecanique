@@ -32,11 +32,14 @@ public class PilesCartesTransport {
         else if (pilePioche.size() == 0) {
             Collections.shuffle(pileDefausse);
             for(int i = 0; i < pileDefausse.size(); i++){
-                pilePioche.add(pileDefausse.get(i));
+                CarteTransport carteCourante = pileDefausse.get(i);
+                pilePioche.add(carteCourante);
+                pileDefausse.remove(carteCourante);
+
             }
         }
         // Enlève la dernière carte du paquet et la return
-        CarteTransport cartePiochee = pilePioche.get(pilePioche.size());
+        CarteTransport cartePiochee = pilePioche.get(0);
         pilePioche.remove(cartePiochee);
         return cartePiochee;
     }
@@ -51,7 +54,7 @@ public class PilesCartesTransport {
     public boolean estVide() {
         boolean estVide = false;
         if(pilePioche.size() == 0 && pileDefausse.size() == 0){
-            estVide = false;
+            estVide = true;
         }
         return estVide;
     }

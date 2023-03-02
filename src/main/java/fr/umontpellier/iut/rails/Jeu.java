@@ -142,7 +142,18 @@ public class Jeu implements Runnable {
     public void run() {
         // IMPORTANT : Le corps de cette fonction est à réécrire entièrement
         // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
-        for (Joueur j : joueurs) {
+
+        // Donne la main de départ à tous les joueurs
+        for (Joueur joueurCourant : joueurs) {
+            for(int i = 0; i < 7; i++) {
+                joueurCourant.ajouterCarteEnMain(this.pilesDeCartesBateau.piocher());
+            }
+            for(int i = 0; i < 3; i++) {
+                joueurCourant.ajouterCarteEnMain(this.pilesDeCartesWagon.piocher());
+            }
+        }
+
+            for (Joueur j : joueurs) {
             joueurCourant = j;
             j.jouerTour();
         }

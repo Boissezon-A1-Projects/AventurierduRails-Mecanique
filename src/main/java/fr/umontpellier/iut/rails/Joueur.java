@@ -117,7 +117,7 @@ public class Joueur {
         }
     }
 
-    /**
+     /**
      * Attend une entrée de la part du joueur (au clavier ou sur la websocket) et
      * renvoie le choix du joueur.
      *
@@ -229,6 +229,16 @@ public class Joueur {
      * valeurs sérialisables
      * (qui sera converti en JSON pour l'envoyer à l'interface graphique)
      */
+
+
+    public void ajouterCarteEnMain(CarteTransport carte){
+        this.cartesTransport.add(carte);
+    }
+
+
+
+
+
     Map<String, Object> dataMap() {
         return Map.ofEntries(
                 Map.entry("nom", nom),
@@ -246,4 +256,7 @@ public class Joueur {
                 Map.entry("ports", ports.stream().map(Ville::nom).toList()),
                 Map.entry("routes", routes.stream().map(Route::getNom).toList()));
     }
+
+
+
 }
