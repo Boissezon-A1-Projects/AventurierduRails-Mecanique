@@ -96,24 +96,37 @@ public class Joueur {
     void jouerTour() {
         // IMPORTANT : Le corps de cette fonction est à réécrire entièrement
         // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
+        /* PORTS LIBRES
         List<String> optionsVilles = new ArrayList<>();
         for (Ville ville : jeu.getPortsLibres()) {
             optionsVilles.add(ville.nom());
-        }
+        }*/
         List<Bouton> boutons = Arrays.asList(
-                new Bouton("Montpellier"),
-                new Bouton("Sète"));
+                new Bouton("Piocher Cartes Transport"),
+                new Bouton("Echanger Pions"),
+                new Bouton("Nouvelles Destinations"),
+                new Bouton("Capturer Route"),
+                new Bouton("Construire Port"));
 
         String choix = choisir(
-                "Choisissez votre ville préférée",
-                optionsVilles,
+                "Que voulez-vous faire ?",
+                null,
                 boutons,
                 true);
 
-        if (choix.equals("")) {
-            log(String.format("%s n'aime aucune ville", toLog()));
-        } else {
-            log(String.format("%s a choisi %s", toLog(), choix));
+        if (choix.equals("Piocher Cartes Transport")) {
+            //lui demander si wagon bateau ou joker (si ce dernier est present face visible)
+            piocherCarteTransport("uy");
+            log(String.format("%s Piocher Cartes Transport", toLog()));
+        } else if(choix.equals("Echanger Pions")) {
+            log(String.format("%s Echanger Pions", toLog()));
+        } else if(choix.equals("Nouvelles Destinations")) {
+            log(String.format("%s Nouvelles Destinations", toLog()));
+        }else if(choix.equals("Capturer Route")) {
+            log(String.format("%s Echanger Pions", toLog()));
+        }
+        else {
+            log(String.format("%s Construire Port", toLog()));
         }
     }
 
@@ -235,9 +248,18 @@ public class Joueur {
         this.cartesTransport.add(carte);
     }
 
+    //methodes pour jouer tour
 
+    /*piocher carte transport : peut prendre DEUX cartes soit visibles soit non visible deux wagons ou deux bateaux ou un wagon un bateau
+      S'il prend un joker face visible il peut pas prendre d'autres cartes
+      S'il prend une carte, il ne peut pas prendre un joker apres
+      S'il tombe sur un joker dasn une pioche face cachée bah GG WP et il peut en prendre une deuxieme
+      methode : lit ce que prend le jouer (soit WAGON soit BATEAU soit JOKER) et de quelle pioche puis l'ajoute dans sa main ou les/la retourne (à voir)
+      DOIT PTET PRENDRE DES ARGUMENTS JSP*/
+    public void piocherCarteTransport(String choix){ throw new RuntimeException("Methode pas encore implémentée !");}
 
-
+    /* prendre possession route :
+    * */
 
     Map<String, Object> dataMap() {
         return Map.ofEntries(
