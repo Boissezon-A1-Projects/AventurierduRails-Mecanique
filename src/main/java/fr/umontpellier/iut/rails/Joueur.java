@@ -278,8 +278,17 @@ public class Joueur {
 
     public void piocherCarteDestination(){throw new RuntimeException("Methode pas encore implémentée !");}
 
+    /*construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
+    * ATTENTION : 1.peut que le faire si le joueur a deja une route qui mene à la ville
+    * 2. si ville est un Port (faire un get)
+    * 3. si ville n'a pas deja un port
+    * 4. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
+    * 5. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
+    * methode : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
 
+    public void construirePort(Ville ville){throw new RuntimeException("Methode pas encore implémentée !");}
 
+    /*echanger des pions*/
 
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
