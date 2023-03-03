@@ -237,7 +237,9 @@ public class Joueur {
         throw new RuntimeException("Méthode pas encore implémentée !");
     }
 
-
+    public void ajouterDestination(Destination destination){
+        this.destinations.add(destination);
+    }
 
     public void ajouterCarteEnMain(CarteTransport carte){
         this.cartesTransport.add(carte);
@@ -260,12 +262,15 @@ public class Joueur {
     * 3. route double : un joueur peut prendre que l'une des deux routes pas les deux
     * 4. cartes double-bateau : prend pour deux bateaux; ex: une route à 4 bateaux peut prendre 2 doubles bateaux ou encore 2 simple 1 double
     * methode : lit quelle route prend le joueur et prend son type, verifie si les cartes qu'il veut mettre sont bonnes,
-    * pose les pions dont le joueur a besoin, les cartes qu'il a choisit s'enlevent de sa main et sont défaussées (dans la bonne defausse)
+    * pose les pions dont le joueur a besoin (enleve de la main du joueur en gros),
+    * les cartes qu'il a choisit s'enlevent de sa main et sont défaussées (dans la bonne defausse)
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
 
     public void prendrePossessionRoute(String choixRoute){throw new RuntimeException("Methode pas encore implémentée !");}
+
+    /**/
 
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
