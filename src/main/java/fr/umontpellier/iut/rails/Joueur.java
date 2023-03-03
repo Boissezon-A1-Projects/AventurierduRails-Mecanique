@@ -102,32 +102,39 @@ public class Joueur {
         }*/
         List<Bouton> boutons = Arrays.asList(
                 new Bouton("Piocher Cartes Transport"),
-                new Bouton("Echanger Pions"),
-                new Bouton("Nouvelles Destinations"),
                 new Bouton("Capturer Route"),
+                new Bouton("Nouvelles Destinations"),
+                new Bouton("Echanger Pions"),
                 new Bouton("Construire Port"));
 
         String choix = choisir(
                 "Que voulez-vous faire ?",
                 null,
                 boutons,
-                true);
+                false);
         // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
 
         if (choix.equals("Piocher Cartes Transport")) {
             //lui demander si wagon bateau ou joker (si ce dernier est present face visible)
-            piocherCarteTransport("uy");
+            //appeler fonction piocher carte en fnction du choix
             log(String.format("%s Piocher Cartes Transport", toLog()));
-        } else if(choix.equals("Echanger Pions")) {
-            log(String.format("%s Echanger Pions", toLog()));
-        } else if(choix.equals("Nouvelles Destinations")) {
+        } else if(choix.equals("Capturer Route")) {
+            //demander au joueur la route qu'il veut prendre via map
+            //appeler fonction prendre possession route
+            log(String.format("%s Capturer Route", toLog()));
+        }else if(choix.equals("Nouvelles Destinations")) {
+            //appeler fonction piocherCarteDestination
             log(String.format("%s Nouvelles Destinations", toLog()));
-        }else if(choix.equals("Capturer Route")) {
+        }else if(choix.equals("Construire Port")){
+            //demander ville sur laquelle il veut construire via map
+            //appeler fonction construirePort
+            log(String.format("%s Construire Port", toLog()));
+        }else{
+            //demander type et nombre à echanger
+            //appeler fonction echangerPions
             log(String.format("%s Echanger Pions", toLog()));
         }
-        else {
-            log(String.format("%s Construire Port", toLog()));
-        }
+
     }
 
      /**
