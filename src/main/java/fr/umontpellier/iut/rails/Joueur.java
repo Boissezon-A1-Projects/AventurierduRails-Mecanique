@@ -235,12 +235,13 @@ public class Joueur {
     }
 
     boolean destinationEstComplete(Destination d) {
-        // Cette méthode pour l'instant renvoie false pour que le jeu puisse s'exécuter.
+        /** Cette méthode pour l'instant renvoie false pour que le jeu puisse s'exécuter.*/
         // À vous de modifier le corps de cette fonction pour qu'elle retourne la valeur attendue.
         return false;
     }
 
     public int calculerScoreFinal() {
+        /**à faire*/
         throw new RuntimeException("Méthode pas encore implémentée !");
     }
 
@@ -252,7 +253,7 @@ public class Joueur {
         this.cartesTransport.add(carte);
     }
 
-    //methodes pour jouer tour
+    /**methodes pour jouer tour*/
 
     /*piocher carte transport : peut prendre DEUX cartes soit visibles soit non visible deux wagons ou deux bateaux ou un wagon un bateau
       S'il prend un joker face visible il peut pas prendre d'autres cartes
