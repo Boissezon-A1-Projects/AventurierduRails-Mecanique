@@ -94,8 +94,7 @@ public class Joueur {
      *  - construire un port
      */
     void jouerTour() {
-        // IMPORTANT : Le corps de cette fonction est à réécrire entièrement
-        // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
+
         /* PORTS LIBRES
         List<String> optionsVilles = new ArrayList<>();
         for (Ville ville : jeu.getPortsLibres()) {
@@ -113,6 +112,7 @@ public class Joueur {
                 null,
                 boutons,
                 true);
+        // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
 
         if (choix.equals("Piocher Cartes Transport")) {
             //lui demander si wagon bateau ou joker (si ce dernier est present face visible)
@@ -237,11 +237,6 @@ public class Joueur {
         throw new RuntimeException("Méthode pas encore implémentée !");
     }
 
-    /**
-     * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
-     * valeurs sérialisables
-     * (qui sera converti en JSON pour l'envoyer à l'interface graphique)
-     */
 
 
     public void ajouterCarteEnMain(CarteTransport carte){
@@ -256,10 +251,27 @@ public class Joueur {
       S'il tombe sur un joker dasn une pioche face cachée bah GG WP et il peut en prendre une deuxieme
       methode : lit ce que prend le jouer (soit WAGON soit BATEAU soit JOKER) et de quelle pioche puis l'ajoute dans sa main ou les/la retourne (à voir)
       DOIT PTET PRENDRE DES ARGUMENTS JSP*/
-    public void piocherCarteTransport(String choix){ throw new RuntimeException("Methode pas encore implémentée !");}
+    public void piocherCarteTransport(String choixCarte){ throw new RuntimeException("Methode pas encore implémentée !");}
 
-    /* prendre possession route :
-    * */
+    /* prendre possession route : pose autant de WAGON ou BATEAU de la couleur de la route choisie
+    * toute carte jouée doivent etre du meme type donc route maritime -> bateau ; route terrestre -> wagon
+    * ATTENTION : 1.route grise -> n'importe quelle serie de carte (wagon ou bateau) de la meme couleur
+    * 2. route paire : doit utiliser deux fois plus de cartes; ex: une route paire à deux wagons peut etre prise avec quatres wagons
+    * 3. route double : un joueur peut prendre que l'une des deux routes pas les deux
+    * 4. cartes double-bateau : prend pour deux bateaux; ex: une route à 4 bateaux peut prendre 2 doubles bateaux ou encore 2 simple 1 double
+    * methode : lit quelle route prend le joueur et prend son type, verifie si les cartes qu'il veut mettre sont bonnes,
+    * pose les pions dont le joueur a besoin, les cartes qu'il a choisit s'enlevent de sa main et sont défaussées (dans la bonne defausse)
+    * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
+    * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
+    */
+
+    public void prendrePossessionRoute(String choixRoute){throw new RuntimeException("Methode pas encore implémentée !");}
+
+    /**
+     * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
+     * valeurs sérialisables
+     * (qui sera converti en JSON pour l'envoyer à l'interface graphique)
+     */
 
     Map<String, Object> dataMap() {
         return Map.ofEntries(
