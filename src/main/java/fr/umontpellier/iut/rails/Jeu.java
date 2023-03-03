@@ -38,9 +38,7 @@ public class Jeu implements Runnable {
      */
     private final List<CarteTransport> cartesTransportVisibles;
     /**
-     * Pile des cartes "Destination" (uniquement les destinations "courtes", les
-     * destinations "longues" sont distribuées au début de la partie et ne peuvent
-     * plus être piochées après)
+     * Pile des cartes "Destination"
      */
     private final List<Destination> pileDestinations;
     /**
@@ -133,7 +131,6 @@ public class Jeu implements Runnable {
 
     /**
      * Exécute la partie
-     *
      * C'est cette méthode qui est appelée pour démarrer la partie. Elle doit intialiser le jeu
      * (retourner les cartes transport visibles, puis demander à chaque joueur de choisir ses destinations initiales
      * et le nombre de pions wagon qu'il souhaite prendre) puis exécuter les tours des joueurs en appelant la
@@ -143,22 +140,57 @@ public class Jeu implements Runnable {
         // IMPORTANT : Le corps de cette fonction est à réécrire entièrement
         // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
 
-        // Donne la main de départ à tous les joueurs
+        // Donne la main de départ à tous les joueurs (bateaux et wagons)
         for (Joueur joueurCourant : joueurs) {
             for(int i = 0; i < 7; i++) {
-                joueurCourant.ajouterCarteEnMain(this.pilesDeCartesBateau.piocher());
+                joueurCourant.ajouterCarteEnMain(piocherCarteBateau());
             }
             for(int i = 0; i < 3; i++) {
-                joueurCourant.ajouterCarteEnMain(this.pilesDeCartesWagon.piocher());
+                joueurCourant.ajouterCarteEnMain(piocherCarteWagon());
             }
         }
+        // Retourne 3 cartes de chaque paquet sur la table face visible
+        for(int i = 0; i < 3; i++) {
+            cartesTransportVisibles.add(piocherCarteWagon());
+            cartesTransportVisibles.add(piocherCarteBateau());
+        }
 
-            for (Joueur j : joueurs) {
+        // Donne les cartes destinations à chacun (à implémenter)
+        ArrayList<Destination> listeDesPropositions = new ArrayList<>();
+        for (Joueur joueurCourant : joueurs) {
+            // Créée la liste des 5 propositions pour le joueur
+            listeDesPropositions.clear();
+            for(int i = 0; i < 5; i++) {
+                listeDesPropositions.add(piocherDestinationAleatoire());
+            }
+            // Fait faire choisir les 3 premières cartes au joueur (obligatoire)
+            for(int i = 0; i < 3; i++){
+                joueurCourant.choisir("Choisissez une carte à garder (encore " + (3-i) + ")", );
+            }
+            // Propose au joueur de choisir parmi les restantes ou de passer
+
+        }
+
+
+        for (Joueur j : joueurs) {
             joueurCourant = j;
             j.jouerTour();
         }
         // Fin de la partie
         prompt("Fin de la partie.", new ArrayList<>(), true);
+    }
+
+    /**
+     * (Fonction faite par nous)
+     * Renvoie une carte destination aléatoire et la retire de la pile.
+     * @return la destination choisie aléatoirement
+     */
+    public Destination piocherDestinationAleatoire(){
+        Random random = new Random();
+        Destination destinationAleatoire;
+        destinationAleatoire = pileDestinations.get(random.nextInt(pileDestinations.size() - 1));
+        pileDestinations.remove(destinationAleatoire);
+        return destinationAleatoire;
     }
 
 
