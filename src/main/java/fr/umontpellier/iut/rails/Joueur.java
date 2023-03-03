@@ -270,7 +270,16 @@ public class Joueur {
 
     public void prendrePossessionRoute(String choixRoute){throw new RuntimeException("Methode pas encore implémentée !");}
 
-    /**/
+    /*piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
+    * ATTENTION : 1. si moins de quatres cartes dans la pioche il prend ce qui reste
+    * cartes conservees sont mises sous la pioche destination
+    * methode : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
+    * et reste des fois : choix entre les autres cartes ou passer et si passer met les cartes destinations sous la pioche*/
+
+    public void piocherCarteDestination(){throw new RuntimeException("Methode pas encore implémentée !");}
+
+
+
 
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
