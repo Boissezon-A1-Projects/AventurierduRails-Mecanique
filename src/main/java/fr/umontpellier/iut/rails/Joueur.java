@@ -267,7 +267,6 @@ public class Joueur {
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
-
     public void prendrePossessionRoute(String choixRoute){throw new RuntimeException("Methode pas encore implémentée !");}
 
     /*piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
@@ -275,7 +274,6 @@ public class Joueur {
     * cartes conservees sont mises sous la pioche destination
     * methode : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
     * et reste des fois : choix entre les autres cartes ou passer et si passer met les cartes destinations sous la pioche*/
-
     public void piocherCarteDestination(){throw new RuntimeException("Methode pas encore implémentée !");}
 
     /*construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
@@ -285,10 +283,14 @@ public class Joueur {
     * 4. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
     * 5. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
     * methode : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
-
     public void construirePort(Ville ville){throw new RuntimeException("Methode pas encore implémentée !");}
 
-    /*echanger des pions*/
+    /*echanger des pions: enchange pions w par b ou b par w
+    * score joueur diminue du nombre de pions qu'il a échangé
+    * ATTENTION : il faut qu'il reste des pions du type voulu dans la boite
+    * methode : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
+    * + diminue son score*/
+    public void echangerPions(String type, int nombreEchanges){throw new RuntimeException("Methode pas encore implémentée !");}
 
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
