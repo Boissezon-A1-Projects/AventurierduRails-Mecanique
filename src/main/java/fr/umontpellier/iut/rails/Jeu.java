@@ -157,15 +157,27 @@ public class Jeu implements Runnable {
 
         // Donne les cartes destinations à chacun (à implémenter)
         ArrayList<Destination> listeDesPropositions = new ArrayList<>();
+        ArrayList<Bouton> differentsChoix = new ArrayList<>();
         for (Joueur joueurCourant : joueurs) {
-            // Créée la liste des 5 propositions pour le joueur
+            // Créée la liste des 5 propositions pour le joueur et de la liste de boutons
             listeDesPropositions.clear();
             for(int i = 0; i < 5; i++) {
+                Bouton boutonVariable = new Bouton("" + i);
+                differentsChoix.add(boutonVariable);
                 listeDesPropositions.add(piocherDestinationAleatoire());
             }
+
             // Fait faire choisir les 3 premières cartes au joueur (obligatoire)
-            for(int i = 0; i < 3; i++){
-                joueurCourant.choisir("Choisissez une carte à garder (encore " + (3-i) + ")", );
+            for(int nbChoixFaits = 0; nbChoixFaits < 3; nbChoixFaits++){
+                String valeurCarteChoisie;
+                valeurCarteChoisie = joueurCourant.choisir("Choisissez une carte à garder (encore " + (3-nbChoixFaits) + ")", null, differentsChoix, false);
+                // Retire le choix du joueur des choix possibles
+                for(int i = 0; i < 5 - nbChoixFaits; i++){
+                    if(differentsChoix.get(i).label() == valeurCarteChoisie){
+                        differentsChoix.remove(i);
+                        listeDesPropositions.remove(i);
+                    }
+                }
             }
             // Propose au joueur de choisir parmi les restantes ou de passer
 
