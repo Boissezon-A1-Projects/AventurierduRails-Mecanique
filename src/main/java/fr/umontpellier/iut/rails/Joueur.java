@@ -113,9 +113,9 @@ public class Joueur {
                 boutons,
                 false);
         // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
-
+        // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
         if (choix.equals("Piocher Cartes Transport")) {
-            //lui demander si wagon bateau ou joker (si ce dernier est present face visible)
+            //lui demander si wagon bateau ou joker (si ce dernier est present face visible) à faire avec clique sur carte
             //appeler fonction piocher carte en fnction du choix
             log(String.format("%s Piocher Cartes Transport", toLog()));
         } else if(choix.equals("Capturer Route")) {
@@ -127,6 +127,7 @@ public class Joueur {
             log(String.format("%s Nouvelles Destinations", toLog()));
         }else if(choix.equals("Construire Port")){
             //demander ville sur laquelle il veut construire via map
+            //demander cartes qu'il veut utiliser et add dans cartes transport posées
             //appeler fonction construirePort
             log(String.format("%s Construire Port", toLog()));
         }else{
@@ -261,7 +262,9 @@ public class Joueur {
       S'il tombe sur un joker dasn une pioche face cachée bah GG WP et il peut en prendre une deuxieme
       methode : lit ce que prend le jouer (soit WAGON soit BATEAU soit JOKER) et de quelle pioche puis l'ajoute dans sa main ou les/la retourne (à voir)
       DOIT PTET PRENDRE DES ARGUMENTS JSP*/
-    public void piocherCarteTransport(String choixCarte){ throw new RuntimeException("Methode pas encore implémentée !");}
+    public void piocherCarteTransport(String choixCarte1, String choixCarte2){
+        throw new RuntimeException("Methode pas encore implémentée !");
+    }
 
     /* prendre possession route : pose autant de WAGON ou BATEAU de la couleur de la route choisie
     * toute carte jouée doivent etre du meme type donc route maritime -> bateau ; route terrestre -> wagon
@@ -285,13 +288,108 @@ public class Joueur {
     public void piocherCarteDestination(){throw new RuntimeException("Methode pas encore implémentée !");}
 
     /*construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
-    * ATTENTION : 1.peut que le faire si le joueur a deja une route qui mene à la ville
+    * ATTENTION : 4.peut que le faire si le joueur a deja une route qui mene à la ville
     * 2. si ville est un Port (faire un get)
     * 3. si ville n'a pas deja un port
-    * 4. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
-    * 5. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
+    * 5. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
+    * 1. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
     * methode : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
-    public void construirePort(Ville ville){throw new RuntimeException("Methode pas encore implémentée !");}
+    public Ville construirePort(Ville ville){
+        boolean villeLibre=false;
+        boolean villeDansRoutes= false;
+        boolean memeCouleur = true;
+        int compteurCouleur =0;
+        int compteurWagon =0;
+        int compteurBateau =0;
+        int compteurJoker =0;
+       if(ports.size()!=3){ // si il y a la place pour construire un port
+           if(ville.estPort()){ // si la ville est un port
+               for (int i = 0; i < jeu.getPortsLibres().size(); i++) {
+                   if(ville==jeu.getPortsLibres().get(i)){
+                       villeLibre=true;
+                   }
+               }
+               if(villeLibre){ // si la ville n'a pas de port construit
+                   for (Route route : this.routes) {
+                       if(route.getVille1()==ville||route.getVille2()==ville){
+                           villeDansRoutes=true;
+                       }
+                   }
+                   if(villeDansRoutes){ // si le joueur a une route qui mene a la route
+                       while(memeCouleur && compteurCouleur!=3){
+                            if(cartesTransportPosees.get(compteurCouleur).getType()!=TypeCarteTransport.JOKER){
+                                if(cartesTransportPosees.get(compteurCouleur).getCouleur()!=cartesTransportPosees.get(compteurCouleur+1).getCouleur()) {
+                                    memeCouleur = false;
+                                }
+                            }
+                            compteurCouleur++;
+                       }
+                       if(memeCouleur) {
+                           for (CarteTransport carte : this.cartesTransportPosees) {
+                               if (carte.getType() == TypeCarteTransport.WAGON) {
+                                   compteurWagon++;
+                               }
+                               if (carte.getType() == TypeCarteTransport.BATEAU) {
+                                   compteurBateau++;
+                               }
+                               if (carte.getType() == TypeCarteTransport.JOKER) {
+                                   compteurJoker++;
+                               }
+                           }
+                           if(compteurJoker==0 && compteurWagon==2 && compteurBateau==2){
+                                ports.add(ville);
+                                return ville;
+                           }
+                           else if((compteurJoker ==1 && compteurWagon==1 && compteurBateau==2) || (compteurJoker ==1 && compteurWagon==2 && compteurBateau==1)){
+                               ports.add(ville);
+                               return ville;
+                           }
+                           else if((compteurJoker ==2 && compteurWagon==0 && compteurBateau==2) || (compteurJoker ==2 && compteurWagon==2 && compteurBateau==0)){
+                               ports.add(ville);
+                               return ville;
+                           }
+                           else if(compteurJoker ==2 && compteurWagon==1 && compteurBateau==1){
+                               ports.add(ville);
+                               return ville;
+                           }
+                           else if((compteurJoker ==3 && compteurWagon==0 && compteurBateau==1) || (compteurJoker ==3 && compteurWagon==1 && compteurBateau==0)){
+                               ports.add(ville);
+                               return ville;
+                           }
+                           else if((compteurJoker ==4 && compteurWagon==0 && compteurBateau==0)){
+                               ports.add(ville);
+                               return ville;
+                           }
+                           else{
+                               System.out.println("Vous n'avez pas mis les bonnes cartes");
+                               return null;
+                           }
+                       }
+                       else{
+                           System.out.println();
+                       }
+                   }
+                   else{
+                       System.out.println("Vous n'avez pas de routes menant à cette ville");
+                       return null;
+                   }
+               }
+               else{
+                   System.out.println("La ville a déjà un port");
+                   return null;
+               }
+           }
+           else{
+               System.out.println("La ville que vous avez choisis n'est pas un port.");
+               return null;
+           }
+       }
+       else{
+           System.out.println("Vous ne pouvez plus contruire de ports.");
+           return null;
+       }
+       return null;
+    }
 
     /*echanger des pions: enchange pions w par b ou b par w
     * score joueur diminue du nombre de pions qu'il a échangé
