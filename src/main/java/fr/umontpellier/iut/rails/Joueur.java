@@ -131,11 +131,12 @@ public class Joueur {
             //appeler fonction construirePort
             log(String.format("%s Construire Port", toLog()));
         }else{
-
+            log(String.format("%s Echanger Pions", toLog()));
+            //Echanger Pions
             List<Bouton> typeBoutons = Arrays.asList(new Bouton("WAGON"), new Bouton("BATEAU"));
-            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? WAGON ou BATEAU",null,typeBoutons,false);
+            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? WAGON ou BATEAU",null,typeBoutons,false); // pour savoir s'il veut recevoir bateaux ou wagons
 
-            List<String> nombre = new ArrayList<String>();
+            List<String> nombre = new ArrayList<String>(); // créations du liste pour savoir si le choix est correct (chiffre possibles)
             if(choixTypeARecevoir.equals("WAGON")){
                 for (int i = 1; i <= nbPionsWagonEnReserve; i++) {
                         nombre.add(String.valueOf(i));
@@ -149,8 +150,8 @@ public class Joueur {
 
             String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
 
-            pionsARecevoir(choixTypeARecevoir,Integer.valueOf(choixNombreARecevoir));
-            log(String.format("%s Echanger Pions", toLog()));
+            pionsARecevoir(choixTypeARecevoir,Integer.valueOf(choixNombreARecevoir));// appel fonction qui gere l'echange
+
         }
 
     }
