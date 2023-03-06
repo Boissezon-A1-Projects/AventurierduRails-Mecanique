@@ -131,8 +131,25 @@ public class Joueur {
             //appeler fonction construirePort
             log(String.format("%s Construire Port", toLog()));
         }else{
-            //demander type et nombre à echanger
-            //appeler fonction echangerPions
+
+            List<Bouton> typeBoutons = Arrays.asList(new Bouton("WAGON"), new Bouton("BATEAU"));
+            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? WAGON ou BATEAU",null,typeBoutons,false);
+
+            List<String> nombre = new ArrayList<String>();
+            if(choixTypeARecevoir.equals("WAGON")){
+                for (int i = 1; i <= nbPionsWagonEnReserve; i++) {
+                        nombre.add(String.valueOf(i));
+                }
+            }
+            if(choixTypeARecevoir.equals("BATEAU")){
+                for (int i = 1; i <= nbPionsBateauEnReserve; i++) {
+                    nombre.add(String.valueOf(i));
+                }
+            }
+
+            String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
+
+            pionsARecevoir(choixTypeARecevoir,Integer.valueOf(choixNombreARecevoir));
             log(String.format("%s Echanger Pions", toLog()));
         }
 
@@ -278,14 +295,18 @@ public class Joueur {
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
-    public void prendrePossessionRoute(String choixRoute){throw new RuntimeException("Methode pas encore implémentée !");}
+    public void prendrePossessionRoute(String choixRoute){
+        throw new RuntimeException("Methode pas encore implémentée !");
+    }
 
     /*piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
     * ATTENTION : 1. si moins de quatres cartes dans la pioche il prend ce qui reste
     * cartes conservees sont mises sous la pioche destination
     * methode : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
     * et reste des fois : choix entre les autres cartes ou passer et si passer met les cartes destinations sous la pioche*/
-    public void piocherCarteDestination(){throw new RuntimeException("Methode pas encore implémentée !");}
+    public void piocherCarteDestination(){
+        throw new RuntimeException("Methode pas encore implémentée !");
+    }
 
     /*construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
     * ATTENTION : 4.peut que le faire si le joueur a deja une route qui mene à la ville
@@ -338,27 +359,21 @@ public class Joueur {
                            }
                            if(compteurJoker==0 && compteurWagon==2 && compteurBateau==2){
                                 ports.add(ville);
-                                return ville;
                            }
                            else if((compteurJoker ==1 && compteurWagon==1 && compteurBateau==2) || (compteurJoker ==1 && compteurWagon==2 && compteurBateau==1)){
                                ports.add(ville);
-                               return ville;
                            }
                            else if((compteurJoker ==2 && compteurWagon==0 && compteurBateau==2) || (compteurJoker ==2 && compteurWagon==2 && compteurBateau==0)){
                                ports.add(ville);
-                               return ville;
                            }
                            else if(compteurJoker ==2 && compteurWagon==1 && compteurBateau==1){
                                ports.add(ville);
-                               return ville;
                            }
                            else if((compteurJoker ==3 && compteurWagon==0 && compteurBateau==1) || (compteurJoker ==3 && compteurWagon==1 && compteurBateau==0)){
                                ports.add(ville);
-                               return ville;
                            }
                            else if((compteurJoker ==4 && compteurWagon==0 && compteurBateau==0)){
                                ports.add(ville);
-                               return ville;
                            }
                            else{
                                System.out.println("Vous n'avez pas mis les bonnes cartes");
@@ -388,7 +403,7 @@ public class Joueur {
            System.out.println("Vous ne pouvez plus contruire de ports.");
            return null;
        }
-       return null;
+        return ville;
     }
 
     /*echanger des pions: enchange pions w par b ou b par w
@@ -396,7 +411,18 @@ public class Joueur {
     * ATTENTION : il faut qu'il reste des pions du type voulu dans la boite
     * methode : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
     * + diminue son score*/
-    public void echangerPions(String type, int nombreEchanges){throw new RuntimeException("Methode pas encore implémentée !");}
+    public void pionsARecevoir(String type, int nombreEchanges){
+        if(type.equals("WAGON") && nbPionsWagonEnReserve!=0 && nbPionsBateau>=nombreEchanges){
+            nbPionsBateau -= nombreEchanges; nbPionsBateauEnReserve += nombreEchanges;
+            nbPionsWagon += nombreEchanges; nbPionsWagonEnReserve -= nombreEchanges;
+            score -= nombreEchanges;
+        }
+        if(type.equals("BATEAU")&& nbPionsBateauEnReserve!=0 && nbPionsWagon>=nombreEchanges){
+            nbPionsWagon -= nombreEchanges; nbPionsWagonEnReserve += nombreEchanges;
+            nbPionsBateau += nombreEchanges; nbPionsBateauEnReserve -= nombreEchanges;
+            score -= nombreEchanges;
+        }
+    }
 
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
