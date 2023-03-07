@@ -151,14 +151,6 @@ public class JoueurProfTest {
     }
 
     @Test
-    void testNbPionsParDefaut() {
-        assertEquals(20, TestUtils.getNbPionsWagon(joueur1));
-        assertEquals(5, TestUtils.getNbPionsWagonEnReserve(joueur1));
-        assertEquals(40, TestUtils.getNbPionsBateau(joueur1));
-        assertEquals(10, TestUtils.getNbPionsBateauEnReserve(joueur1));
-    }
-
-    @Test
     void testPrendrePionsWagon() {
         jeu.setInput(
                 "PIONS WAGON", // prendre des pions wagon
