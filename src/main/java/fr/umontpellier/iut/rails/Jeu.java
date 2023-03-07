@@ -232,6 +232,18 @@ public class Jeu implements Runnable {
         return pilesDeCartesBateau.estVide();
     }
 
+    public void ajoutCartePaquetRandomDansCarteVisible(){
+        //fonction pour ajouter dans les cartes visibles une carte piochée d'un des deux paquets aléatoirement
+        Random random = new Random();
+        int nbalea = random.nextInt(2);
+        if(nbalea==0){
+            cartesTransportVisibles.add(piocherCarteWagon());
+        }
+        else{
+            cartesTransportVisibles.add(piocherCarteBateau());
+        }
+    }
+
     /**
      * Ajoute un message au log du jeu
      */
