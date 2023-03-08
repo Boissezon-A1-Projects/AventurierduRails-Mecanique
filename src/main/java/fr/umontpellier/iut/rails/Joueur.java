@@ -154,14 +154,33 @@ public class Joueur {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
             log(String.format("%s Capturer Route", toLog()));
+
         }else if(choix.equals("Nouvelles Destinations")) {
             //appeler fonction piocherCarteDestination
             log(String.format("%s Nouvelles Destinations", toLog()));
         }else if(choix.equals("Construire Port")){
-            //demander ville sur laquelle il veut construire via map
-            //demander cartes qu'il veut utiliser et add dans cartes transport posées
-            //appeler fonction construirePort
             log(String.format("%s Construire Port", toLog()));
+            //demande choix ville où construire port
+            List<String> choixVilles = new ArrayList<String>();
+            for (Ville ville: jeu.getPortsLibres()) {
+                choixVilles.add(ville.toString());
+            }
+            String choixJoueurVille = choisir("Cliquez sur la ville où vous voulez construire un port",choixVilles,null,false);
+            Ville choixVilleAConstruire= null;
+            for (Ville ville: jeu.getPortsLibres()) {
+                if(choixJoueurVille.equals(ville.toString())){
+                    choixVilleAConstruire = new Ville(ville.toString(), ville.estPort());
+                }
+            }
+            //demander cartes qu'il veut utiliser et add dans cartes transport posées
+            List<String> choixCarteAUtiliser = new ArrayList<String>();
+            for (CarteTransport carte: cartesTransport ) {
+                choixCarteAUtiliser.add(carte.getNom());
+            }
+            String choixC = choisir("tufd",choixCarteAUtiliser,null,false);
+            log(String.format(choixC,toLog()));
+            construirePort(choixVilleAConstruire);
+
         }else{
             log(String.format("%s Echanger Pions", toLog()));
             //Echanger Pions
@@ -405,13 +424,7 @@ public class Joueur {
         int compteurJoker =0;
        if(ports.size()!=3){ // si il y a la place pour construire un port
            if(ville.estPort()){ // si la ville est un port
-               for (int i = 0; i < jeu.getPortsLibres().size(); i++) {
-                   if(ville==jeu.getPortsLibres().get(i)){
-                       villeLibre=true;
-                   }
-               }
-               if(villeLibre){ // si la ville n'a pas de port construit
-                   for (Route route : this.routes) {
+               for (Route route : this.routes) {
                        if(route.getVille1()==ville||route.getVille2()==ville){
                            villeDansRoutes=true;
                        }
@@ -468,11 +481,7 @@ public class Joueur {
                        System.out.println("Vous n'avez pas de routes menant à cette ville");
                        return null;
                    }
-               }
-               else{
-                   System.out.println("La ville a déjà un port");
-                   return null;
-               }
+
            }
            else{
                System.out.println("La ville que vous avez choisis n'est pas un port.");
