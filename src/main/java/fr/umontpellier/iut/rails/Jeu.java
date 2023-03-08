@@ -244,6 +244,10 @@ public class Jeu implements Runnable {
         }
     }
 
+    public void retireCarteDeCarteVisible(CarteTransport carte){
+        cartesTransportVisibles.remove(carte);
+    }
+
     /**
      * Ajoute un message au log du jeu
      */
