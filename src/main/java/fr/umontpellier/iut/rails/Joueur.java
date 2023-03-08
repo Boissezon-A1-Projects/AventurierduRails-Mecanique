@@ -119,15 +119,14 @@ public class Joueur {
 
             String choixCarteVisibleOuNon = choixPiocherCarteVisible();
             if(choixCarteVisibleOuNon.equals("OUI")){ // si il veut prendre une carte du paquet visible
-                CarteTransport carte1= piocherCarteVisible();
-
-                if(carte1.getType().equals("JOKER")){ // si c'st un joker il peut plus
-                    jeu.addInput("Vous ne pouvez plus choisir de cartes");
+                CarteTransport carte1= piocherCarteVisible(1);
+                if(carte1.getType()==TypeCarteTransport.JOKER){ // si c'st un joker il peut plus
+                    choisir("Vous ne pouvez plus ajouter de carte, veuillez cliquer sur passer.",null,null,true);
                 }
                 else{ //sinon on lui demande s'il veut reprendre des cartes visibles
                     String choixCarteVisibleOuNon2 = choixPiocherCarteVisible();
                     if(choixCarteVisibleOuNon2.equals("OUI")){
-                        CarteTransport carte2= piocherCarteVisible();
+                        CarteTransport carte2= piocherCarteVisible(2);
                     }else{ // s'il veut pas, il choisi de WAGON ou BATEAU
                         String paquetCarteChoisi = choixPiocherCartePaquet();
                         piocherCarteDunPaquet(paquetCarteChoisi);
@@ -140,7 +139,7 @@ public class Joueur {
 
                 String choixCarteVisibleOuNon2 = choixPiocherCarteVisible();
                 if(choixCarteVisibleOuNon2.equals("OUI")){ // s'il veut choisir une des cartes visibles
-                    CarteTransport carte2= piocherCarteVisible();
+                    CarteTransport carte2= piocherCarteVisible(2);
                 }
                 else{ // sinon il rechoisit d'un paquet
                     String paquetCarteChoisi2 = choixPiocherCartePaquet();
@@ -155,14 +154,33 @@ public class Joueur {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
             log(String.format("%s Capturer Route", toLog()));
+
         }else if(choix.equals("Nouvelles Destinations")) {
             //appeler fonction piocherCarteDestination
             log(String.format("%s Nouvelles Destinations", toLog()));
         }else if(choix.equals("Construire Port")){
-            //demander ville sur laquelle il veut construire via map
-            //demander cartes qu'il veut utiliser et add dans cartes transport posées
-            //appeler fonction construirePort
             log(String.format("%s Construire Port", toLog()));
+            //demande choix ville où construire port
+            List<String> choixVilles = new ArrayList<String>();
+            for (Ville ville: jeu.getPortsLibres()) {
+                choixVilles.add(ville.toString());
+            }
+            String choixJoueurVille = choisir("Cliquez sur la ville où vous voulez construire un port",choixVilles,null,false);
+            Ville choixVilleAConstruire= null;
+            for (Ville ville: jeu.getPortsLibres()) {
+                if(choixJoueurVille.equals(ville.toString())){
+                    choixVilleAConstruire = new Ville(ville.toString(), ville.estPort());
+                }
+            }
+            //demander cartes qu'il veut utiliser et add dans cartes transport posées
+            List<String> choixCarteAUtiliser = new ArrayList<String>();
+            for (CarteTransport carte: cartesTransport ) {
+                choixCarteAUtiliser.add(carte.getNom());
+            }
+            String choixC = choisir("tufd",choixCarteAUtiliser,null,false);
+            log(String.format(choixC,toLog()));
+            construirePort(choixVilleAConstruire);
+
         }else{
             log(String.format("%s Echanger Pions", toLog()));
             //Echanger Pions
@@ -311,8 +329,7 @@ public class Joueur {
       S'il prend un joker face visible il peut pas prendre d'autres cartes
       S'il prend une carte, il ne peut pas prendre un joker apres
       S'il tombe sur un joker dasn une pioche face cachée bah GG WP et il peut en prendre une deuxieme
-      methode : lit ce que prend le jouer (soit WAGON soit BATEAU soit JOKER) et de quelle pioche puis l'ajoute dans sa main ou les/la retourne (à voir)
-      DOIT PTET PRENDRE DES ARGUMENTS JSP*/
+      */
 
     //fonction qui demande au joueur s'il veut prendre une carte du paquet visible ou non
     public String choixPiocherCarteVisible(){
@@ -322,19 +339,27 @@ public class Joueur {
 
     //fonction qui demande au joueur de choisir une des cartes de celles visibles, qui l'ajoute dans sa main,
     // l'enleve des cartes visibles, et ajoute une carte random dans les cartes visibles
-    public CarteTransport piocherCarteVisible(){
+    public CarteTransport piocherCarteVisible(int nbtours){
         CarteTransport carteChoisie = null;
-
         List<String> choixCartesPossibles = new ArrayList<String>(); // initialisation choix possibles
-        for (CarteTransport carte: jeu.getCartesTransportVisibles()) {
-            choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
-        }
-        String choixCarte = choisir("Choisir une carte.", choixCartesPossibles,null, false);
+        if(nbtours==1) { // au tour 1 il peut prendre n'importe quelle carte
+            for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
+                choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
+            }
 
+        }
+        else{ // au tour 2 tout sauf les jokers présents
+            for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
+                if(carte.getType()!=TypeCarteTransport.JOKER) {
+                    choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
+                }
+            }
+        }
+        String choixCarte = choisir("Choisir une carte.", choixCartesPossibles, null, false);
         for (CarteTransport carte: jeu.getCartesTransportVisibles()) {
             if(carte.getNom().equals(choixCarte)){
                 carteChoisie = new CarteTransport(carte.getType(),carte.getCouleur(), carte.estDouble(), carte.getAncre());
-                jeu.getCartesTransportVisibles().remove(carte);
+                jeu.retireCarteDeCarteVisible(carte);
                 ajouterCarteEnMain(carte);
                 jeu.ajoutCartePaquetRandomDansCarteVisible();
             }
@@ -399,13 +424,7 @@ public class Joueur {
         int compteurJoker =0;
        if(ports.size()!=3){ // si il y a la place pour construire un port
            if(ville.estPort()){ // si la ville est un port
-               for (int i = 0; i < jeu.getPortsLibres().size(); i++) {
-                   if(ville==jeu.getPortsLibres().get(i)){
-                       villeLibre=true;
-                   }
-               }
-               if(villeLibre){ // si la ville n'a pas de port construit
-                   for (Route route : this.routes) {
+               for (Route route : this.routes) {
                        if(route.getVille1()==ville||route.getVille2()==ville){
                            villeDansRoutes=true;
                        }
@@ -462,11 +481,7 @@ public class Joueur {
                        System.out.println("Vous n'avez pas de routes menant à cette ville");
                        return null;
                    }
-               }
-               else{
-                   System.out.println("La ville a déjà un port");
-                   return null;
-               }
+
            }
            else{
                System.out.println("La ville que vous avez choisis n'est pas un port.");
