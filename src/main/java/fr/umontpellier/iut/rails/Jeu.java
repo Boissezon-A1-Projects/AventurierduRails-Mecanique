@@ -155,33 +155,7 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteBateau());
         }
 
-        // Donne les cartes destinations à chacun (à implémenter)
-        ArrayList<Destination> listeDesPropositions = new ArrayList<>();
-        ArrayList<Bouton> differentsChoix = new ArrayList<>();
-        for (Joueur joueurCourant : joueurs) {
-            // Créée la liste des 5 propositions pour le joueur et de la liste de boutons
-            listeDesPropositions.clear();
-            for(int i = 0; i < 5; i++) {
-                Bouton boutonVariable = new Bouton("" + i);
-                differentsChoix.add(boutonVariable);
-                listeDesPropositions.add(piocherDestinationAleatoire());
-            }
-
-            // Fait faire choisir les 3 premières cartes au joueur (obligatoire)
-            for(int nbChoixFaits = 0; nbChoixFaits < 3; nbChoixFaits++){
-                String valeurCarteChoisie;
-                valeurCarteChoisie = joueurCourant.choisir("Choisissez une carte à garder (encore " + (3-nbChoixFaits) + ")", null, differentsChoix, false);
-                // Retire le choix du joueur des choix possibles
-                for(int i = 0; i < 5 - nbChoixFaits; i++){
-                    if(differentsChoix.get(i).label() == valeurCarteChoisie){
-                        differentsChoix.remove(i);
-                        listeDesPropositions.remove(i);
-                    }
-                }
-            }
-            // Propose au joueur de choisir parmi les restantes ou de passer
-
-        }
+        distribuerDestinations();
 
 
         for (Joueur j : joueurs) {
@@ -191,6 +165,65 @@ public class Jeu implements Runnable {
         // Fin de la partie
         prompt("Fin de la partie.", new ArrayList<>(), true);
     }
+
+
+    public void distribuerDestinations(){
+        // Donne les cartes destinations à chacun
+        ArrayList<Destination> listeDesPropositions = new ArrayList<>();
+        ArrayList<Bouton> differentsChoix = new ArrayList<>();
+        for (Joueur joueurCourant : joueurs) {
+            // Créée la liste des 5 propositions pour le joueur et de la liste de boutons
+            listeDesPropositions.clear();
+            differentsChoix.clear();
+            for(int i = 1; i <= 5; i++) {
+                // Mettre idDestination plutot qu'un chiffre
+                Bouton boutonVariable = new Bouton("" + (i));
+                differentsChoix.add(boutonVariable);
+                listeDesPropositions.add(piocherDestinationAleatoire());
+            }
+
+            // Fait faire choisir les 3 premières cartes au joueur (obligatoire)
+            for(int nbChoixFaits = 0; nbChoixFaits < 3; nbChoixFaits++){
+                String valeurCarteChoisie;
+                valeurCarteChoisie = joueurCourant.choisir("Joueur " +joueurCourant.getNom() + " : Choisissez une carte à garder (encore " + (3-nbChoixFaits) + ")", null, differentsChoix, false);
+                // Retire le choix du joueur des choix possibles
+                int indice = enleverBoutonDeListeAvecValeur(differentsChoix, valeurCarteChoisie);
+                joueurCourant.ajouterDestination(listeDesPropositions.get(indice));
+                listeDesPropositions.remove(indice);
+            }
+            // Propose au joueur de choisir parmi les restantes ou de passer
+            Bouton BoutonPasser = new Bouton("Passer");
+            differentsChoix.add(BoutonPasser);
+            for(int nbChoixFaitsEnPlus = 0; nbChoixFaitsEnPlus < 2; nbChoixFaitsEnPlus++){
+                String valeurCarteChoisie;
+                valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " :Vous pouvez choisir une carte en plus, ou passer", null, differentsChoix, false);
+                if(valeurCarteChoisie.equals("Passer")){
+                    break;
+                }
+                else{
+                    int indice = enleverBoutonDeListeAvecValeur(differentsChoix, valeurCarteChoisie);
+                    joueurCourant.ajouterDestination(listeDesPropositions.get(indice));
+                    listeDesPropositions.remove(indice);
+                }
+
+
+            }
+
+        }
+    }
+
+    public int enleverBoutonDeListeAvecValeur(ArrayList<Bouton> listeBoutons, String valeur){
+        int tailleListe = listeBoutons.size();
+        for(int i = 0; i < tailleListe; i++){
+            if(listeBoutons.get(i).label().equals(valeur)){
+                listeBoutons.remove(i);
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
 
     /**
      * (Fonction faite par nous)
