@@ -115,6 +115,7 @@ public class Joueur {
         // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
         // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
         if (choix.equals("Piocher Cartes Transport")) {
+            /** PIOCHER CARTE TRANSPORT*/
             log(String.format("%s Piocher Cartes Transport", toLog()));
 
             String choixCarteVisibleOuNon = choixPiocherCarteVisible();
@@ -147,9 +148,6 @@ public class Joueur {
                 }
             }
 
-            //lui demander si wagon bateau ou joker (si ce dernier est present face visible) à faire avec clique sur carte
-            //appeler fonction piocher carte en fnction du choix
-
         } else if(choix.equals("Capturer Route")) {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
@@ -158,7 +156,9 @@ public class Joueur {
         }else if(choix.equals("Nouvelles Destinations")) {
             //appeler fonction piocherCarteDestination
             log(String.format("%s Nouvelles Destinations", toLog()));
-        }else if(choix.equals("Construire Port")){
+        }
+        else if(choix.equals("Construire Port")){
+            /**CONSTRUCTION PORT*/
             log(String.format("%s Construire Port", toLog()));
             //demande choix ville où construire port
             List<String> choixVilles = new ArrayList<String>();
@@ -166,19 +166,21 @@ public class Joueur {
                 choixVilles.add(ville.toString());
             }
             String choixJoueurVille = choisir("Cliquez sur la ville où vous voulez construire un port",choixVilles,null,false);
-            Ville choixVilleAConstruire= null;
+            Ville choixVilleAConstruire= null; // creation ville pour appeler la commande ultérieurement
             for (Ville ville: jeu.getPortsLibres()) {
                 if(choixJoueurVille.equals(ville.toString())){
                     choixVilleAConstruire = new Ville(ville.toString(), ville.estPort());
                 }
             }
-            //demander cartes qu'il veut utiliser et add dans cartes transport posées
+            //demande cartes qu'il veut utiliser pour construire port et add dans cartes transport posées
             List<String> choixCarteAUtiliser = new ArrayList<String>();
             for (CarteTransport carte: cartesTransport ) {
-                choixCarteAUtiliser.add(carte.getNom());
+                if(!carte.estDouble()){
+                    choixCarteAUtiliser.add(carte.getNom());
+                }
             }
             String choixC = choisir("tufd",choixCarteAUtiliser,null,false);
-            log(String.format(choixC,toLog()));
+
             construirePort(choixVilleAConstruire);
 
         }else{
@@ -331,14 +333,18 @@ public class Joueur {
       S'il tombe sur un joker dasn une pioche face cachée bah GG WP et il peut en prendre une deuxieme
       */
 
-    //fonction qui demande au joueur s'il veut prendre une carte du paquet visible ou non
+    /**FAIT PAR NOUS
+     * fonction qui demande au joueur s'il veut prendre une carte du paquet visible ou non
+     * @Renvoi: String avec le choix*/
     public String choixPiocherCarteVisible(){
         List<Bouton> choixPaquetBoutons = Arrays.asList( new Bouton("OUI"), new Bouton("NON"));
         return choisir("Voulez-vous prendre une carte de celles visibles ?", null, choixPaquetBoutons,false);
     }
 
-    //fonction qui demande au joueur de choisir une des cartes de celles visibles, qui l'ajoute dans sa main,
-    // l'enleve des cartes visibles, et ajoute une carte random dans les cartes visibles
+    /**FAIT PAR NOUS
+     * METHODE: demande au joueur de choisir une des cartes de celles visibles, qui l'ajoute dans sa main,
+     * l'enleve des cartes visibles, et ajoute une carte random dans les cartes visibles en fonction du tour où il est
+     * @Renvoi : carte choisie*/
     public CarteTransport piocherCarteVisible(int nbtours){
         CarteTransport carteChoisie = null;
         List<String> choixCartesPossibles = new ArrayList<String>(); // initialisation choix possibles
@@ -366,12 +372,15 @@ public class Joueur {
         }
         return carteChoisie;
     }
-    //fonction qui demande au joueur de quel paquet il veut prendre sa carte
+    /** FAIT PAR NOUS
+     * METHODE demande au joueur de quel paquet il veut prendre sa carte
+     * @Renvoi : string avec paquet choisi*/
     public String choixPiocherCartePaquet(){
         List<String> choixPaquetCarte = Arrays.asList("WAGON","BATEAU");
         return choisir("Choississez le paquet où vous voulez piocher.",choixPaquetCarte,null,false);
     }
-    //fonction qui ajoute dans la main du joueur une carte des pioches WAGON ou BATEAU en fonction de son choix
+    /**FAIT PAR NOUS
+     * METHODE: ajoute dans la main du joueur une carte des pioches WAGON ou BATEAU en fonction de son choix*/
     public void piocherCarteDunPaquet(String paquet){
         if(paquet.equals("WAGON")){
             ajouterCarteEnMain(jeu.piocherCarteWagon());
@@ -382,13 +391,14 @@ public class Joueur {
     }
 
 
-    /* prendre possession route : pose autant de WAGON ou BATEAU de la couleur de la route choisie
+    /** FAIT PAR NOUS
+    *prendre possession route : pose autant de WAGON ou BATEAU de la couleur de la route choisie
     * toute carte jouée doivent etre du meme type donc route maritime -> bateau ; route terrestre -> wagon
     * ATTENTION : 1.route grise -> n'importe quelle serie de carte (wagon ou bateau) de la meme couleur
     * 2. route paire : doit utiliser deux fois plus de cartes; ex: une route paire à deux wagons peut etre prise avec quatres wagons
     * 3. route double : un joueur peut prendre que l'une des deux routes pas les deux
     * 4. cartes double-bateau : prend pour deux bateaux; ex: une route à 4 bateaux peut prendre 2 doubles bateaux ou encore 2 simple 1 double
-    * methode : lit quelle route prend le joueur et prend son type, verifie si les cartes qu'il veut mettre sont bonnes,
+    * METHODE : lit quelle route prend le joueur et prend son type, verifie si les cartes qu'il veut mettre sont bonnes,
     * pose les pions dont le joueur a besoin (enleve de la main du joueur en gros),
     * les cartes qu'il a choisit s'enlevent de sa main et sont défaussées (dans la bonne defausse)
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
@@ -398,22 +408,24 @@ public class Joueur {
         throw new RuntimeException("Methode pas encore implémentée !");
     }
 
-    /*piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
+    /** FAIT PAS NOUS
+     * piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
     * ATTENTION : 1. si moins de quatres cartes dans la pioche il prend ce qui reste
     * cartes conservees sont mises sous la pioche destination
-    * methode : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
+    * METHODE : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
     * et reste des fois : choix entre les autres cartes ou passer et si passer met les cartes destinations sous la pioche*/
     public void piocherCarteDestination(){
         throw new RuntimeException("Methode pas encore implémentée !");
     }
 
-    /*construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
+    /** FAIT PAR NOUS
+    * construire un port: deux cartes WAGONS deux cartes BATEAUX (ou joker) marquees d'une ancre et de la meme couleur
     * ATTENTION : 4.peut que le faire si le joueur a deja une route qui mene à la ville
     * 2. si ville est un Port (faire un get)
     * 3. si ville n'a pas deja un port
     * 5. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
     * 1. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
-    * methode : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
+    * METHODE : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
     public Ville construirePort(Ville ville){
         boolean villeLibre=false;
         boolean villeDansRoutes= false;
@@ -495,10 +507,11 @@ public class Joueur {
         return ville;
     }
 
-    /*echanger des pions: enchange pions w par b ou b par w
+    /**FONCTION FAITE PAR NOUS
+    echanger des pions: enchange pions w par b ou b par w
     * score joueur diminue du nombre de pions qu'il a échangé
     * ATTENTION : il faut qu'il reste des pions du type voulu dans la boite
-    * methode : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
+    * METHODE : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
     * + diminue son score*/
     public void pionsARecevoir(String type, int nombreEchanges){
         if(type.equals("WAGON") && nbPionsWagonEnReserve!=0 && nbPionsBateau>=nombreEchanges){
