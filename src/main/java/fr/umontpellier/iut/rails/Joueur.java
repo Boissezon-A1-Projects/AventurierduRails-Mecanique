@@ -155,9 +155,9 @@ public class Joueur {
         else if(choix.equals("Capturer Route")) {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
-            List<String> routes = new ArrayList<String>() ;
+            List<String> listRoutes = new ArrayList<String>() ;
             for (Route route: jeu.getRoutesLibres()) {
-                routes.add(route.getNom());
+                listRoutes.add(route.getNom());
             }
             log(String.format("%s Capturer Route", toLog()));
 
@@ -339,8 +339,12 @@ public class Joueur {
         this.destinations.add(destination);
     }
 
-    public void enleverDestination(Destination destination){
-        this.destinations.remove(destination);
+    public void enleverDestinationId(String destinationId){
+        for (int i = 0; i < destinations.size(); i++) {
+            if(destinations.get(i).getNom()==destinationId){
+                destinations.remove(destinations.get(i));
+            }
+        }
     }
 
     public void ajouterCarteEnMain(CarteTransport carte){
