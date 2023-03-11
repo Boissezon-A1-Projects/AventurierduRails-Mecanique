@@ -159,7 +159,8 @@ public class Joueur {
             for (Route route: jeu.getRoutesLibres()) {
                 listRoutes.add(route.getNom());
             }
-            log(String.format("%s Capturer Route", toLog()));
+            String choixRoute = choisir("ivyuv", listRoutes, null, false);
+            log(String.format(choixRoute, toLog()));
 
         }
         else if(choix.equals("Nouvelles Destinations")) {
@@ -341,7 +342,7 @@ public class Joueur {
 
     public void enleverDestinationId(String destinationId){
         for (int i = 0; i < destinations.size(); i++) {
-            if(destinations.get(i).getNom()==destinationId){
+            if(destinations.get(i).getNom().equals(destinationId)){
                 destinations.remove(destinations.get(i));
             }
         }
