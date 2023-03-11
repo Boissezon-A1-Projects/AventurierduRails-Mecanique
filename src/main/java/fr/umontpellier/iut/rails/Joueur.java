@@ -116,35 +116,38 @@ public class Joueur {
         // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
         if (choix.equals("Piocher Cartes Transport")) {
             /** PIOCHER CARTE TRANSPORT*/
+            boolean possible = true;
+
             log(String.format("%s Piocher Cartes Transport", toLog()));
-
-            String choixCarteVisibleOuNon = choixPiocherCarteVisible();
-            if(choixCarteVisibleOuNon.equals("OUI")){ // si il veut prendre une carte du paquet visible
-                CarteTransport carte1= piocherCarteVisible(1);
-                if(carte1.getType()==TypeCarteTransport.JOKER){ // si c'st un joker il peut plus
-                    choisir("Vous ne pouvez plus ajouter de carte, veuillez cliquer sur passer.",null,null,true);
+            List<String> choixPaquet= choixPiocherPaquetOuCarteVisible(1);
+            String choixPaquetJoueur= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet, null, false);
+            while(possible) {
+                if (choixPaquetJoueur.equals("WAGON") || choixPaquetJoueur.equals("BATEAU")) {
+                    piocherCarteDunPaquet(choixPaquetJoueur);
+                    //deuxiemeTour
+                    possible = deuxiemeTourPiocherCarteTransport();
                 }
-                else{ //sinon on lui demande s'il veut reprendre des cartes visibles
-                    String choixCarteVisibleOuNon2 = choixPiocherCarteVisible();
-                    if(choixCarteVisibleOuNon2.equals("OUI")){
-                        CarteTransport carte2= piocherCarteVisible(2);
-                    }else{ // s'il veut pas, il choisi de WAGON ou BATEAU
-                        String paquetCarteChoisi = choixPiocherCartePaquet();
-                        piocherCarteDunPaquet(paquetCarteChoisi);
+                else { // carteVisible
+                    List<String> choixPaquetARemplacer = null;
+                    if (jeu.piocheWagonEstVide()) {
+                       choixPaquetARemplacer  = Arrays.asList("BATEAU");
+                    } else if (jeu.piocheBateauEstVide()) {
+                        choixPaquetARemplacer = Arrays.asList("WAGON");
+                    } else if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
+                        possible = false;
+                    } else {
+                        choixPaquetARemplacer = Arrays.asList("WAGON", "BATEAU");
                     }
-                }
-            }
-            else{ // sinon il choisi du paquet WAGON ou BATEAU
-                String paquetCarteChoisi = choixPiocherCartePaquet();
-                piocherCarteDunPaquet(paquetCarteChoisi);
+                    String paquetChoisi = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer,null,false );
+                    CarteTransport carteChoisie = prendreCarteVisible(choixPaquetJoueur,paquetChoisi);
 
-                String choixCarteVisibleOuNon2 = choixPiocherCarteVisible();
-                if(choixCarteVisibleOuNon2.equals("OUI")){ // s'il veut choisir une des cartes visibles
-                    CarteTransport carte2= piocherCarteVisible(2);
-                }
-                else{ // sinon il rechoisit d'un paquet
-                    String paquetCarteChoisi2 = choixPiocherCartePaquet();
-                    piocherCarteDunPaquet(paquetCarteChoisi2);
+                    if(carteChoisie.getType().equals(TypeCarteTransport.JOKER)){
+                        possible = false;
+                    }
+                    else{
+                        //deuxieme tour
+                        possible= deuxiemeTourPiocherCarteTransport();
+                    }
                 }
             }
 
@@ -175,27 +178,37 @@ public class Joueur {
             //demande cartes qu'il veut utiliser pour construire port et add dans cartes transport posées
             List<String> choixCarteAUtiliser = new ArrayList<String>();
             for (CarteTransport carte: cartesTransport ) {
-                if(!carte.estDouble()){
+                if(carte.getAncre()){
                     choixCarteAUtiliser.add(carte.getNom());
                 }
             }
-            String choixC = choisir("tufd",choixCarteAUtiliser,null,false);
+
+            if(choixCarteAUtiliser.size()>=4) {
+                while(cartesTransportPosees.size()!=4){
+                    String choixC = choisir("tufd", choixCarteAUtiliser, null, false);
+                    //a faire
+
+                }
+
+            }
 
             construirePort(choixVilleAConstruire);
 
         }else{
             log(String.format("%s Echanger Pions", toLog()));
+            nbPionsBateau+=15;
+            nbPionsWagon+=15;
             //Echanger Pions
-            List<Bouton> typeBoutons = Arrays.asList(new Bouton("WAGON"), new Bouton("BATEAU"));
-            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? WAGON ou BATEAU",null,typeBoutons,false); // pour savoir s'il veut recevoir bateaux ou wagons
+            List<String> typeChoix = Arrays.asList("PIONS WAGON", "PIONS BATEAU");
+            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? PIONS WAGON ou BATEAU",typeChoix,null,false); // pour savoir s'il veut recevoir bateaux ou wagons
 
             List<String> nombre = new ArrayList<String>(); // créations du liste pour savoir si le choix est correct (chiffre possibles)
-            if(choixTypeARecevoir.equals("WAGON")){
+            if(choixTypeARecevoir.equals("PIONS WAGON")){
                 for (int i = 1; i <= nbPionsWagonEnReserve; i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
                         nombre.add(String.valueOf(i));
                 }
             }
-            if(choixTypeARecevoir.equals("BATEAU")){
+            if(choixTypeARecevoir.equals("PIONS BATEAU")){
                 for (int i = 1; i <= nbPionsBateauEnReserve; i++) {
                     nombre.add(String.valueOf(i));
                 }
@@ -334,21 +347,17 @@ public class Joueur {
       */
 
     /**FAIT PAR NOUS
-     * fonction qui demande au joueur s'il veut prendre une carte du paquet visible ou non
+     * fonction qui crée les possibilité de choix s'il veut prendre une carte du paquet visible ou wagon ou bateau
      * @Renvoi: String avec le choix*/
-    public String choixPiocherCarteVisible(){
-        List<Bouton> choixPaquetBoutons = Arrays.asList( new Bouton("OUI"), new Bouton("NON"));
-        return choisir("Voulez-vous prendre une carte de celles visibles ?", null, choixPaquetBoutons,false);
-    }
-
-    /**FAIT PAR NOUS
-     * METHODE: demande au joueur de choisir une des cartes de celles visibles, qui l'ajoute dans sa main,
-     * l'enleve des cartes visibles, et ajoute une carte random dans les cartes visibles en fonction du tour où il est
-     * @Renvoi : carte choisie*/
-    public CarteTransport piocherCarteVisible(int nbtours){
-        CarteTransport carteChoisie = null;
+    public List<String> choixPiocherPaquetOuCarteVisible(int nbTours){
         List<String> choixCartesPossibles = new ArrayList<String>(); // initialisation choix possibles
-        if(nbtours==1) { // au tour 1 il peut prendre n'importe quelle carte
+        if(!jeu.piocheWagonEstVide()){
+            choixCartesPossibles.add("WAGON");
+        }
+        if(!jeu.piocheBateauEstVide()){
+            choixCartesPossibles.add("BATEAU");
+        }
+        if(nbTours==1) { // au tour 1 il peut prendre n'importe quelle carte
             for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
                 choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
             }
@@ -361,13 +370,22 @@ public class Joueur {
                 }
             }
         }
-        String choixCarte = choisir("Choisir une carte.", choixCartesPossibles, null, false);
+        return choixCartesPossibles;
+    }
+
+
+    /**FAIT PAR NOUS
+     * METHODE:ajoute dans la main du joueur la carte qu'il a choisi au préalable,
+     * l'enleve des cartes visibles, et ajoute une carte du paquet demandé dans les cartes visibles
+     * @Renvoi : carte choisie*/
+    public CarteTransport prendreCarteVisible(String nomCarte, String paquetRemplacementVoulu){
+        CarteTransport carteChoisie= null;
         for (CarteTransport carte: jeu.getCartesTransportVisibles()) {
-            if(carte.getNom().equals(choixCarte)){
+            if(carte.getNom().equals(nomCarte)){
                 carteChoisie = new CarteTransport(carte.getType(),carte.getCouleur(), carte.estDouble(), carte.getAncre());
-                jeu.retireCarteDeCarteVisible(carte);
+                jeu.retireCarteVisible(carte);
                 ajouterCarteEnMain(carte);
-                jeu.ajoutCartePaquetRandomDansCarteVisible();
+                jeu.ajoutCarteDePaquetDemandéDansCarteVisible(paquetRemplacementVoulu);
             }
         }
         return carteChoisie;
@@ -375,10 +393,7 @@ public class Joueur {
     /** FAIT PAR NOUS
      * METHODE demande au joueur de quel paquet il veut prendre sa carte
      * @Renvoi : string avec paquet choisi*/
-    public String choixPiocherCartePaquet(){
-        List<String> choixPaquetCarte = Arrays.asList("WAGON","BATEAU");
-        return choisir("Choississez le paquet où vous voulez piocher.",choixPaquetCarte,null,false);
-    }
+
     /**FAIT PAR NOUS
      * METHODE: ajoute dans la main du joueur une carte des pioches WAGON ou BATEAU en fonction de son choix*/
     public void piocherCarteDunPaquet(String paquet){
@@ -387,6 +402,31 @@ public class Joueur {
         }
         else{
             ajouterCarteEnMain(jeu.piocherCarteBateau());
+        }
+    }
+
+    public boolean deuxiemeTourPiocherCarteTransport(){
+        List<String> choixPaquet2 = choixPiocherPaquetOuCarteVisible(2);
+        String choixPaquetJoueur2= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet2, null, false);
+        if(choixPaquetJoueur2.equals("WAGON") || choixPaquetJoueur2.equals("BATEAU")){
+            piocherCarteDunPaquet(choixPaquetJoueur2);
+            return false;
+        }
+        else{
+
+            List<String> choixPaquetARemplacer2 = null;
+            if (jeu.piocheWagonEstVide()) {
+                choixPaquetARemplacer2  = Arrays.asList("BATEAU");
+            } else if (jeu.piocheBateauEstVide()) {
+                choixPaquetARemplacer2 = Arrays.asList("WAGON");
+            } else if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
+                return false;
+            } else {
+                choixPaquetARemplacer2 = Arrays.asList("WAGON", "BATEAU");
+            }
+            String paquetChoisi2 = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer2,null,false );
+            prendreCarteVisible(choixPaquetJoueur2,paquetChoisi2);
+            return false;
         }
     }
 
@@ -514,13 +554,13 @@ public class Joueur {
     * METHODE : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
     * + diminue son score*/
     public void pionsARecevoir(String type, int nombreEchanges){
-        if(type.equals("WAGON") && nbPionsWagonEnReserve!=0 && nbPionsBateau>=nombreEchanges){
+        if(type.equals("PIONS WAGON") && nbPionsWagonEnReserve!=0 && nbPionsBateau>=nombreEchanges){
             //Si le joueur demande à recevoir des wagons, on lui enleve des bateaux qu'on ajoute dans la reserve, on lui ajoute des wagons qu'on enleve de la reserve
             nbPionsBateau -= nombreEchanges; nbPionsBateauEnReserve += nombreEchanges;
             nbPionsWagon += nombreEchanges; nbPionsWagonEnReserve -= nombreEchanges;
             score -= nombreEchanges;
         }
-        if(type.equals("BATEAU")&& nbPionsBateauEnReserve!=0 && nbPionsWagon>=nombreEchanges){
+        if(type.equals("PIONS BATEAU")&& nbPionsBateauEnReserve!=0 && nbPionsWagon>=nombreEchanges){
             //Si le joueur demande à recevoir des bateaux, on lui enleve des wagons qu'on ajoute dans la reserve, on lui ajoute des bateaux qu'on enleve de la reserve
             nbPionsWagon -= nombreEchanges; nbPionsWagonEnReserve += nombreEchanges;
             nbPionsBateau += nombreEchanges; nbPionsBateauEnReserve -= nombreEchanges;

@@ -277,7 +277,16 @@ public class Jeu implements Runnable {
         }
     }
 
-    public void retireCarteDeCarteVisible(CarteTransport carte){
+    public void ajoutCarteDePaquetDemandéDansCarteVisible(String paquet){
+        if(paquet.equals("WAGON")){
+            cartesTransportVisibles.add(piocherCarteWagon());
+        }
+        else{
+            cartesTransportVisibles.add(piocherCarteBateau());
+        }
+    }
+
+    public void retireCarteVisible(CarteTransport carte){
         cartesTransportVisibles.remove(carte);
     }
 
