@@ -181,15 +181,25 @@ public class Jeu implements Runnable {
     public void distribuerDestionationsBis(){
         for (Joueur joueurCourant : joueurs) {
             //Distribue les 5 cartes au joueur
+            int compteur = 0;
+            boolean passer = false;
             ArrayList<String> listeChoix = new ArrayList<>();
             for (int i = 0; i < 5; i++) {
                 Destination destinationAjoutee = piocherDestination();
                 listeChoix.add(destinationAjoutee.getNom());
                 joueurCourant.ajouterDestination(destinationAjoutee);
             }
-            String nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.", listeChoix, null, true);
-            if(nomCarteChoisie != ""){
-                joueurCourant.enleverDestinationID(nomCarteChoisie);
+            while(compteur < 2 | !passer) {
+                String nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.", listeChoix, null, true);
+
+                if (!nomCarteChoisie.equals("")) {
+                    joueurCourant.enleverDestinationId(nomCarteChoisie);
+                    listeChoix.remove(nomCarteChoisie);
+                    compteur++;
+                }
+                else{
+                    passer = true;
+                }
             }
         }
 
