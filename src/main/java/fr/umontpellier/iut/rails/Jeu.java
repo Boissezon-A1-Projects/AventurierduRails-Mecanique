@@ -141,14 +141,8 @@ public class Jeu implements Runnable {
         // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
 
         // Donne la main de départ à tous les joueurs (bateaux et wagons)
-        for (Joueur joueurCourant : joueurs) {
-            for(int i = 0; i < 7; i++) {
-                joueurCourant.ajouterCarteEnMain(piocherCarteBateau());
-            }
-            for(int i = 0; i < 3; i++) {
-                joueurCourant.ajouterCarteEnMain(piocherCarteWagon());
-            }
-        }
+        distribuerMainDepart();
+
         // Retourne 3 cartes de chaque paquet sur la table face visible
         for(int i = 0; i < 3; i++) {
             cartesTransportVisibles.add(piocherCarteWagon());
@@ -166,6 +160,51 @@ public class Jeu implements Runnable {
         prompt("Fin de la partie.", new ArrayList<>(), true);
     }
 
+    /**
+     * (Fonction faite par nous)
+     * Distribue la main de départ de chacun des joueurs (7 Bateaux et 3 Wagons)
+     * @return rien
+     */
+    public void distribuerMainDepart(){
+        for (Joueur joueurCourant : joueurs) {
+            for(int i = 0; i < 7; i++) {
+                joueurCourant.ajouterCarteEnMain(piocherCarteBateau());
+            }
+            for(int i = 0; i < 3; i++) {
+                joueurCourant.ajouterCarteEnMain(piocherCarteWagon());
+            }
+        }
+    }
+
+
+
+    public void distribuerDestionationsBis(){
+        for (Joueur joueurCourant : joueurs) {
+            //Distribue les 5 cartes au joueur
+            ArrayList<String> listeChoix = new ArrayList<>();
+            for (int i = 0; i < 5; i++) {
+                Destination destinationAjoutee = piocherDestination();
+                listeChoix.add(destinationAjoutee.getNom());
+                joueurCourant.ajouterDestination(destinationAjoutee);
+            }
+            String nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.", listeChoix, null, true);
+            if(nomCarteChoisie != ""){
+                joueurCourant.enleverDestinationID(nomCarteChoisie);
+            }
+        }
+
+    }
+
+
+
+
+    /**
+     * (Fonction faite par nous)
+     * Distribue les destinations au départ du jeu (choix parmi 5 cartes):
+     *      - 3 choix minimum par personnage
+     *      - 2 choix facultatifs par personnage
+     * @return rien
+     */
 
     public void distribuerDestinations(){
         // Donne les cartes destinations à chacun
@@ -175,43 +214,42 @@ public class Jeu implements Runnable {
             // Créée la liste des 5 propositions pour le joueur et de la liste de boutons
             listeDesPropositions.clear();
             differentsChoix.clear();
-            for(int i = 1; i <= 5; i++) {
-                // Mettre idDestination plutot qu'un chiffre
+            for (int i = 1; i <= 5; i++) {
                 Bouton boutonVariable = new Bouton("" + (i));
                 differentsChoix.add(boutonVariable);
-                listeDesPropositions.add(piocherDestinationAleatoire());
+                listeDesPropositions.add(piocherDestination());
             }
 
-            // Fait faire choisir les 3 premières cartes au joueur (obligatoire)
-            for(int nbChoixFaits = 0; nbChoixFaits < 3; nbChoixFaits++){
+            // Fait faire choisir les 3 premières cartes au joueur (obligatoire) puis un choix entre les 2 dernières (facultatif)
+            for (int nbChoixFaits = 0; nbChoixFaits < 5; nbChoixFaits++) {
                 String valeurCarteChoisie;
-                valeurCarteChoisie = joueurCourant.choisir("Joueur " +joueurCourant.getNom() + " : Choisissez une carte à garder (encore " + (3-nbChoixFaits) + ")", null, differentsChoix, false);
-                // Retire le choix du joueur des choix possibles
-                int indice = enleverBoutonDeListeAvecValeur(differentsChoix, valeurCarteChoisie);
-                joueurCourant.ajouterDestination(listeDesPropositions.get(indice));
-                listeDesPropositions.remove(indice);
-            }
-            // Propose au joueur de choisir parmi les restantes ou de passer
-            Bouton BoutonPasser = new Bouton("Passer");
-            differentsChoix.add(BoutonPasser);
-            for(int nbChoixFaitsEnPlus = 0; nbChoixFaitsEnPlus < 2; nbChoixFaitsEnPlus++){
-                String valeurCarteChoisie;
-                valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " :Vous pouvez choisir une carte en plus, ou passer", null, differentsChoix, false);
-                if(valeurCarteChoisie.equals("Passer")){
+                if (nbChoixFaits < 3) {
+                    valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " : Choisissez une carte à garder (encore " + (3 - nbChoixFaits) + ")", null, differentsChoix, false);
+                } else {
+                    if (nbChoixFaits == 3) {
+                        Bouton BoutonPasser = new Bouton("Passer");
+                        differentsChoix.add(BoutonPasser);
+                    }
+                    valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " :Vous pouvez choisir une carte en plus, ou passer", null, differentsChoix, false);
+                }
+
+
+                if (valeurCarteChoisie.equals("Passer")) {
                     break;
                 }
-                else{
+                else {
                     int indice = enleverBoutonDeListeAvecValeur(differentsChoix, valeurCarteChoisie);
                     joueurCourant.ajouterDestination(listeDesPropositions.get(indice));
                     listeDesPropositions.remove(indice);
                 }
-
-
             }
-
         }
     }
-
+     /**
+     * (Fonction faite par nous)
+     * Enleve un bouton d'une liste de boutons dont la valeur est passée en paramètre
+     * @return l'indice du bouton retiré
+     */
     public int enleverBoutonDeListeAvecValeur(ArrayList<Bouton> listeBoutons, String valeur){
         int tailleListe = listeBoutons.size();
         for(int i = 0; i < tailleListe; i++){
@@ -230,12 +268,8 @@ public class Jeu implements Runnable {
      * Renvoie une carte destination aléatoire et la retire de la pile.
      * @return la destination choisie aléatoirement
      */
-    public Destination piocherDestinationAleatoire(){
-        Random random = new Random();
-        Destination destinationAleatoire;
-        destinationAleatoire = pileDestinations.get(random.nextInt(pileDestinations.size() - 1));
-        pileDestinations.remove(destinationAleatoire);
-        return destinationAleatoire;
+    public Destination piocherDestination(){
+        return pileDestinations.get(0);
     }
 
 

@@ -61,6 +61,10 @@ public class Destination {
         }
     }
 
+    public String getNom(){
+        return nom;
+    }
+
     /**
      * @return une liste contenant toutes les destinations du jeu
      */
