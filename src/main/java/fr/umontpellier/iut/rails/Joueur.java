@@ -151,12 +151,18 @@ public class Joueur {
                 }
             }
 
-        } else if(choix.equals("Capturer Route")) {
+        }
+        else if(choix.equals("Capturer Route")) {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
+            List<String> routes = new ArrayList<String>() ;
+            for (Route route: jeu.getRoutesLibres()) {
+                routes.add(route.getNom());
+            }
             log(String.format("%s Capturer Route", toLog()));
 
-        }else if(choix.equals("Nouvelles Destinations")) {
+        }
+        else if(choix.equals("Nouvelles Destinations")) {
             //appeler fonction piocherCarteDestination
             log(String.format("%s Nouvelles Destinations", toLog()));
         }
@@ -182,7 +188,6 @@ public class Joueur {
                     choixCarteAUtiliser.add(carte.getNom());
                 }
             }
-
             if(choixCarteAUtiliser.size()>=4) {
                 while(cartesTransportPosees.size()!=4){
                     String choixC = choisir("tufd", choixCarteAUtiliser, null, false);
@@ -194,10 +199,10 @@ public class Joueur {
 
             construirePort(choixVilleAConstruire);
 
-        }else{
+        }
+        else{
             log(String.format("%s Echanger Pions", toLog()));
-            nbPionsBateau+=15;
-            nbPionsWagon+=15;
+
             //Echanger Pions
             List<String> typeChoix = Arrays.asList("PIONS WAGON", "PIONS BATEAU");
             String choixTypeARecevoir = choisir("Que voulez-vous recevoir? PIONS WAGON ou BATEAU",typeChoix,null,false); // pour savoir s'il veut recevoir bateaux ou wagons
@@ -332,6 +337,10 @@ public class Joueur {
 
     public void ajouterDestination(Destination destination){
         this.destinations.add(destination);
+    }
+
+    public void enleverDestination(Destination destination){
+        this.destinations.remove(destination);
     }
 
     public void ajouterCarteEnMain(CarteTransport carte){
