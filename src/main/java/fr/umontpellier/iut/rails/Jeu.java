@@ -152,7 +152,7 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteBateau());
         }
 
-        distribuerDestinations();
+        distribuerDestionationsBis();
 
 
         for (Joueur j : joueurs) {
@@ -187,14 +187,22 @@ public class Jeu implements Runnable {
             int compteur = 0;
             boolean passer = false;
             ArrayList<String> listeChoix = new ArrayList<>();
+            String nomCarteChoisie;
+
             for (int i = 0; i < 5; i++) {
                 Destination destinationAjoutee = piocherDestination();
                 listeChoix.add(destinationAjoutee.getNom());
                 joueurCourant.ajouterDestination(destinationAjoutee);
             }
-            while(compteur < 2 | !passer) {
-                String nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.", listeChoix, null, true);
-
+            while(compteur < 2 && !passer) {
+                if(compteur == 0) {
+                    nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
+                            "Choix :" + listeChoix.get(0) + " " + listeChoix.get(1) + " " + listeChoix.get(2) + " " + listeChoix.get(3) + " " + listeChoix.get(4), listeChoix, null, true);
+                }
+                else{
+                    nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
+                            "Choix :" + listeChoix.get(0) + " " + listeChoix.get(1) + " " + listeChoix.get(2) + " " + listeChoix.get(3), listeChoix, null, true);
+                }
                 if (!nomCarteChoisie.equals("")) {
                     joueurCourant.enleverDestinationId(nomCarteChoisie);
                     listeChoix.remove(nomCarteChoisie);
