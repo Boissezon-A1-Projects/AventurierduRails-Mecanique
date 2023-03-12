@@ -65,6 +65,8 @@ public class Destination {
         return nom;
     }
 
+
+
     /**
      * @return une liste contenant toutes les destinations du jeu
      */

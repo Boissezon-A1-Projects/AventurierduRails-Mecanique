@@ -164,8 +164,7 @@ public class Joueur {
 
         }
         else if(choix.equals("Nouvelles Destinations")) {
-            //appeler fonction piocherCarteDestination
-            log(String.format("%s Nouvelles Destinations", toLog()));
+           piocherCarteDestination();
         }
         else if(choix.equals("Construire Port")){
             /**CONSTRUCTION PORT*/
@@ -468,8 +467,66 @@ public class Joueur {
     * cartes conservees sont mises sous la pioche destination
     * METHODE : donne 4 cartes (ou moins) au joueur, 1ere fois lui demande de choisir une carte et l'ajoute dans sa main
     * et reste des fois : choix entre les autres cartes ou passer et si passer met les cartes destinations sous la pioche*/
-    public void piocherCarteDestination(){
-        throw new RuntimeException("Methode pas encore implémentée !");
+    public boolean piocherCarteDestination(){
+        boolean aPasse = false;
+        List<Destination> destinationsPiochee = new ArrayList<Destination>();
+        List<String> destinationsPiocheeNom = new ArrayList<String>();
+
+
+        if(jeu.getPileDestinations().size()>=4){ //initialisation des piles en fonction du nombre dans la pileDestination
+            for (int i = 0; i < 4; i++) {
+                Destination desti = jeu.piocherDestination();
+                destinationsPiochee.add(desti);
+                destinationsPiocheeNom.add(desti.getNom());
+
+            }
+        }
+        else{
+            for (int i = 0; i < jeu.getPileDestinations().size(); i++) {
+                Destination desti = jeu.piocherDestination();
+                destinationsPiochee.add(desti);
+                destinationsPiocheeNom.add(desti.getNom());
+
+            }
+        }
+
+        String choix;Destination destiChoisie;
+
+        // tant que apasse est faux ou que la la taille de la liste des choisies n'est pas égale à 0 (parce qu'il faut qu'il en garde une au moins
+        while(!aPasse && destinationsPiochee.size()>1){
+            String pourChoix = "Veuillez choisir ou non une carte à défausser: ";
+            for (String nomDesti: destinationsPiocheeNom) {
+                pourChoix += nomDesti +"  ";
+            }
+            choix = choisir(pourChoix, destinationsPiocheeNom, null, true);
+
+            if (!choix.equals("")) { // si c'est pas un passer on enleve des piles et on la defausse
+                destiChoisie= nomDestinationVersCarteDestination(choix,destinationsPiochee);
+                jeu.defausserDestination(destiChoisie);
+                destinationsPiochee.remove(destiChoisie);
+                destinationsPiocheeNom.remove(choix);
+                System.out.print(destinationsPiocheeNom.toString());
+            }
+            else{ //sinon on met à true (et on sort de la boucle normalement)
+                aPasse = true;
+            }
+
+        }
+        for (Destination destinationChoisie: destinationsPiochee ) { // on ajoute toute les cartes restantes dans la main
+            ajouterDestination(destinationChoisie);
+        }
+        return aPasse;
+    }
+
+
+    public Destination nomDestinationVersCarteDestination(String nomCarte,List<Destination> listeDesti){
+        Destination resultat = null;
+        for (Destination destination: listeDesti) {
+            if(destination.getNom().equals(nomCarte)){
+                resultat = destination;
+            }
+        }
+        return resultat;
     }
 
     /** FAIT PAR NOUS
