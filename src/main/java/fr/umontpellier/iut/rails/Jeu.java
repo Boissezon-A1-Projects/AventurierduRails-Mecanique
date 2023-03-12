@@ -287,6 +287,9 @@ public class Jeu implements Runnable {
         return desti;
     }
 
+    public void defausserDestination(Destination desti){
+        pileDestinations.add(desti);
+    }
 
     /**
      * Pioche une carte de la pile de pioche des cartes wagon.
