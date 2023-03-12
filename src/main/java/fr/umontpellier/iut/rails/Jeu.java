@@ -129,6 +129,9 @@ public class Jeu implements Runnable {
         return new ArrayList<>(cartesTransportVisibles);
     }
 
+    /** faite par nous*/
+    public List<Destination> getPileDestinations() { return pileDestinations; }
+
     /**
      * Exécute la partie
      * C'est cette méthode qui est appelée pour démarrer la partie. Elle doit intialiser le jeu
@@ -279,7 +282,9 @@ public class Jeu implements Runnable {
      * @return la destination choisie aléatoirement
      */
     public Destination piocherDestination(){
-        return pileDestinations.get(0);
+        Destination desti =pileDestinations.get(0);
+        pileDestinations.remove(0);
+        return desti;
     }
 
 
