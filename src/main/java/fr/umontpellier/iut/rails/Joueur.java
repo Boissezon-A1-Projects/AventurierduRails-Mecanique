@@ -105,23 +105,33 @@ public class Joueur {
         for (Ville ville : jeu.getPortsLibres()) {
             optionsVilles.add(ville.nom());
         }*/
-        List<Bouton> boutons = Arrays.asList(
-                new Bouton("Piocher Cartes Transport"),
-                new Bouton("Capturer Route"),
-                new Bouton("Nouvelles Destinations"),
-                new Bouton("Echanger Pions"),
-                new Bouton("Construire Port"));
+        List<String> listeChoixPossible= new ArrayList<>();
+        //Piocher une carte transport // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
+        List<CarteTransport> carteVisible = jeu.getCartesTransportVisibles();
+        for (CarteTransport carte: carteVisible ) {
+            listeChoixPossible.add(carte.getNom());
+        }
+        listeChoixPossible.add("WAGON"); listeChoixPossible.add("BATEAU");
+        //capturer une route
+        //nouvelles destination
+        listeChoixPossible.add("DESTINATION");
+        //Construction port // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
+        //if(verificationCarteConstructionPort()){
+            for (Ville ville: jeu.getPortsLibres()) {
+                listeChoixPossible.add(ville.nom());
+            }
+        //}
+        //echanger pions
+        listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
+        System.out.println(listeChoixPossible.toString());
+        String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, false);
 
-        String choix = choisir(
-                "Que voulez-vous faire ?",
-                null,
-                boutons,
-                false);
-        // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
-        // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
-        if (choix.equals("Piocher Cartes Transport")) {
+        log(String.format(choix,toLog()));
+
+        if (choix.equals("WAGON") || choix.equals("BATEAU") || choix.charAt(0)=='C') {
             /** PIOCHER CARTE TRANSPORT*/
-            boolean possible = true;
+            log(String.format("%s carte transp", toLog()));
+            /*boolean possible = true;
 
             log(String.format("%s Piocher Cartes Transport", toLog()));
             List<String> choixPaquet= choixPiocherPaquetOuCarteVisible(1);
@@ -154,28 +164,36 @@ public class Joueur {
                         possible= deuxiemeTourPiocherCarteTransport();
                     }
                 }
-            }
+            }*/
 
         }
-        else if(choix.equals("Capturer Route")) {
+        else if(choix.charAt(0)=='R') {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
-            List<String> listRoutes = new ArrayList<String>() ;
+            /*List<String> listRoutes = new ArrayList<String>() ;
             for (Route route: jeu.getRoutesLibres()) {
                 listRoutes.add(route.getNom());
             }
             String choixRoute = choisir("ivyuv", listRoutes, null, false);
-            log(String.format(choixRoute, toLog()));
-
+            log(String.format(choixRoute, toLog()));*/
+            log(String.format("%s route", toLog()));
         }
-        else if(choix.equals("Nouvelles Destinations")) {
-           piocherCarteDestination();
+        else if(choix.equals("DESTINATION")) {
+            log(String.format("%s destination", toLog()));
+           //piocherCarteDestination();
         }
-        else if(choix.equals("Construire Port")){
+        else if(choix.equals("PIONS WAGON")){
+            log(String.format("%s Echanger Pions wagons", toLog()));
+            //echangerPions(choix);
+        } else if (choix.equals("PIONS BATEAU")) {
+            log(String.format("%s Echanger Pions bateaux", toLog()));
+            //echangerPions(choix);
+        }
+        else {
             /**CONSTRUCTION PORT*/
             log(String.format("%s Construire Port", toLog()));
             //demande choix ville où construire port
-            List<String> choixVilles = new ArrayList<String>();
+            /*List<String> choixVilles = new ArrayList<String>();
             for (Ville ville: jeu.getPortsLibres()) {
                 choixVilles.add(ville.toString());
             }
@@ -200,32 +218,8 @@ public class Joueur {
 
                 }
 
-            }
+            }*/
 
-
-        }
-        else{
-            log(String.format("%s Echanger Pions", toLog()));
-
-            //Echanger Pions
-            List<String> typeChoix = Arrays.asList("PIONS WAGON", "PIONS BATEAU");
-            String choixTypeARecevoir = choisir("Que voulez-vous recevoir? PIONS WAGON ou BATEAU",typeChoix,null,false); // pour savoir s'il veut recevoir bateaux ou wagons
-
-            List<String> nombre = new ArrayList<String>(); // créations du liste pour savoir si le choix est correct (chiffre possibles)
-            if(choixTypeARecevoir.equals("PIONS WAGON")){
-                for (int i = 1; i <= nbPionsWagonEnReserve; i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
-                        nombre.add(String.valueOf(i));
-                }
-            }
-            if(choixTypeARecevoir.equals("PIONS BATEAU")){
-                for (int i = 1; i <= nbPionsBateauEnReserve; i++) {
-                    nombre.add(String.valueOf(i));
-                }
-            }
-
-            String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
-
-            pionsARecevoir(choixTypeARecevoir,Integer.valueOf(choixNombreARecevoir));// appel fonction qui gere l'echange
 
         }
 
@@ -706,6 +700,18 @@ public class Joueur {
     * ATTENTION : il faut qu'il reste des pions du type voulu dans la boite
     * METHODE : enleve les pions du type non voulu au joueur et ajoute les pions du type voulu au joueur
     * + diminue son score*/
+    public void echangerPions(String type){
+        List<String> nombre = new ArrayList<String>(); // créations du liste pour savoir si le choix est correct (chiffre possibles)
+        for (int i = 1; i <= nbPionsWagonEnReserve; i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
+            nombre.add(String.valueOf(i));
+        }
+
+
+        String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
+
+        pionsARecevoir(type,Integer.valueOf(choixNombreARecevoir));// appel fonction qui gere l'echange
+    }
+
     public void pionsARecevoir(String type, int nombreEchanges){
         if(type.equals("PIONS WAGON") && nbPionsWagonEnReserve!=0 && nbPionsBateau>=nombreEchanges){
             //Si le joueur demande à recevoir des wagons, on lui enleve des bateaux qu'on ajoute dans la reserve, on lui ajoute des wagons qu'on enleve de la reserve
