@@ -151,8 +151,9 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteWagon());
             cartesTransportVisibles.add(piocherCarteBateau());
         }
-
-        distribuerDestionationsBis();
+        for (Joueur j : joueurs) {
+            distribuerDestionations(j);
+        }
 
 
         for (Joueur j : joueurs) {
@@ -181,53 +182,48 @@ public class Jeu implements Runnable {
 
 
 
-    public void distribuerDestionationsBis(){
-        for (Joueur joueurCourant : joueurs) {
-            //Distribue les 5 cartes au joueur
-            int compteur = 0;
-            boolean passer = false;
-            ArrayList<String> listeChoixNom = new ArrayList<>();
-            ArrayList<Destination> listeChoix = new ArrayList<>();
-            String nomCarteChoisie;
-
-            for (int i = 0; i < 5; i++) {
-                Destination destinationAjoutee = piocherDestination();
-                listeChoixNom.add(destinationAjoutee.getNom());
-                listeChoix.add(destinationAjoutee);
-                joueurCourant.ajouterDestination(destinationAjoutee);
+    public void distribuerDestionations(Joueur joueurCourant){
+        //Distribue les 5 cartes au joueur
+        int compteur = 0;
+        boolean passer = false;
+        ArrayList<String> listeChoixNom = new ArrayList<>();
+        String nomCarteChoisie;
+        for (int i = 0; i < 5; i++) {
+            Destination destinationAjoutee = piocherDestination();
+            listeChoixNom.add(destinationAjoutee.getNom());
+            joueurCourant.ajouterDestination(destinationAjoutee);
+        }
+        while(compteur < 2 && !passer) {
+            if(compteur == 0) {
+                nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
+                        "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3) + " " + listeChoixNom.get(4), listeChoixNom, null, true);
             }
-            while(compteur < 2 && !passer) {
-                if(compteur == 0) {
-                    nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
-                            "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3) + " " + listeChoixNom.get(4), listeChoixNom, null, true);
+            else{
+                nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
+                        "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3), listeChoixNom, null, true);
+            }
+            if (!nomCarteChoisie.equals("")) {
+                // Rajoute la carte défaussée à la pile de destinations
+                for(int i = 0; i < joueurCourant.getDestinations().size(); i++){
+                    if(joueurCourant.getDestinations().get(i).getNom() == nomCarteChoisie){
+                        pileDestinations.add(pileDestinations.size(), joueurCourant.getDestinations().get(i));
+                    }
                 }
-                else{
-                    nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
-                            "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3), listeChoixNom, null, true);
-                }
-                if (!nomCarteChoisie.equals("")) {
-                    joueurCourant.enleverDestinationId(nomCarteChoisie);
-                    listeChoixNom.remove(nomCarteChoisie);
-                    compteur++;
-                }
-                else{
-                    passer = true;
-                }
+                joueurCourant.enleverDestinationId(nomCarteChoisie);
+                listeChoixNom.remove(nomCarteChoisie);
+                compteur++;
+            }
+            else{
+                passer = true;
             }
         }
-
     }
 
 
 
-
-    /**
-     * (Fonction faite par nous)
-     * Distribue les destinations au départ du jeu (choix parmi 5 cartes):
-     *      - 3 choix minimum par personnage
-     *      - 2 choix facultatifs par personnage
-     * @return rien
-     */
+    // Fonction ratée qui fonctionne mais ne passe pas les tests, on va quand
+    // même pas la supprimmer après le travail fourni
+    /*
 
     public void distribuerDestinations(){
         // Donne les cartes destinations à chacun
@@ -268,6 +264,8 @@ public class Jeu implements Runnable {
             }
         }
     }
+    */
+
      /**
      * (Fonction faite par nous)
      * Enleve un bouton d'une liste de boutons dont la valeur est passée en paramètre
