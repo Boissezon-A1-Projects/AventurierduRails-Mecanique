@@ -206,9 +206,6 @@ public class Jeu implements Runnable {
                             "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3), listeChoixNom, null, true);
                 }
                 if (!nomCarteChoisie.equals("")) {
-                    for(int i = 0; i < listeChoix.size(); i++){
-                        if(listeChoix.get(i))
-                    }
                     joueurCourant.enleverDestinationId(nomCarteChoisie);
                     listeChoixNom.remove(nomCarteChoisie);
                     compteur++;

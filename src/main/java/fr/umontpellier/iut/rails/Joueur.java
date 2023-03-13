@@ -84,6 +84,11 @@ public class Joueur {
         return nom;
     }
 
+    public List<Destination> getDestinations(){
+        return destinations;
+    }
+
+
     /**
      * Cette méthode est appelée à tour de rôle pour chacun des joueurs de la partie.
      * Elle doit réaliser un tour de jeu, pendant lequel le joueur a le choix entre 5 actions possibles :
