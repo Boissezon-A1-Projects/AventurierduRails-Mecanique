@@ -197,7 +197,6 @@ public class Joueur {
 
             }
 
-            construirePort(choixVilleAConstruire);
 
         }
         else{
@@ -537,86 +536,164 @@ public class Joueur {
     * 5. les cartes utilisées doivent etre marquées d'une ancre (get) et meme couleur (sauf si joker)
     * 1. si la length de la liste des ports n'est pas égale à 3 (ptet à faire en premier ça)
     * METHODE : verifie toutes les conditions + ajoute un port dans la liste si c'est faisable*/
-    public Ville construirePort(Ville ville){
-        boolean villeLibre=false;
-        boolean villeDansRoutes= false;
-        boolean memeCouleur = true;
-        int compteurCouleur =0;
-        int compteurWagon =0;
-        int compteurBateau =0;
-        int compteurJoker =0;
-       if(ports.size()!=3){ // si il y a la place pour construire un port
-           if(ville.estPort()){ // si la ville est un port
-               for (Route route : this.routes) {
-                       if(route.getVille1()==ville||route.getVille2()==ville){
-                           villeDansRoutes=true;
-                       }
-                   }
-                   if(villeDansRoutes){ // si le joueur a une route qui mene a la route
-                       while(memeCouleur && compteurCouleur!=3){
-                            if(cartesTransportPosees.get(compteurCouleur).getType()!=TypeCarteTransport.JOKER){
-                                if(cartesTransportPosees.get(compteurCouleur).getCouleur()!=cartesTransportPosees.get(compteurCouleur+1).getCouleur()) {
-                                    memeCouleur = false;
-                                }
-                            }
-                            compteurCouleur++;
-                       }
-                       if(memeCouleur) {
-                           for (CarteTransport carte : this.cartesTransportPosees) {
-                               if (carte.getType() == TypeCarteTransport.WAGON) {
-                                   compteurWagon++;
-                               }
-                               if (carte.getType() == TypeCarteTransport.BATEAU) {
-                                   compteurBateau++;
-                               }
-                               if (carte.getType() == TypeCarteTransport.JOKER) {
-                                   compteurJoker++;
-                               }
-                           }
-                           if(compteurJoker==0 && compteurWagon==2 && compteurBateau==2){
-                                ports.add(ville);
-                           }
-                           else if((compteurJoker ==1 && compteurWagon==1 && compteurBateau==2) || (compteurJoker ==1 && compteurWagon==2 && compteurBateau==1)){
-                               ports.add(ville);
-                           }
-                           else if((compteurJoker ==2 && compteurWagon==0 && compteurBateau==2) || (compteurJoker ==2 && compteurWagon==2 && compteurBateau==0)){
-                               ports.add(ville);
-                           }
-                           else if(compteurJoker ==2 && compteurWagon==1 && compteurBateau==1){
-                               ports.add(ville);
-                           }
-                           else if((compteurJoker ==3 && compteurWagon==0 && compteurBateau==1) || (compteurJoker ==3 && compteurWagon==1 && compteurBateau==0)){
-                               ports.add(ville);
-                           }
-                           else if((compteurJoker ==4 && compteurWagon==0 && compteurBateau==0)){
-                               ports.add(ville);
-                           }
-                           else{
-                               System.out.println("Vous n'avez pas mis les bonnes cartes");
-                               return null;
-                           }
-                       }
-                       else{
-                           System.out.println();
-                       }
-                   }
-                   else{
-                       System.out.println("Vous n'avez pas de routes menant à cette ville");
-                       return null;
-                   }
 
-           }
-           else{
-               System.out.println("La ville que vous avez choisis n'est pas un port.");
-               return null;
-           }
-       }
-       else{
-           System.out.println("Vous ne pouvez plus contruire de ports.");
-           return null;
-       }
-        return ville;
+
+    public boolean verificationCarteConstructionPort(){
+        boolean peutConstruirePort = false;
+        List<CarteTransport> wagons = new ArrayList<CarteTransport>();
+        List<CarteTransport> bateaux = new ArrayList<CarteTransport>();
+        List<CarteTransport> jokers = new ArrayList<CarteTransport>();
+
+        List<Couleur> couleursW = new ArrayList<>();
+        List<Couleur> couleursB = new ArrayList<>();
+        int nombreCarteWagon =0;
+        int nombreCarteBateau =0;
+        int nombreCarteJoker =0;
+        boolean memeCouleur = false;
+        if(cartesTransport.size()>=4) {
+            for (CarteTransport carte : cartesTransport) {
+                if (carte.getAncre()) { // on prend que les cartes qui ont une ancre
+                    if (carte.getType().equals(TypeCarteTransport.WAGON)) {
+                        wagons.add(carte);
+                    }
+                    if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
+                        bateaux.add(carte);
+                    }
+                    if (carte.getType().equals(TypeCarteTransport.JOKER)) {
+                        jokers.add(carte);
+                    }
+                }
+            }
+            nombreCarteWagon = wagons.size();
+            nombreCarteBateau = bateaux.size();
+            nombreCarteJoker = jokers.size();
+
+
+            //on verifie si il a assez de carte de la meme couleur (en fonction du nombre de joker)
+            if (nombreCarteJoker == 0 && nombreCarteWagon >= 2 && nombreCarteBateau >= 2) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 2);
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 2);
+                memeCouleur = verifierComptabilitéCouleurWagonBateau(couleursW,couleursB);
+                if (memeCouleur) {
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 1 && nombreCarteWagon == 1 && nombreCarteBateau == 2) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 1);
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 2);
+                memeCouleur = verifierComptabilitéCouleurWagonBateau(couleursW,couleursB);
+                if (memeCouleur) {
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 1 && nombreCarteWagon == 2 && nombreCarteBateau == 1) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 2);
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 1);
+                memeCouleur = verifierComptabilitéCouleurWagonBateau(couleursW,couleursB);
+                if (memeCouleur) {
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 2 && nombreCarteWagon == 0 && nombreCarteBateau == 2) {
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 2);
+                if(couleursB.size()>=1){
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 2 && nombreCarteWagon == 2 && nombreCarteBateau == 0) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 2);
+                if(couleursW.size()>=1){
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 2 && nombreCarteWagon == 1 && nombreCarteBateau == 1) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 1);
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 1);
+                memeCouleur = verifierComptabilitéCouleurWagonBateau(couleursW,couleursB);
+                if (memeCouleur) {
+                    peutConstruirePort = true;
+                }
+            }else if (nombreCarteJoker == 3 && nombreCarteWagon == 0 && nombreCarteBateau == 1) {
+                couleursB = compterEtVerifierCouleurCarteTransportPourConstruirePort(bateaux, 1);
+                if(couleursB.size()>=1){
+                    peutConstruirePort = true;
+                }
+            } else if (nombreCarteJoker == 3 && nombreCarteWagon == 1 && nombreCarteBateau == 0) {
+                couleursW = compterEtVerifierCouleurCarteTransportPourConstruirePort(wagons, 1);
+                if(couleursW.size()>=1){
+                    peutConstruirePort = true;
+                }
+            }
+            else if ((nombreCarteJoker == 4 && nombreCarteWagon == 0 && nombreCarteBateau == 0)) {
+                peutConstruirePort=true;
+            }
+
+        }
+        return peutConstruirePort;
     }
+
+
+    public List<Couleur> compterEtVerifierCouleurCarteTransportPourConstruirePort(List<CarteTransport> listeCartes, int nombreAVerifier){
+        List<Integer> compteursCouleurs = new ArrayList<Integer>();
+        List<Couleur> couleursType = new ArrayList<>();
+        int compteurJaune =0; int compteurNoir =0; int compteurBlanc =0;  int compteurRouge =0; int compteurVert =0; int compteurViolet =0;
+        for (CarteTransport carte: listeCartes) {
+            if(!carte.estDouble()) {
+                if (carte.getCouleur().equals(Couleur.JAUNE)) {
+                    compteurJaune++;
+                }
+                if (carte.getCouleur().equals(Couleur.NOIR)) {
+                    compteurNoir++;
+                }
+                if (carte.getCouleur().equals(Couleur.BLANC)) {
+                    compteurBlanc++;
+                }
+                if (carte.getCouleur().equals(Couleur.ROUGE)) {
+                    compteurRouge++;
+                }
+                if (carte.getCouleur().equals(Couleur.VERT)) {
+                    compteurVert++;
+                }
+                if (carte.getCouleur().equals(Couleur.VIOLET)) {
+                    compteurViolet++;
+                }
+            }
+        }
+        compteursCouleurs.add(compteurJaune);compteursCouleurs.add(compteurNoir);compteursCouleurs.add(compteurBlanc);compteursCouleurs.add(compteurRouge);compteursCouleurs.add(compteurVert);compteursCouleurs.add(compteurViolet);
+        for (int i = 0; i <compteursCouleurs.size(); i++) {
+            int compteurCouleur = compteursCouleurs.get(i);
+            if (compteurCouleur == nombreAVerifier) {
+                if(i==0){
+                    couleursType.add(Couleur.JAUNE);
+                } else if (i==1) {
+                    couleursType.add(Couleur.NOIR);
+                } else if (i==2) {
+                    couleursType.add(Couleur.BLANC);
+                } else if (i==3) {
+                    couleursType.add(Couleur.ROUGE);
+                } else if (i==4) {
+                    couleursType.add(Couleur.VERT);
+                }else{
+                    couleursType.add(Couleur.VIOLET);
+                }
+            }
+        }
+        return couleursType;
+    }
+
+    public boolean verifierComptabilitéCouleurWagonBateau(List<Couleur> couleursWagons, List<Couleur> couleursBateaux){
+        boolean resultat= false;
+        if (couleursWagons.size() <= couleursBateaux.size()) {
+            for (Couleur couleur : couleursWagons) {
+                if (couleursBateaux.contains(couleur)) {
+                    resultat = true;
+                }
+            }
+        } else {
+            for (Couleur couleur : couleursBateaux) {
+                if (couleursWagons.contains(couleur)) {
+                    resultat = true;
+                }
+            }
+        }
+        return resultat;
+    }
+
 
     /**FONCTION FAITE PAR NOUS
     echanger des pions: enchange pions w par b ou b par w
