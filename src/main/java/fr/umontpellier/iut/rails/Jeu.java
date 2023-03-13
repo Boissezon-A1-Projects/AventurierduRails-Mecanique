@@ -186,26 +186,31 @@ public class Jeu implements Runnable {
             //Distribue les 5 cartes au joueur
             int compteur = 0;
             boolean passer = false;
-            ArrayList<String> listeChoix = new ArrayList<>();
+            ArrayList<String> listeChoixNom = new ArrayList<>();
+            ArrayList<Destination> listeChoix = new ArrayList<>();
             String nomCarteChoisie;
 
             for (int i = 0; i < 5; i++) {
                 Destination destinationAjoutee = piocherDestination();
-                listeChoix.add(destinationAjoutee.getNom());
+                listeChoixNom.add(destinationAjoutee.getNom());
+                listeChoix.add(destinationAjoutee);
                 joueurCourant.ajouterDestination(destinationAjoutee);
             }
             while(compteur < 2 && !passer) {
                 if(compteur == 0) {
                     nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
-                            "Choix :" + listeChoix.get(0) + " " + listeChoix.get(1) + " " + listeChoix.get(2) + " " + listeChoix.get(3) + " " + listeChoix.get(4), listeChoix, null, true);
+                            "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3) + " " + listeChoixNom.get(4), listeChoixNom, null, true);
                 }
                 else{
                     nomCarteChoisie = joueurCourant.choisir("Choisissez un nom de carte à défausser, ou passez.\n" +
-                            "Choix :" + listeChoix.get(0) + " " + listeChoix.get(1) + " " + listeChoix.get(2) + " " + listeChoix.get(3), listeChoix, null, true);
+                            "Choix :" + listeChoixNom.get(0) + " " + listeChoixNom.get(1) + " " + listeChoixNom.get(2) + " " + listeChoixNom.get(3), listeChoixNom, null, true);
                 }
                 if (!nomCarteChoisie.equals("")) {
+                    for(int i = 0; i < listeChoix.size(); i++){
+                        if(listeChoix.get(i))
+                    }
                     joueurCourant.enleverDestinationId(nomCarteChoisie);
-                    listeChoix.remove(nomCarteChoisie);
+                    listeChoixNom.remove(nomCarteChoisie);
                     compteur++;
                 }
                 else{
