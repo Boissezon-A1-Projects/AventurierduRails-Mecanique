@@ -2,7 +2,10 @@ package fr.umontpellier.iut.rails;
 
 import fr.umontpellier.iut.rails.data.*;
 
+import java.sql.SQLOutput;
 import java.util.*;
+
+import static java.lang.Character.isDigit;
 
 public class Joueur {
     public enum CouleurJouer {
@@ -113,6 +116,7 @@ public class Joueur {
         }
         listeChoixPossible.add("WAGON"); listeChoixPossible.add("BATEAU");
         //capturer une route
+
         //nouvelles destination
         listeChoixPossible.add("DESTINATION");
         //Construction port // check si les choix sont faisables (genre si y a encore des villes avec ports libres)
@@ -128,17 +132,15 @@ public class Joueur {
 
         log(String.format(choix,toLog()));
 
-        if (choix.equals("WAGON") || choix.equals("BATEAU") || choix.charAt(0)=='C') {
+        if (choix.equals("WAGON") || choix.equals("BATEAU") || (choix.charAt(0)=='C' && isDigit(choix.charAt(1)))) {
             /** PIOCHER CARTE TRANSPORT*/
             log(String.format("%s carte transp", toLog()));
-            /*boolean possible = true;
+            boolean possible = true;
 
-            log(String.format("%s Piocher Cartes Transport", toLog()));
-            List<String> choixPaquet= choixPiocherPaquetOuCarteVisible(1);
-            String choixPaquetJoueur= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet, null, false);
+
             while(possible) {
-                if (choixPaquetJoueur.equals("WAGON") || choixPaquetJoueur.equals("BATEAU")) {
-                    piocherCarteDunPaquet(choixPaquetJoueur);
+                if (choix.equals("WAGON") || choix.equals("BATEAU")) {
+                    piocherCarteDunPaquet(choix);
                     //deuxiemeTour
                     possible = deuxiemeTourPiocherCarteTransport();
                 }
@@ -154,7 +156,7 @@ public class Joueur {
                         choixPaquetARemplacer = Arrays.asList("WAGON", "BATEAU");
                     }
                     String paquetChoisi = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer,null,false );
-                    CarteTransport carteChoisie = prendreCarteVisible(choixPaquetJoueur,paquetChoisi);
+                    CarteTransport carteChoisie = prendreCarteVisible(choix,paquetChoisi);
 
                     if(carteChoisie.getType().equals(TypeCarteTransport.JOKER)){
                         possible = false;
@@ -164,10 +166,10 @@ public class Joueur {
                         possible= deuxiemeTourPiocherCarteTransport();
                     }
                 }
-            }*/
+            }
 
         }
-        else if(choix.charAt(0)=='R') {
+        else if(choix.charAt(0)=='R' && isDigit(choix.charAt(1))) {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
             /*List<String> listRoutes = new ArrayList<String>() ;
@@ -180,14 +182,18 @@ public class Joueur {
         }
         else if(choix.equals("DESTINATION")) {
             log(String.format("%s destination", toLog()));
-           //piocherCarteDestination();
+           piocherCarteDestination();
         }
         else if(choix.equals("PIONS WAGON")){
+            nbPionsBateau =15;
+            nbPionsWagon =20;
             log(String.format("%s Echanger Pions wagons", toLog()));
-            //echangerPions(choix);
+            echangerPions(choix);
         } else if (choix.equals("PIONS BATEAU")) {
+            nbPionsBateau =5;
+            nbPionsWagon =20;
             log(String.format("%s Echanger Pions bateaux", toLog()));
-            //echangerPions(choix);
+            echangerPions(choix);
         }
         else {
             /**CONSTRUCTION PORT*/
@@ -702,11 +708,18 @@ public class Joueur {
     * + diminue son score*/
     public void echangerPions(String type){
         List<String> nombre = new ArrayList<String>(); // créations du liste pour savoir si le choix est correct (chiffre possibles)
-        for (int i = 1; i <= nbPionsWagonEnReserve; i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
-            nombre.add(String.valueOf(i));
+        if(type.equals("PIONS WAGON")) {
+            for (int i = 1; i <= Math.min(nbPionsBateau, nbPionsWagonEnReserve); i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
+                nombre.add(String.valueOf(i));
+            }
+        }
+        else{
+            for (int i = 1; i <=Math.min(nbPionsWagon,nbPionsBateauEnReserve); i++) { /*pions en reserve ou le nombre de pions de bateau qu'il a ?*/
+                nombre.add(String.valueOf(i));
+            }
         }
 
-
+        System.out.println(nombre.toString());
         String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
 
         pionsARecevoir(type,Integer.valueOf(choixNombreARecevoir));// appel fonction qui gere l'echange
