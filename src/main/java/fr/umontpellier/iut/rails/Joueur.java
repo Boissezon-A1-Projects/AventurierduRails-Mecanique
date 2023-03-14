@@ -740,6 +740,16 @@ public class Joueur {
         }
     }
 
+    //Fonction utile dans jeu
+    public void updatePions(int nbWagons){
+        this.nbPionsWagonEnReserve -= nbWagons;
+        this.nbPionsWagon += nbWagons;
+        this.nbPionsBateauEnReserve -= 60 - nbWagons;
+        this.nbPionsBateau += 60 - nbWagons;
+
+    }
+
+
     /**
      * Renvoie une représentation du joueur sous la forme d'un dictionnaire de
      * valeurs sérialisables
