@@ -224,7 +224,7 @@ public class Jeu implements Runnable {
 
     public void donnerPions(Joueur joueur){
         ArrayList<String> reponsesPossibles = new ArrayList<>();
-        for(int i = 0; i <= 25; i += 5){
+        for(int i = 10; i <= 25; i += 5){
             reponsesPossibles.add(String.valueOf(i));
         }
         String nombreWagons;
