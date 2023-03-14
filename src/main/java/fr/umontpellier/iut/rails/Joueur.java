@@ -128,7 +128,7 @@ public class Joueur {
         //echanger pions
         listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
         System.out.println(listeChoixPossible.toString());
-        String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, false);
+        String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, true);
 
         log(String.format(choix,toLog()));
 
@@ -185,13 +185,9 @@ public class Joueur {
            piocherCarteDestination();
         }
         else if(choix.equals("PIONS WAGON")){
-            nbPionsBateau =15;
-            nbPionsWagon =20;
             log(String.format("%s Echanger Pions wagons", toLog()));
             echangerPions(choix);
         } else if (choix.equals("PIONS BATEAU")) {
-            nbPionsBateau =5;
-            nbPionsWagon =20;
             log(String.format("%s Echanger Pions bateaux", toLog()));
             echangerPions(choix);
         }
@@ -424,9 +420,12 @@ public class Joueur {
 
     public boolean deuxiemeTourPiocherCarteTransport(){
         List<String> choixPaquet2 = choixPiocherPaquetOuCarteVisible(2);
-        String choixPaquetJoueur2= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet2, null, false);
+        String choixPaquetJoueur2= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet2, null, true);
         if(choixPaquetJoueur2.equals("WAGON") || choixPaquetJoueur2.equals("BATEAU")){
             piocherCarteDunPaquet(choixPaquetJoueur2);
+            return false;
+        }
+        else if(choixPaquetJoueur2.equals("")){
             return false;
         }
         else{
