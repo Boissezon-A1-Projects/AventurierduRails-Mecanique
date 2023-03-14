@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import fr.umontpellier.iut.gui.GameServer;
 import fr.umontpellier.iut.rails.data.*;
 
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -152,6 +153,7 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteBateau());
         }
         for (Joueur j : joueurs) {
+            joueurCourant = j;
             distribuerDestionations(j);
         }
 
@@ -219,7 +221,20 @@ public class Jeu implements Runnable {
         }
     }
 
+    public void donnerPions(Joueur joueur){
+        ArrayList<String> reponsesPossibles = new ArrayList<>();
+        for(int i = 0; i < 20; i += 5){
+            reponsesPossibles.add(String.valueOf(i));
+        }
+        String nombreWagons;
+        nombreWagons = joueur.choisir("Combien voulez vous de pions wagon ? (Maximum 25)\n " +
+                                      "Vous pouvez avoir 60 pions wagon ou bateau en tout.",
+                                      reponsesPossibles, null, false);
+        joueur.updatePions(nombreWagons);
 
+
+
+    }
 
     // Fonction ratée qui fonctionne mais ne passe pas les tests, on va quand
     // même pas la supprimmer après le travail fourni
