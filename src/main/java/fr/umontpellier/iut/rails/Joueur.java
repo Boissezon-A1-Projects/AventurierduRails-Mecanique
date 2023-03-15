@@ -118,11 +118,15 @@ public class Joueur {
         List<String> listeChoixPossible= new ArrayList<>();
         //Piocher une carte transport // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
         List<CarteTransport> carteVisible = jeu.getCartesTransportVisibles();
-        for (CarteTransport carte: carteVisible ) {
-            listeChoixPossible.add(carte.getNom());
+        if(carteVisible.size()>=1) {
+            for (CarteTransport carte : carteVisible) {
+                listeChoixPossible.add(carte.getNom());
+            }
         }
-        listeChoixPossible.add("WAGON"); listeChoixPossible.add("BATEAU");
-        //capturer une route
+        if(!jeu.piocheWagonEstVide()){
+        listeChoixPossible.add("WAGON");}
+        if(!jeu.piocheBateauEstVide()){
+        listeChoixPossible.add("BATEAU");}        //capturer une route
 
         //nouvelles destination
         listeChoixPossible.add("DESTINATION");
@@ -347,6 +351,16 @@ public class Joueur {
         this.cartesTransport.add(carte);
     }
 
+    public CarteTransport carteTransportNomVersCarte(String nom){
+
+        for (CarteTransport carte: cartesTransport) {
+            if(carte.getNom().equals(nom)){
+                return carte;
+            }
+        }
+        return null;
+    }
+
     /**methodes pour jouer tour*/
 
     /*piocher carte transport : peut prendre DEUX cartes soit visibles soit non visible deux wagons ou deux bateaux ou un wagon un bateau
@@ -366,16 +380,20 @@ public class Joueur {
         if(!jeu.piocheBateauEstVide()){
             choixCartesPossibles.add("BATEAU");
         }
-        if(nbTours==1) { // au tour 1 il peut prendre n'importe quelle carte
-            for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
-                choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
-            }
 
+        if(nbTours==1) { // au tour 1 il peut prendre n'importe quelle carte
+            if(jeu.getCartesTransportVisibles().size()<=1) {
+                for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
+                    choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
+                }
+            }
         }
         else{ // au tour 2 tout sauf les jokers présents
-            for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
-                if(carte.getType()!=TypeCarteTransport.JOKER) {
-                    choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
+            if(jeu.getCartesTransportVisibles().size()<=1) {
+                for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
+                    if (carte.getType() != TypeCarteTransport.JOKER) {
+                        choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
+                    }
                 }
             }
         }
@@ -457,17 +475,7 @@ public class Joueur {
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
     public void prendrePossessionRoute(String choixRoute){
-        for (Route route: jeu.getRoutesLibres()) {
-            if(route.getCouleur()==Couleur.GRIS){
-                if(route instanceof RoutePaire){
-                    
-                } else if (route instanceof RouteTerrestre) {
-                    
-                } else if (route instanceof RouteMaritime) {
-                    
-                }
-            }
-        }
+
     }
 
     /** FAIT PAS NOUS
