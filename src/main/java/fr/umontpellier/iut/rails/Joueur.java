@@ -457,7 +457,17 @@ public class Joueur {
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
     public void prendrePossessionRoute(String choixRoute){
-        throw new RuntimeException("Methode pas encore implémentée !");
+        for (Route route: jeu.getRoutesLibres()) {
+            if(route.getCouleur()==Couleur.GRIS){
+                if(route instanceof RoutePaire){
+                    
+                } else if (route instanceof RouteTerrestre) {
+                    
+                } else if (route instanceof RouteMaritime) {
+                    
+                }
+            }
+        }
     }
 
     /** FAIT PAS NOUS
