@@ -166,7 +166,7 @@ public class Jeu implements Runnable {
             for (Joueur j : joueurs) {
                 joueurCourant = j;
                 j.jouerTour();
-                //FinDuJeu = verfierReserve(j);
+                FinDuJeu = verfierReserve(j);
             }
         }
         // Fin de la partie
@@ -189,7 +189,12 @@ public class Jeu implements Runnable {
         }
     }
 
-
+    public boolean verfierReserve(Joueur joueur){
+        if(joueur.getNbPionsBateau() + joueur.getNbPionsWagon() <= 6){
+            return true;
+        }
+        return false;
+    }
 
     public void distribuerDestionations(Joueur joueurCourant){
         //Distribue les 5 cartes au joueur
