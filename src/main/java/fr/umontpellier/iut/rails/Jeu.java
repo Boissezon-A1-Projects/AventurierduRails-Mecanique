@@ -157,11 +157,13 @@ public class Jeu implements Runnable {
             distribuerDestionations(j);
             donnerPions(j);
         }
-
-
-        for (Joueur j : joueurs) {
-            joueurCourant = j;
-            j.jouerTour();
+        boolean FinDuJeu = false;
+        while(!FinDuJeu) {
+            for (Joueur j : joueurs) {
+                joueurCourant = j;
+                j.jouerTour();
+                //FinDuJeu = verfierReserve(j);
+            }
         }
         // Fin de la partie
         prompt("Fin de la partie.", new ArrayList<>(), true);
