@@ -228,7 +228,14 @@ public class Joueur {
             //GROS BUG je sais po quoi faire pour qu'il donne les bonnes cartes (je sais pas si on considere qu'il est pas con)
             //pour ajouter un port dans la liste des ports du joueur : ports.add(la ville qu'il a choisi donc choix)
 
-
+            ArrayList<String> listeChoixPossibles = new ArrayList<>();
+            CarteTransport carteChoisie;
+            String nomCarteChoisie;
+            for(CarteTransport carte: cartesTransport){
+                listeChoixPossibles.add(carte.getNom());
+            }
+            nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
+            carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
 
 
         }
@@ -412,7 +419,7 @@ public class Joueur {
     /**FAIT PAR NOUS
      * METHODE:ajoute dans la main du joueur la carte qu'il a choisi au préalable,
      * l'enleve des cartes visibles, et ajoute une carte du paquet demandé dans les cartes visibles
-     * @Renvoi : carte choisie*/
+     * @Return : carte choisie*/
     public CarteTransport prendreCarteVisible(String nomCarte, String paquetRemplacementVoulu){
         CarteTransport carteChoisie= null;
         for (CarteTransport carte: jeu.getCartesTransportVisibles()) {
@@ -517,7 +524,7 @@ public class Joueur {
 
         String choix;Destination destiChoisie;
 
-        // tant que apasse est faux ou que la la taille de la liste des choisies n'est pas égale à 0 (parce qu'il faut qu'il en garde une au moins
+        // tant que aPasse est faux ou que la la taille de la liste des choisies n'est pas égale à 0 (parce qu'il faut qu'il en garde une au moins
         while(!aPasse && destinationsPiochee.size()>1){
             String pourChoix = "Veuillez choisir ou non une carte à défausser: ";
             for (String nomDesti: destinationsPiocheeNom) {

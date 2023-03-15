@@ -162,14 +162,15 @@ public class Jeu implements Runnable {
             donnerPions(j);
         }
         // Corps du jeu, on joue jusqu'à qu'un joueur ait moins de 6 pions
-        boolean FinDuJeu = false;
+        boolean finDuJeu = false;
         int indiceJoueurDeclencheurFinDuJeu = 0;
-        while(!FinDuJeu) {
+        while(!finDuJeu) {
             for(int i = 0; i < joueurs.size(); i++){
                 joueurCourant = joueurs.get(i);
                 joueurCourant.jouerTour();
-                FinDuJeu = verfierReserve(joueurCourant);
-                if(FinDuJeu){
+                finDuJeu = verfierReserve(joueurCourant);
+                // On garde l'indice du déclencheur en mémoire
+                if(finDuJeu){
                     indiceJoueurDeclencheurFinDuJeu = i;
                     break;
                 }
