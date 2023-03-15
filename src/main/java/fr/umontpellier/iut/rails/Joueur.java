@@ -91,6 +91,14 @@ public class Joueur {
         return destinations;
     }
 
+    public int getNbPionsWagon() {
+        return nbPionsWagon;
+    }
+
+    public int getNbPionsBateau() {
+        return nbPionsBateau;
+    }
+
     public void setCartesTransport(List<CarteTransport> carteAAdd){
         for (CarteTransport carte:carteAAdd) {
             cartesTransport.add(carte);
