@@ -140,13 +140,13 @@ public class Joueur {
         listeChoixPossible.add("DESTINATION");
         //Construction port // EST CE QUON VERIFIE AUSSI SI SA LISTE DE PORTS EST PAS COMPLETE ?
         if(verificationCarteConstruirePort(cartesTransport)){ // seulement s'il a les cartes pour construire un port
-            for (Ville ville: villeLibreReliéesParRoute()) { // parcours les villes où le joueur a une route où elle est
+           for (Ville ville: jeu.getPortsLibres()) { // parcours les villes où le joueur a une route où elle est
                 listeChoixPossible.add(ville.nom());
             }
         }
         //echanger pions
         listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
-        System.out.println(listeChoixPossible.toString());
+
         String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, true);
 
 
@@ -234,13 +234,22 @@ public class Joueur {
             }
             while(!verificationCarteConstruirePort(cartesTransportPosees)) {
                 cartesTransportPosees.clear();
-                while (cartesTransportPosees.size() != 4) {
+                nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
+                carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
+                cartesTransportPosees.add(carteChoisie);
+                int compteur =1;
+                while (compteur<=4 ) {
                     nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
                     carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
+                    listeChoixPossibles.remove(carteChoisie);
                     cartesTransportPosees.add(carteChoisie);
+                    System.out.println(cartesTransportPosees.toString());
+                    compteur++;
                 }
+                System.out.println(cartesTransportPosees.toString());
             }
             ports.add(jeu.nomVilleToVille(choix));
+            System.out.println(ports.toString());
         }
 
     }
@@ -492,8 +501,82 @@ public class Joueur {
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
-    public void prendrePossessionRoute(String choixRoute){
+    public boolean verfierRoute(){ // verifie carte ET bon nombre de pions
+        boolean peutPoserRoute = false;
+        List<Integer> compteurCarteParType = compteTypeCarte();
+        for (Route route : jeu.getRoutesLibres()) {
+            if(route instanceof RouteTerrestre){
+                if (route.getLongueur() == 1) {
+                    if(compteurCarteParType.get(0)>=1 || compteurCarteParType.get(3)>=1){}
+                } else if (route.getLongueur() == 2) {
 
+                }else if (route.getLongueur() == 3) {
+
+                }else if (route.getLongueur() == 4) {
+
+                }else if (route.getLongueur() == 5) {
+
+                }else if (route.getLongueur() == 6) {
+
+                }else if (route.getLongueur() == 7) {
+
+                }else{}
+            }
+            else if (route instanceof RouteMaritime) {
+                if (route.getLongueur() == 1) {
+                } else if (route.getLongueur() == 2) {
+
+                }else if (route.getLongueur() == 3) {
+
+                }else if (route.getLongueur() == 4) {
+
+                }else if (route.getLongueur() == 5) {
+
+                }else if (route.getLongueur() == 6) {
+
+                }else if (route.getLongueur() == 7) {
+
+                }else{}
+            }
+            else if(route instanceof RouteMaritime){
+                if (route.getLongueur() == 1) {
+
+                } else if (route.getLongueur() == 2) {
+
+                }else if (route.getLongueur() == 3) {
+
+                }else if (route.getLongueur() == 4) {
+
+                }else if (route.getLongueur() == 5) {
+
+                }else if (route.getLongueur() == 6) {
+
+                }else if (route.getLongueur() == 7) {
+
+                }else{}
+            }
+        }
+        return peutPoserRoute;
+    }
+
+    public List<Integer> compteTypeCarte(){
+        List<Integer> compteursType = new ArrayList<>();
+        int compteurWagon =0; int compteurBateau =0; int compteurDoubleBateau =0;int compteurJoker=0;
+        for (CarteTransport carte:cartesTransport) {
+            if(carte.getType().equals(TypeCarteTransport.WAGON)){
+                compteurWagon++;
+            } else if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
+                if(carte.estDouble()){
+                    compteurBateau++;
+                }else{
+                    compteurDoubleBateau++;
+                }
+            } else if (carte.getType().equals(TypeCarteTransport.JOKER)) {
+                compteurJoker++;
+            }
+        }
+        compteursType.add(compteurWagon);compteursType.add(compteurBateau);compteursType.add(compteurDoubleBateau); compteursType.add(compteurJoker);
+        return compteursType;
     }
 
     /** FAIT PAS NOUS
@@ -591,7 +674,7 @@ public class Joueur {
     //verifie s'il a les cartes pour pouvoir mettre un port
     public boolean verificationCarteConstruirePort(List<CarteTransport> listeAVerifier){
         boolean peutConstruire =false;
-        if(cartesTransport.size()>=4) {
+        if(listeAVerifier.size()>=4) {
             List<Couleur> couleurs = Arrays.asList(Couleur.JAUNE, Couleur.NOIR, Couleur.BLANC, Couleur.ROUGE, Couleur.VERT, Couleur.VIOLET);
             int wagonJaune = 0;
             int bateauJaune = 0;
@@ -611,50 +694,51 @@ public class Joueur {
             for (CarteTransport carte :  listeAVerifier) {
                 for (int i = 0; i < couleurs.size(); i++) {
                     Couleur couleurCourante = couleurs.get(i);
-                    if (carte.getCouleur().equals(couleurCourante)) {
-                        if (carte.getType().equals(TypeCarteTransport.WAGON)) {
-                            if (i == 0) {
-                                wagonJaune++;
-                                break;
-                            } else if (i == 1) {
-                                wagonNoir++;
-                                break;
-                            } else if (i == 2) {
-                                wagonBlanc++;
-                                break;
-                            } else if (i == 3) {
-                                wagonRouge++;
-                                break;
-                            } else if (i == 4) {
-                                wagonVert++;
-                                break;
-                            } else {
-                                wagonViolet++;
-                                break;
+                    if(carte.getAncre()){
+                        if (carte.getCouleur().equals(couleurCourante)) {
+                            if (carte.getType().equals(TypeCarteTransport.WAGON)) {
+                                if (i == 0) {
+                                    wagonJaune++;
+                                    break;
+                                } else if (i == 1) {
+                                    wagonNoir++;
+                                    break;
+                                } else if (i == 2) {
+                                    wagonBlanc++;
+                                    break;
+                                } else if (i == 3) {
+                                    wagonRouge++;
+                                    break;
+                                } else if (i == 4) {
+                                    wagonVert++;
+                                    break;
+                                } else {
+                                    wagonViolet++;
+                                    break;
+                                }
+                            }
+                            if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
+                                if (i == 0) {
+                                    bateauJaune++;
+                                    break;
+                                } else if (i == 1) {
+                                    bateauNoir++;
+                                    break;
+                                } else if (i == 2) {
+                                    bateauBlanc++;
+                                    break;
+                                } else if (i == 3) {
+                                    bateauRouge++;
+                                    break;
+                                } else if (i == 4) {
+                                    bateauVert++;
+                                    break;
+                                } else {
+                                    bateauViolet++;
+                                    break;
+                                }
                             }
                         }
-                        if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
-                            if (i == 0) {
-                                bateauJaune++;
-                                break;
-                            } else if (i == 1) {
-                                bateauNoir++;
-                                break;
-                            } else if (i == 2) {
-                                bateauBlanc++;
-                                break;
-                            } else if (i == 3) {
-                                bateauRouge++;
-                                break;
-                            } else if (i == 4) {
-                                bateauVert++;
-                                break;
-                            } else {
-                                bateauViolet++;
-                                break;
-                            }
-                        }
-
                     }
                     if (carte.getType().equals(TypeCarteTransport.JOKER)) {
                         nombreJoker++;
