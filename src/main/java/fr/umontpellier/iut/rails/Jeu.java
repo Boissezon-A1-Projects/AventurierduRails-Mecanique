@@ -219,6 +219,16 @@ public class Jeu implements Runnable {
         }
     }
 
+
+    public Ville nomVilleToVille(String nomVille){
+        for(Ville ville: portsLibres){
+            if(ville.toString() == nomVille){
+                return ville;
+            }
+        }
+        return null;
+    }
+
     public boolean verfierReserve(Joueur joueur){
         if(joueur.getNbPionsBateau() + joueur.getNbPionsWagon() <= 6){
             return true;

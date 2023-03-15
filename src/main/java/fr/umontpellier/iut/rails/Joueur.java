@@ -223,21 +223,24 @@ public class Joueur {
 
 
 
-            List<String> choixCarteAUtiliser = new ArrayList<>();
             //il faut add les cartes qu'il choisit dans cartesTransportPosees puis apres les defausser
             //GROS BUG je sais po quoi faire pour qu'il donne les bonnes cartes (je sais pas si on considere qu'il est pas con)
             //pour ajouter un port dans la liste des ports du joueur : ports.add(la ville qu'il a choisi donc choix)
-
             ArrayList<String> listeChoixPossibles = new ArrayList<>();
             CarteTransport carteChoisie;
             String nomCarteChoisie;
             for(CarteTransport carte: cartesTransport){
                 listeChoixPossibles.add(carte.getNom());
             }
-            nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
-            carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
-
-
+            while(!verificationCarteConstruirePort(cartesTransportPosees)) {
+                cartesTransportPosees.clear();
+                while (cartesTransportPosees.size() != 4) {
+                    nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
+                    carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
+                    cartesTransportPosees.add(carteChoisie);
+                }
+            }
+            ports.add(jeu.nomVilleToVille(choix));
         }
 
     }
