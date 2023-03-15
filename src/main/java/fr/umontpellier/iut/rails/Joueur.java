@@ -111,7 +111,10 @@ public class Joueur {
      *  - construire un port
      */
     void jouerTour() {
-
+        while(jeu.verifieCompteJokerCarteVisible()){
+            jeu.retireCarteVisibleEtDefausseDansBonPaquet();
+            jeu.ajout3CarteWagon3CarteBateauCarteVisible();
+        }
         List<String> listeChoixPossible= new ArrayList<>();
         //Piocher une carte transport // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
         List<CarteTransport> carteVisible = jeu.getCartesTransportVisibles();
@@ -161,12 +164,19 @@ public class Joueur {
                     }
                     String paquetChoisi = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer,null,false );
                     CarteTransport carteChoisie = prendreCarteVisible(choix,paquetChoisi);
-
+                    while(jeu.verifieCompteJokerCarteVisible()){
+                        jeu.retireCarteVisibleEtDefausseDansBonPaquet();
+                        jeu.ajout3CarteWagon3CarteBateauCarteVisible();
+                    }
                     if(carteChoisie.getType().equals(TypeCarteTransport.JOKER)){
                         possible = false;
                     }
                     else{
                         //deuxieme tour
+                        while(jeu.verifieCompteJokerCarteVisible()){
+                            jeu.retireCarteVisibleEtDefausseDansBonPaquet();
+                            jeu.ajout3CarteWagon3CarteBateauCarteVisible();
+                        }
                         possible= deuxiemeTourPiocherCarteTransport();
                     }
                 }
@@ -199,7 +209,7 @@ public class Joueur {
             /**CONSTRUCTION PORT*/
             log(String.format("%s Construire Port", toLog()));
 
-            //demande cartes qu'il veut utiliser pour construire port et add dans cartes transport posées
+
 
             List<String> choixCarteAUtiliser = new ArrayList<>();
             //il faut add les cartes qu'il choisit dans cartesTransportPosees puis apres les defausser

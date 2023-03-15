@@ -152,6 +152,10 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteWagon());
             cartesTransportVisibles.add(piocherCarteBateau());
         }
+        while(verifieCompteJokerCarteVisible()){
+            retireCarteVisibleEtDefausseDansBonPaquet();
+            ajout3CarteWagon3CarteBateauCarteVisible();
+        }
         for (Joueur j : joueurs) {
             joueurCourant = j;
             distribuerDestionations(j);
@@ -326,6 +330,8 @@ public class Jeu implements Runnable {
         return pilesDeCartesWagon.estVide();
     }
 
+    public void defausserCarteWagon(CarteTransport carte){ pilesDeCartesWagon.defausser(carte);}
+
     /**
      * Pioche une carte de la pile de pioche des cartes bateau.
      *
@@ -338,6 +344,9 @@ public class Jeu implements Runnable {
     public boolean piocheBateauEstVide() {
         return pilesDeCartesBateau.estVide();
     }
+
+    public void defausserCarteBateau(CarteTransport carte){pilesDeCartesBateau.defausser(carte);   }
+
 
     public void ajoutCartePaquetRandomDansCarteVisible(){
         //fonction pour ajouter dans les cartes visibles une carte piochée d'un des deux paquets aléatoirement
@@ -363,6 +372,40 @@ public class Jeu implements Runnable {
     public void retireCarteVisible(CarteTransport carte){
         cartesTransportVisibles.remove(carte);
     }
+
+    //return s'il y a 3 joker ou plus dans les cartes visibles
+    public boolean verifieCompteJokerCarteVisible(){
+        boolean aTropDeJokers = false;
+        int compteJoker=0;
+        for (CarteTransport carte: cartesTransportVisibles ) {
+            if(carte.getType().equals(TypeCarteTransport.JOKER)){
+                compteJoker++;
+            }
+        }
+        if(compteJoker>=3){ aTropDeJokers=true;}
+        return aTropDeJokers;
+    }
+
+    //ajoute 3 cartes de chaque paquet dans carteVisible
+    public void ajout3CarteWagon3CarteBateauCarteVisible(){
+        for (int i = 0; i < 3; i++) {
+            piocherCarteBateau();
+            piocherCarteWagon();
+        }
+    }
+
+    public void retireCarteVisibleEtDefausseDansBonPaquet(){
+        for (CarteTransport carte: cartesTransportVisibles) {
+            retireCarteVisible(carte);
+            if(carte.getType().equals(TypeCarteTransport.WAGON)||carte.getType().equals(TypeCarteTransport.JOKER)){
+                defausserCarteWagon(carte);
+            }
+            if(carte.getType().equals(TypeCarteTransport.BATEAU)){
+                defausserCarteBateau(carte);
+            }
+        }
+    }
+
 
     /**
      * Ajoute un message au log du jeu
