@@ -161,14 +161,43 @@ public class Jeu implements Runnable {
             distribuerDestionations(j);
             donnerPions(j);
         }
+        // Corps du jeu, on joue jusqu'à qu'un joueur ait moins de 6 pions
         boolean FinDuJeu = false;
+        int indiceJoueurDeclencheurFinDuJeu = 0;
         while(!FinDuJeu) {
-            for (Joueur j : joueurs) {
-                joueurCourant = j;
-                j.jouerTour();
-                FinDuJeu = verfierReserve(j);
+            for(int i = 0; i < joueurs.size(); i++){
+                joueurCourant = joueurs.get(i);
+                joueurCourant.jouerTour();
+                FinDuJeu = verfierReserve(joueurCourant);
+                if(FinDuJeu){
+                    indiceJoueurDeclencheurFinDuJeu = i;
+                    break;
+                }
             }
         }
+
+        // On fait passer deux tours après le déclenchement de la fin
+        // à partir du joueur suivant le déclencheur
+        int compteurToursPasses = 0;
+        while(compteurToursPasses != 2) {
+            for (int i = indiceJoueurDeclencheurFinDuJeu + 1; i < joueurs.size(); i++) {
+                joueurCourant = joueurs.get(i);
+                joueurCourant.jouerTour();
+                if(i == indiceJoueurDeclencheurFinDuJeu){
+                    compteurToursPasses ++;
+                    if (compteurToursPasses == 2) {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
         // Fin de la partie
         prompt("Fin de la partie.", new ArrayList<>(), true);
     }
