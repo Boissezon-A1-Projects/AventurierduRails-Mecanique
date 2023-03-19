@@ -238,31 +238,36 @@ public class Joueur {
 
 
             while(!valide) {
+                compteur=0;
+                cartesTransportPosees.clear();
 
                 if(compteur > 1){
                     for(CarteTransport carte : cartesTransportPosees){
                         cartesTransport.add(carte);
                     }
                 }
-
-
                 while (compteur<4) {
                     nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
                     carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
                     listeChoixPossibles.remove(carteChoisie);
                     cartesTransport.remove(carteChoisie);
                     cartesTransportPosees.add(carteChoisie);
-                    System.out.println(cartesTransportPosees.toString());
+
                     compteur++;
                 }
                 valide = verificationCarteConstruirePort(cartesTransportPosees);
-                cartesTransportPosees.clear();
-                System.out.println(cartesTransportPosees.toString());
-                System.out.println(valide);
+                if(!valide) {
+                    for (CarteTransport carte : cartesTransportPosees) {
+                        cartesTransport.add(carte);
+                    }
+                }
+
             }
 
             ports.add(jeu.nomVilleToVille(choix));
-            System.out.println(ports.toString());
+            defausserCarteDansBonPaquet(cartesTransportPosees);
+            cartesTransportPosees.clear();
+
         }
 
     }
@@ -515,64 +520,10 @@ public class Joueur {
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
     public boolean verfierRoute(){ // verifie carte ET bon nombre de pions
-        boolean peutPoserRoute = false;
-        List<Integer> compteurCarteParType = compteTypeCarte();
-        for (Route route : jeu.getRoutesLibres()) {
-            if(route instanceof RouteTerrestre){
-                if (route.getLongueur() == 1) {
-                    if(compteurCarteParType.get(0)>=1 || compteurCarteParType.get(3)>=1){}
-                } else if (route.getLongueur() == 2) {
-
-                }else if (route.getLongueur() == 3) {
-
-                }else if (route.getLongueur() == 4) {
-
-                }else if (route.getLongueur() == 5) {
-
-                }else if (route.getLongueur() == 6) {
-
-                }else if (route.getLongueur() == 7) {
-
-                }else{}
-            }
-            else if (route instanceof RouteMaritime) {
-                if (route.getLongueur() == 1) {
-                } else if (route.getLongueur() == 2) {
-
-                }else if (route.getLongueur() == 3) {
-
-                }else if (route.getLongueur() == 4) {
-
-                }else if (route.getLongueur() == 5) {
-
-                }else if (route.getLongueur() == 6) {
-
-                }else if (route.getLongueur() == 7) {
-
-                }else{}
-            }
-            else if(route instanceof RouteMaritime){
-                if (route.getLongueur() == 1) {
-
-                } else if (route.getLongueur() == 2) {
-
-                }else if (route.getLongueur() == 3) {
-
-                }else if (route.getLongueur() == 4) {
-
-                }else if (route.getLongueur() == 5) {
-
-                }else if (route.getLongueur() == 6) {
-
-                }else if (route.getLongueur() == 7) {
-
-                }else{}
-            }
-        }
-        return peutPoserRoute;
+        return false;
     }
 
-    public List<Integer> compteTypeCarte(){
+    public List<Integer> compteTypeCarParCouleur(){
         List<Integer> compteursType = new ArrayList<>();
         int compteurWagon =0; int compteurBateau =0; int compteurDoubleBateau =0;int compteurJoker=0;
         for (CarteTransport carte:cartesTransport) {
@@ -810,7 +761,19 @@ public class Joueur {
         return peutConstruire;
     }
 
-
+    public void defausserCarteDansBonPaquet(List<CarteTransport> listeADefausser){
+        for (CarteTransport carte: listeADefausser) {
+            if(carte.getType().equals(TypeCarteTransport.WAGON)){
+                jeu.defausserCarteWagon(carte);
+            }
+            if(carte.getType().equals(TypeCarteTransport.BATEAU)){
+                jeu.defausserCarteBateau(carte);
+            }
+            if(carte.getType().equals(TypeCarteTransport.JOKER)){
+                jeu.defausserCarteWagon(carte);
+            }
+        }
+    }
 
     /**FONCTION FAITE PAR NOUS
     echanger des pions: enchange pions w par b ou b par w
