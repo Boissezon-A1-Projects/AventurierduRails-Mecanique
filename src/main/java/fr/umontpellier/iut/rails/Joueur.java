@@ -150,8 +150,10 @@ public class Joueur {
         String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, true);
 
 
-
-        if (choix.equals("WAGON") || choix.equals("BATEAU") || (choix.charAt(0)=='C' && isDigit(choix.charAt(1)))) {
+        if (choix.equals("")) {
+            log(String.format("%s a passé son tour",toLog()));
+        }
+        else if (choix.equals("WAGON") || choix.equals("BATEAU") || (choix.charAt(0)=='C' && isDigit(choix.charAt(1)))) {
             /** PIOCHER CARTE TRANSPORT*/
             log(String.format("%s carte transp", toLog()));
             boolean possible = true;
@@ -216,8 +218,7 @@ public class Joueur {
         } else if (choix.equals("PIONS BATEAU")) {
             log(String.format("%s Echanger Pions bateaux", toLog()));
             echangerPions(choix);
-        }
-        else {
+        } else {
             /**CONSTRUCTION PORT*/
             log(String.format(choix, toLog()));
 
