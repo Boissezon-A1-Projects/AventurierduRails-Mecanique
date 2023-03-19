@@ -141,8 +141,8 @@ public class Joueur {
         //Construction port // EST CE QUON VERIFIE AUSSI SI SA LISTE DE PORTS EST PAS COMPLETE ?
         if(verificationCarteConstruirePort(cartesTransport)){ // seulement s'il a les cartes pour construire un port
            for (Ville ville: jeu.getPortsLibres()) { // parcours les villes où le joueur a une route où elle est
-                listeChoixPossible.add(ville.nom());
-            }
+                listeChoixPossible.add(ville.toString());
+           }
         }
         //echanger pions
         listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
@@ -219,7 +219,7 @@ public class Joueur {
         }
         else {
             /**CONSTRUCTION PORT*/
-            log(String.format("%s Construire Port", toLog()));
+            log(String.format(choix, toLog()));
 
 
 
@@ -232,22 +232,34 @@ public class Joueur {
             for(CarteTransport carte: cartesTransport){
                 listeChoixPossibles.add(carte.getNom());
             }
-            while(!verificationCarteConstruirePort(cartesTransportPosees)) {
-                cartesTransportPosees.clear();
-                nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
-                carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
-                cartesTransportPosees.add(carteChoisie);
-                int compteur =1;
-                while (compteur<=4 ) {
+            int compteur = 0;
+            boolean valide = false;
+
+
+            while(!valide) {
+
+                if(compteur > 1){
+                    for(CarteTransport carte : cartesTransportPosees){
+                        cartesTransport.add(carte);
+                    }
+                }
+
+
+                while (compteur<4) {
                     nomCarteChoisie = choisir("Choisissez une carte à utiliser pour construire un port :", listeChoixPossibles, null, false);
                     carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
                     listeChoixPossibles.remove(carteChoisie);
+                    cartesTransport.remove(carteChoisie);
                     cartesTransportPosees.add(carteChoisie);
                     System.out.println(cartesTransportPosees.toString());
                     compteur++;
                 }
+                valide = verificationCarteConstruirePort(cartesTransportPosees);
+                cartesTransportPosees.clear();
                 System.out.println(cartesTransportPosees.toString());
+                System.out.println(valide);
             }
+
             ports.add(jeu.nomVilleToVille(choix));
             System.out.println(ports.toString());
         }
@@ -692,9 +704,9 @@ public class Joueur {
             List<Integer> wagonsCouleurs = new ArrayList<>();
             List<Integer> bateauCouleurs = new ArrayList<>();
             for (CarteTransport carte :  listeAVerifier) {
-                for (int i = 0; i < couleurs.size(); i++) {
-                    Couleur couleurCourante = couleurs.get(i);
-                    if(carte.getAncre()){
+                if(carte.getAncre()) {
+                    for (int i = 0; i < couleurs.size(); i++) {
+                        Couleur couleurCourante = couleurs.get(i);
                         if (carte.getCouleur().equals(couleurCourante)) {
                             if (carte.getType().equals(TypeCarteTransport.WAGON)) {
                                 if (i == 0) {
@@ -739,9 +751,11 @@ public class Joueur {
                                 }
                             }
                         }
-                    }
-                    if (carte.getType().equals(TypeCarteTransport.JOKER)) {
-                        nombreJoker++;
+
+                        if (carte.getType().equals(TypeCarteTransport.JOKER)) {
+                            nombreJoker++;
+                            break;
+                        }
                     }
                 }
             }

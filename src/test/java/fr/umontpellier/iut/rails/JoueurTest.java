@@ -25,6 +25,22 @@ class JoueurTest {
         assertTrue(j.verificationCarteConstruirePort(j.getCartesTransport()));
 
     }
+
+    @Test
+    void verificationCarteConstructionPort_Faux_2WAGONSJAUNE_2BATEAUJAUNE() {
+        String[] joueurs = {"d"};
+        Joueur j = new Joueur("d",new Jeu(joueurs), Joueur.CouleurJouer.BLEU);
+        List<CarteTransport> test = Arrays.asList(new CarteTransport(TypeCarteTransport.WAGON, Couleur.BLANC,false,false),new CarteTransport(TypeCarteTransport.WAGON, Couleur.JAUNE,false,true),
+                new CarteTransport(TypeCarteTransport.WAGON, Couleur.VERT,false,false),new CarteTransport(TypeCarteTransport.WAGON, Couleur.VIOLET,false,false),
+                new CarteTransport(TypeCarteTransport.BATEAU, Couleur.NOIR,true,false),new CarteTransport(TypeCarteTransport.BATEAU, Couleur.NOIR,true,false),
+                new CarteTransport(TypeCarteTransport.BATEAU, Couleur.BLANC,false,true),new CarteTransport(TypeCarteTransport.BATEAU, Couleur.BLANC,true,false),new CarteTransport(TypeCarteTransport.BATEAU, Couleur.JAUNE,false,false),
+                new CarteTransport(TypeCarteTransport.BATEAU, Couleur.ROUGE,true,false),new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT,true,false),
+                new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VIOLET,true,false),new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VIOLET,true,false),new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS,false,true));
+        j.setCartesTransport(test);
+
+        assertFalse(j.verificationCarteConstruirePort(j.getCartesTransport()));
+
+    }
     @Test
     void verificationCarteConstructionPort_2WAGONSJAUNE_2BATEAUJAUNE_1JOKER() {
         String[] joueurs = {"d"};

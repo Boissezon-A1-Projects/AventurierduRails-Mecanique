@@ -143,7 +143,6 @@ public class Jeu implements Runnable {
     public void run() {
         // IMPORTANT : Le corps de cette fonction est à réécrire entièrement
         // Un exemple très simple est donné pour illustrer l'utilisation de certaines méthodes
-
         // Donne la main de départ à tous les joueurs (bateaux et wagons)
         distribuerMainDepart();
 
@@ -222,7 +221,7 @@ public class Jeu implements Runnable {
 
     public Ville nomVilleToVille(String nomVille){
         for(Ville ville: portsLibres){
-            if(ville.toString() == nomVille){
+            if(ville.toString().equals(nomVille)){
                 return ville;
             }
         }
