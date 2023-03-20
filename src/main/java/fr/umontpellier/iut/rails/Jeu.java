@@ -151,10 +151,8 @@ public class Jeu implements Runnable {
             cartesTransportVisibles.add(piocherCarteWagon());
             cartesTransportVisibles.add(piocherCarteBateau());
         }
-        while(verifieCompteJokerCarteVisible()){
-            retireCarteVisibleEtDefausseDansBonPaquet();
-            ajout3CarteWagon3CarteBateauCarteVisible();
-        }
+
+
         for (Joueur j : joueurs) {
             joueurCourant = j;
             distribuerDestionations(j);
@@ -433,15 +431,28 @@ public class Jeu implements Runnable {
     }
 
     //ajoute 3 cartes de chaque paquet dans carteVisible
-    public void ajout3CarteWagon3CarteBateauCarteVisible(){
-        for (int i = 0; i < 3; i++) {
-            piocherCarteBateau();
-            piocherCarteWagon();
+    public void ajout3CarteWagon3CarteBateauCarteVisible(String paquet){
+        if(paquet.equals("WAGON")){
+            for (int i = 0; i < 3; i++) {
+
+                cartesTransportVisibles.add(piocherCarteWagon());
+            }
         }
+        else{
+            for (int i = 0; i < 3; i++) {
+                cartesTransportVisibles.add(piocherCarteBateau());
+
+            }
+        }
+
     }
 
     public void retireCarteVisibleEtDefausseDansBonPaquet(){
-        for (CarteTransport carte: cartesTransportVisibles) {
+        List<CarteTransport> cartevisiblesadefausser = new ArrayList<>();
+        for (CarteTransport carte: cartesTransportVisibles ) {
+            cartevisiblesadefausser.add(carte);
+        }
+        for (CarteTransport carte: cartevisiblesadefausser) {
             retireCarteVisible(carte);
             if(carte.getType().equals(TypeCarteTransport.WAGON)||carte.getType().equals(TypeCarteTransport.JOKER)){
                 defausserCarteWagon(carte);
@@ -450,6 +461,34 @@ public class Jeu implements Runnable {
                 defausserCarteBateau(carte);
             }
         }
+    }
+
+    public void changeCarteVisibleSiTropJoker(){
+        if(!piocheWagonEstVide() && !piocheBateauEstVide()){
+            while(verifieCompteJokerCarteVisible()){
+                retireCarteVisibleEtDefausseDansBonPaquet();
+                ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
+                ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
+            }
+        } else if (!(piocheBateauEstVide() && piocheWagonEstVide())) {
+            if (piocheWagonEstVide()) {
+                while (verifieCompteJokerCarteVisible()) {
+                    retireCarteVisibleEtDefausseDansBonPaquet();
+                    ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
+                    ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
+                }
+            } else if (piocheBateauEstVide()) {
+                while (verifieCompteJokerCarteVisible()) {
+                    retireCarteVisibleEtDefausseDansBonPaquet();
+                    ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
+                    ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
+                }
+            }
+        }
+
+
+
+
     }
 
 

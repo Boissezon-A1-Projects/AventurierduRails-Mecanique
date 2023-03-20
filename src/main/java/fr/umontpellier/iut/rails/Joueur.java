@@ -119,13 +119,11 @@ public class Joueur {
      *  - construire un port
      */
     void jouerTour() {
-        while(jeu.verifieCompteJokerCarteVisible()){
-            jeu.retireCarteVisibleEtDefausseDansBonPaquet();
-            jeu.ajout3CarteWagon3CarteBateauCarteVisible();
-        }
+        jeu.changeCarteVisibleSiTropJoker();
         List<String> listeChoixPossible= new ArrayList<>();
         //Piocher une carte transport // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
         List<CarteTransport> carteVisible = jeu.getCartesTransportVisibles();
+        System.out.println(carteVisible.toString());
         if(carteVisible.size()>=1) {
             for (CarteTransport carte : carteVisible) {
                 listeChoixPossible.add(carte.getNom());
@@ -140,7 +138,7 @@ public class Joueur {
         listeChoixPossible.add("DESTINATION");
         //Construction port // EST CE QUON VERIFIE AUSSI SI SA LISTE DE PORTS EST PAS COMPLETE ?
         if(verificationCarteConstruirePort(cartesTransport)){ // seulement s'il a les cartes pour construire un port
-           for (Ville ville: jeu.getPortsLibres()) { // parcours les villes où le joueur a une route où elle est //IMP A ADD
+           for (Ville ville: villeLibreReliéesParRoute()) { // parcours les villes où le joueur a une route où elle est //IMP A ADD
                 listeChoixPossible.add(ville.toString());
            }
         }
@@ -160,40 +158,57 @@ public class Joueur {
 
 
             while(possible) {
+
                 if (choix.equals("WAGON") || choix.equals("BATEAU")) {
                     piocherCarteDunPaquet(choix);
                     //deuxiemeTour
                     possible = deuxiemeTourPiocherCarteTransport();
                 }
-                else { // carteVisible
+
+                else{
                     List<String> choixPaquetARemplacer = null;
-                    if (jeu.piocheWagonEstVide()) {
-                       choixPaquetARemplacer  = Arrays.asList("BATEAU");
-                    } else if (jeu.piocheBateauEstVide()) {
-                        choixPaquetARemplacer = Arrays.asList("WAGON");
-                    } else if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
-                        possible = false;
-                    } else {
+                    if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide() && jeu.getCartesTransportVisibles().size()==0) {
+                            possible = false;
+                    }
+                    if (!jeu.piocheWagonEstVide()) {
+                       choixPaquetARemplacer  = Arrays.asList("WAGON");
+                    }
+                    if (!jeu.piocheBateauEstVide()) {
+                        choixPaquetARemplacer = Arrays.asList("BATEAU");
+                    }
+                    if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
+                        choixPaquetARemplacer = null;
+                    }
+                    if(!jeu.piocheBateauEstVide() && !jeu.piocheWagonEstVide()) {
                         choixPaquetARemplacer = Arrays.asList("WAGON", "BATEAU");
                     }
-                    String paquetChoisi = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer,null,false );
-                    CarteTransport carteChoisie = prendreCarteVisible(choix,paquetChoisi);
-                    while(jeu.verifieCompteJokerCarteVisible()){
-                        jeu.retireCarteVisibleEtDefausseDansBonPaquet();
-                        jeu.ajout3CarteWagon3CarteBateauCarteVisible();
+                    String paquetChoisi = "";
+                    CarteTransport carteChoisie =null;
+                    if(choixPaquetARemplacer!=null){
+                        paquetChoisi = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise", choixPaquetARemplacer, null, false);
+                        carteChoisie= prendreCarteVisible(choix,paquetChoisi);
                     }
-                    if(carteChoisie.getType().equals(TypeCarteTransport.JOKER)){
-                        possible = false;
+                    else {
+                        prendreCarteVisible(choix, paquetChoisi);
+                    }
+                    jeu.changeCarteVisibleSiTropJoker();
+                    if (carteChoisie != null) {
+                        if(carteChoisie.getType().equals(TypeCarteTransport.JOKER)){
+                            possible = false;
+                        }
+                        else{
+                            //deuxieme tour
+                            jeu.changeCarteVisibleSiTropJoker();
+                            possible= deuxiemeTourPiocherCarteTransport();
+                        }
                     }
                     else{
                         //deuxieme tour
-                        while(jeu.verifieCompteJokerCarteVisible()){
-                            jeu.retireCarteVisibleEtDefausseDansBonPaquet();
-                            jeu.ajout3CarteWagon3CarteBateauCarteVisible();
-                        }
+                        jeu.changeCarteVisibleSiTropJoker();
                         possible= deuxiemeTourPiocherCarteTransport();
                     }
                 }
+
             }
 
         }
@@ -434,9 +449,9 @@ public class Joueur {
             }
         }
         else{ // au tour 2 tout sauf les jokers présents
-            if(jeu.getCartesTransportVisibles().size()<=1) {
+            if(jeu.getCartesTransportVisibles().size()>=1) {
                 for (CarteTransport carte : jeu.getCartesTransportVisibles()) {
-                    if (carte.getType() != TypeCarteTransport.JOKER) {
+                    if (!(carte.getType().equals(TypeCarteTransport.JOKER))) {
                         choixCartesPossibles.add(carte.getNom()); // ajout des cartes visibles dans les choix possibles
                     }
                 }
@@ -457,7 +472,9 @@ public class Joueur {
                 carteChoisie = new CarteTransport(carte.getType(),carte.getCouleur(), carte.estDouble(), carte.getAncre());
                 jeu.retireCarteVisible(carte);
                 ajouterCarteEnMain(carte);
-                jeu.ajoutCarteDePaquetDemandéDansCarteVisible(paquetRemplacementVoulu);
+                if(paquetRemplacementVoulu!="") {
+                    jeu.ajoutCarteDePaquetDemandéDansCarteVisible(paquetRemplacementVoulu);
+                }
             }
         }
         return carteChoisie;
@@ -490,16 +507,26 @@ public class Joueur {
         else{
 
             List<String> choixPaquetARemplacer2 = null;
-            if (jeu.piocheWagonEstVide()) {
-                choixPaquetARemplacer2  = Arrays.asList("BATEAU");
-            } else if (jeu.piocheBateauEstVide()) {
-                choixPaquetARemplacer2 = Arrays.asList("WAGON");
-            } else if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
-                return false;
-            } else {
+            if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide() && jeu.getCartesTransportVisibles().size()==0) {
+               return false;
+            }
+            if (!jeu.piocheWagonEstVide()) {
+                choixPaquetARemplacer2  = Arrays.asList("WAGON");
+            }
+            if (!jeu.piocheBateauEstVide()) {
+                choixPaquetARemplacer2 = Arrays.asList("BATEAU");
+            }
+            if (jeu.piocheWagonEstVide() && jeu.piocheBateauEstVide()) {
+                choixPaquetARemplacer2 = null;
+            }
+            if(!jeu.piocheBateauEstVide() && !jeu.piocheWagonEstVide()) {
                 choixPaquetARemplacer2 = Arrays.asList("WAGON", "BATEAU");
             }
-            String paquetChoisi2 = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise",choixPaquetARemplacer2,null,false );
+            String paquetChoisi2= "";
+            if(choixPaquetARemplacer2 !=null){
+                paquetChoisi2 = choisir("Cliquer sur le paquet par lequel vous voulez remplacer la carte prise", choixPaquetARemplacer2, null, false);
+
+            }
             prendreCarteVisible(choixPaquetJoueur2,paquetChoisi2);
             return false;
         }
