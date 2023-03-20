@@ -226,6 +226,10 @@ public class Jeu implements Runnable {
         return null;
     }
 
+    public void retireVilleDePortsLibres(Ville ville){
+        portsLibres.remove(ville);
+    }
+
     public boolean verfierReserve(Joueur joueur){
         if(joueur.getNbPionsBateau() + joueur.getNbPionsWagon() <= 6){
             return true;

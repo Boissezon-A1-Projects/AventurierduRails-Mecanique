@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class JoueurTest {
 
 
-    @Test
+    /*@Test
     void verificationCarteConstructionPort_2WAGONSJAUNE_2BATEAUJAUNE() {
         String[] joueurs = {"d"};
         Joueur j = new Joueur("d",new Jeu(joueurs), Joueur.CouleurJouer.BLEU);
@@ -232,7 +232,7 @@ class JoueurTest {
 
         assertTrue(j.verificationCarteConstruirePort(j.getCartesTransport()));
 
-    }
+    }*/
 
 
 

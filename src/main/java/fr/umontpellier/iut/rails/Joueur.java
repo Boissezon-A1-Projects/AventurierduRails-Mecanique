@@ -367,7 +367,9 @@ public class Joueur {
                 System.out.println(compteur);
             }
             System.out.println("est sorti de la boucle");
-            ports.add(jeu.nomVilleToVille(choix));
+            Ville villechoisie=jeu.nomVilleToVille(choix);
+            ports.add(villechoisie);
+            jeu.retireVilleDePortsLibres(villechoisie);
             defausserCarteDansBonPaquet(cartesTransportPosees);
             cartesTransportPosees.clear();
 
