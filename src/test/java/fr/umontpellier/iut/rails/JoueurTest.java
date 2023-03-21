@@ -29,6 +29,8 @@ class JoueurTest {
     private List<Route> routesJoueur1;
     private List<Ville> portsJoueur1;
 
+    private List<Destination> destinationJoueur1;
+
     @BeforeAll
     static void staticInit() {
         System.setOut(new PrintStream(OutputStream.nullOutputStream()));
@@ -60,7 +62,7 @@ class JoueurTest {
         cartesJoueur1 = (List<CarteTransport>) TestUtils.getAttribute(joueur1, "cartesTransport");
         routesJoueur1 = (List<Route>) TestUtils.getAttribute(joueur1, "routes");
         portsJoueur1 = (List<Ville>) TestUtils.getAttribute(joueur1, "ports");
-
+        destinationJoueur1 = (List<Destination>) TestUtils.getAttribute(joueur1, "destinations");
         // initialisation des pions wagon et bateau du joueur 1
         TestUtils.setAttribute(joueur1, "nbPionsWagon", 20);
         TestUtils.setAttribute(joueur1, "nbPionsWagonEnReserve", 5);
@@ -292,21 +294,66 @@ class JoueurTest {
     @Test
     void generer_fils(){
         Ville ville = new Ville("Marseille", true);
-        List<Route> res = new ArrayList<>();
+        List<Ville> res = new ArrayList<>();
         for (Route route: routes) {
             if(route.getNom().equals("R50") ||route.getNom().equals("R74") ||route.getNom().equals("R73") ||route.getNom().equals("R68") ||route.getNom().equals("R69") ||route.getNom().equals("R12") ){
-                res.add(route);
                 routesJoueur1.add(route);
+                if(route.getVille1().equals(ville)){
+                    res.add(route.getVille2());
+                }
+                if(route.getVille2().equals(ville)){
+                    res.add(route.getVille1());
+                }
             }
         }
+
         System.out.println(res);
-        List<Route> resGen = joueur1.genererFils(ville);
+        List<Ville> resGen = joueur1.genererFils(ville);
         System.out.println(resGen.toString());
         assertTrue(res.containsAll(resGen) && resGen.containsAll(res));
     }
 
+    @Test
+    void destination_est_complete_false_pasDeRoutesHongHonk(){
+        destinationJoueur1.add( new Destination("Lagos", "Hong Kong", 14));
+        for (Route route: routes) {
+            if(route.getNom().equals("R86") ||route.getNom().equals("R85") ||route.getNom().equals("R35") ||route.getNom().equals("R16") ||route.getNom().equals("R121")) {
+                routesJoueur1.add(route);
+            }
+        }
+        assertFalse(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
+    }
 
+    @Test
+    void destination_est_complete_false_route_pas_relie(){
+        destinationJoueur1.add( new Destination("Lagos", "Hong Kong", 14));
+        for (Route route: routes) {
+            if(route.getNom().equals("R86") ||route.getNom().equals("R85") ||route.getNom().equals("R35") ||route.getNom().equals("R16") ||route.getNom().equals("R14")) {
+                routesJoueur1.add(route);
+            }
+        }
+        assertFalse(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
+    }
 
+    @Test
+    void destination_est_complete_true(){
+        destinationJoueur1.add( new Destination("Lagos", "Hong Kong", 14));
+        for (Route route: routes) {
+            if(route.getNom().equals("R86") ||route.getNom().equals("R85") ||route.getNom().equals("R35") ||route.getNom().equals("R16") ||route.getNom().equals("R14") ||route.getNom().equals("R37")  ||route.getNom().equals("R121")) {
+                routesJoueur1.add(route);
+            }
+        }
+        assertTrue(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
+    }
 
-
+    @Test
+    void destination_est_complete_true_maisdesroutesrandomsenplus(){
+        destinationJoueur1.add( new Destination("Lagos", "Hong Kong", 14));
+        for (Route route: routes) {
+            if(route.getNom().equals("R86") ||route.getNom().equals("R85") ||route.getNom().equals("R41")||route.getNom().equals("R116")||route.getNom().equals("R35") ||route.getNom().equals("R16") ||route.getNom().equals("R14") ||route.getNom().equals("R37")  ||route.getNom().equals("R121")) {
+                routesJoueur1.add(route);
+            }
+        }
+        assertTrue(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
+    }
 }

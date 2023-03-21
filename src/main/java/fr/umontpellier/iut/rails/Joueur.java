@@ -479,49 +479,62 @@ public class Joueur {
     }
 
     boolean destinationEstComplete(Destination d) {
-        /** Cette méthode pour l'instant renvoie false pour que le jeu puisse s'exécuter.*/
-        // À vous de modifier le corps de cette fonction pour qu'elle retourne la valeur attendue.
-        return false;
+        return resoudre(d);
     }
 
     /**FONCTIONS pour algorithme destinationEstComplete*/
     //fonction qui renvoie la liste des villes qu'on peut acceder depuis la ville
-    public List<Route> genererFils(Ville ville){
-        List<Route> fils= new ArrayList<>();
+    public List<Ville> genererFils(Ville ville){
+        List<Ville> fils= new ArrayList<>();
         for (Route route: routes) {
-            if(route.getVille1().equals(ville) || route.getVille2().equals(ville)){
-                fils.add(route);
+            if(route.getVille1().equals(ville) && !fils.contains(route.getVille2())){
+                fils.add(route.getVille2());
+            }
+            if(route.getVille2().equals(ville) && !fils.contains(route.getVille1())){
+                fils.add(route.getVille1());
             }
         }
         return fils;
     }
 
-    public void mettreAJour(ArrayList<Route> frontiere, ArrayList<Ville> dejaVus, Ville villeCourante, Route routeCourante){
-        List<Route> filsCourant = genererFils(villeCourante);
+    public void mettreAJour(List<Ville> frontiere, List<Ville> dejaVus, Ville villeActuelle){
+        List<Ville> filsCourant = genererFils(villeActuelle);
         for (int i = 0; i < filsCourant.size(); i++) {
-            Route couplecourant = filsCourant.get(i);
-            if(!dejaVus.contains(filsCourant.get(i).getVille1())){
-                frontiere.add(couplecourant);
-                dejaVus.add(filsCourant.get(i).getVille1());
-            }
-            if(!dejaVus.contains(filsCourant.get(i).getVille2())){
-                frontiere.add(couplecourant);
-                dejaVus.add(filsCourant.get(i).getVille2());
+
+            Ville villecourante = filsCourant.get(i);
+            if(!dejaVus.contains(villecourante)){
+                frontiere.add(villecourante);
+                dejaVus.add(villecourante);
             }
         }
-        frontiere.remove(routeCourante);
+
     }
 
-    public void resoudre(Destination d){
-        Ville villeCourant = nomVilleToVille(d.getVilles().get(0));
-        Ville villeRes = null;
-        Route routeCourante = null;
-        List<Route> frontieres = new ArrayList<>();
-        List<Ville> dejaVus = new ArrayList<>();
-        while(frontieres.size() >=0){
-            villeRes = nomVilleToVille(d.getVilles().get(d.getVilles().size()-1));
+    public boolean resoudre(Destination d){
+        //on peut eliminer direct si une des villes est pas dans les routes
+        List<Ville> listeAverifier = new ArrayList<>();
+        for (String villeNom: d.getVilles() ) {
+            Ville villeCourante = nomVilleToVille(villeNom);
+            if(villeCourante==null){
+                return false;
+            }
+            if(!listeAverifier.contains(villeCourante)){
+                listeAverifier.add(villeCourante);
+            }
 
         }
+        Ville villeCourant = nomVilleToVille(d.getVilles().get(0));
+
+        List<Ville> frontieres = new ArrayList<>(); frontieres.add(villeCourant);
+        List<Ville> dejaVus = new ArrayList<>(); dejaVus.add(villeCourant);
+
+        while(!dejaVus.containsAll(listeAverifier) && !frontieres.isEmpty()){
+            //ne sait pas quoi mettre ici
+            Ville villecourante = frontieres.remove(0);
+            mettreAJour(frontieres,dejaVus,villecourante);
+
+        }
+        return  dejaVus.containsAll(listeAverifier);
     }
 
     public Ville nomVilleToVille(String nomVille){
