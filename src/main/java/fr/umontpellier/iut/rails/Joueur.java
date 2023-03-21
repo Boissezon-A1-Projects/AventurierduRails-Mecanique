@@ -639,7 +639,7 @@ public class Joueur {
 
     }*/
 
-    public boolean peutPayerRouteTerrestre(RouteTerrestre route){
+    /*public boolean peutPayerRouteTerrestre(RouteTerrestre route){
         boolean peutPayer = false;
         Couleur couleurRoute = route.getCouleur();
         int tailleRoute = route.getLongueur();
@@ -860,7 +860,7 @@ public class Joueur {
             }
             return res;
 
-    }
+    }*/
 
     /** FAIT PAS NOUS
      * piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
