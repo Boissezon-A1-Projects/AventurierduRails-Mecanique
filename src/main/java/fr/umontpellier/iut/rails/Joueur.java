@@ -151,6 +151,7 @@ public class Joueur {
 
         String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, true);
 
+        log(String.format(choix,toLog()));
 
         if (choix.equals("")) {
             log(String.format("%s a passé son tour",toLog()));
@@ -481,6 +482,58 @@ public class Joueur {
         /** Cette méthode pour l'instant renvoie false pour que le jeu puisse s'exécuter.*/
         // À vous de modifier le corps de cette fonction pour qu'elle retourne la valeur attendue.
         return false;
+    }
+
+    /**FONCTIONS pour algorithme destinationEstComplete*/
+    //fonction qui renvoie la liste des villes qu'on peut acceder depuis la ville
+    public List<Route> genererFils(Ville ville){
+        List<Route> fils= new ArrayList<>();
+        for (Route route: routes) {
+            if(route.getVille1().equals(ville) || route.getVille2().equals(ville)){
+                fils.add(route);
+            }
+        }
+        return fils;
+    }
+
+    public void mettreAJour(ArrayList<Route> frontiere, ArrayList<Ville> dejaVus, Ville villeCourante, Route routeCourante){
+        List<Route> filsCourant = genererFils(villeCourante);
+        for (int i = 0; i < filsCourant.size(); i++) {
+            Route couplecourant = filsCourant.get(i);
+            if(!dejaVus.contains(filsCourant.get(i).getVille1())){
+                frontiere.add(couplecourant);
+                dejaVus.add(filsCourant.get(i).getVille1());
+            }
+            if(!dejaVus.contains(filsCourant.get(i).getVille2())){
+                frontiere.add(couplecourant);
+                dejaVus.add(filsCourant.get(i).getVille2());
+            }
+        }
+        frontiere.remove(routeCourante);
+    }
+
+    public void resoudre(Destination d){
+        Ville villeCourant = nomVilleToVille(d.getVilles().get(0));
+        Ville villeRes = null;
+        Route routeCourante = null;
+        List<Route> frontieres = new ArrayList<>();
+        List<Ville> dejaVus = new ArrayList<>();
+        while(frontieres.size() >=0){
+            villeRes = nomVilleToVille(d.getVilles().get(d.getVilles().size()-1));
+
+        }
+    }
+
+    public Ville nomVilleToVille(String nomVille){
+        for (Route route: routes) {
+            if(route.getVille1().toString().equals(nomVille)){
+                return route.getVille1();
+            }
+            if(route.getVille2().toString().equals(nomVille)){
+                return route.getVille2();
+            }
+        }
+        return null;
     }
 
     public int calculerScoreFinal() {

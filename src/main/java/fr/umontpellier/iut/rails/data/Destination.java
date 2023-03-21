@@ -65,6 +65,9 @@ public class Destination {
         return nom;
     }
 
+    public List<String> getVilles() {
+        return villes;
+    }
 
     /**
      * @return une liste contenant toutes les destinations du jeu
