@@ -200,11 +200,6 @@ public class Jeu implements Runnable {
         prompt("Fin de la partie.", new ArrayList<>(), true);
     }
 
-    /**
-     * (Fonction faite par nous)
-     * Distribue la main de départ de chacun des joueurs (7 Bateaux et 3 Wagons)
-     * @return rien
-     */
     public void distribuerMainDepart(){
         for (Joueur joueurCourant : joueurs) {
             for(int i = 0; i < 7; i++) {

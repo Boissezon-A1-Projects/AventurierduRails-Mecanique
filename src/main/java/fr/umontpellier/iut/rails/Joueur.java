@@ -1,6 +1,7 @@
 package fr.umontpellier.iut.rails;
 
 import fr.umontpellier.iut.rails.data.*;
+import org.glassfish.grizzly.http.util.MimeHeaders;
 
 import java.sql.SQLOutput;
 import java.util.*;
@@ -132,8 +133,11 @@ public class Joueur {
         if(!jeu.piocheWagonEstVide()){
         listeChoixPossible.add("WAGON");}
         if(!jeu.piocheBateauEstVide()){
-        listeChoixPossible.add("BATEAU");}        //capturer une route
-
+        listeChoixPossible.add("BATEAU");}
+        //capturer une route
+        for (Route route: verfierRoute()) {
+            listeChoixPossible.add(route.getNom());
+        }
         //nouvelles destination
         listeChoixPossible.add("DESTINATION");
         //Construction port // EST CE QUON VERIFIE AUSSI SI SA LISTE DE PORTS EST PAS COMPLETE ?
@@ -622,6 +626,9 @@ public class Joueur {
     }
 
 
+
+
+
     /** FAIT PAR NOUS
     *prendre possession route : pose autant de WAGON ou BATEAU de la couleur de la route choisie
     * toute carte jouée doivent etre du meme type donc route maritime -> bateau ; route terrestre -> wagon
@@ -635,9 +642,62 @@ public class Joueur {
     * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
     * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
     */
-    /*public List<Route> verfierRoute(){ // verifie carte ET bon nombre de pions
+    public List<Route> verfierRoute(){ // verifie carte ET bon nombre de pions
+        List<Route> routesValides = new ArrayList<>();
+        for (Route route: jeu.getRoutesLibres() ) {
+            if(route instanceof RouteTerrestre || route instanceof RoutePaire){
+                if(peutPayerRouteTerrestre(route) ){
+                    routesValides.add(route);
+                }
+            }
+        }
+        return routesValides;
+    }
 
-    }*/
+    public boolean peutPayerRouteTerrestre(Route route){
+        Couleur couleurRoute = route.getCouleur();
+        int tailleRoute = route.getLongueur();
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
+
+        boolean estWagon;
+        boolean estJoker;
+        boolean valide = false;
+
+        int compteurCartesValides = 0;
+
+        if(getNbPionsWagon() >= tailleRoute) {
+            if (couleurRoute.equals(Couleur.GRIS)) {
+                for (Couleur couleur : couleurs) {
+                    for (CarteTransport carte : cartesTransport) {
+                        estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
+                        estWagon = carte.getType().equals(TypeCarteTransport.WAGON);
+                        if (estJoker || (estWagon && carte.getCouleur().equals(couleur))) {
+                            compteurCartesValides++;
+                        }
+                    }
+                    if ((compteurCartesValides >= tailleRoute) && route instanceof RouteTerrestre) {
+                        valide = true;
+                    } else if ((compteurCartesValides >= 2 * tailleRoute) && route instanceof RoutePaire) {
+                        valide = true;
+                    }
+
+                    compteurCartesValides = 0;
+                }
+            } else {
+                for (CarteTransport carte : cartesTransport) {
+                    estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
+                    estWagon = carte.getType().equals(TypeCarteTransport.WAGON);
+                    if (estJoker || (estWagon && carte.getCouleur().equals(couleurRoute))) {
+                        compteurCartesValides++;
+                    }
+                }
+                if (compteurCartesValides >= tailleRoute) {
+                    valide = true;
+                }
+            }
+        }
+        return valide;
+    }
 
     /*public boolean peutPayerRouteTerrestre(RouteTerrestre route){
         boolean peutPayer = false;
