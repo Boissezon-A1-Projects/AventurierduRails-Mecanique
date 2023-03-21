@@ -645,13 +645,18 @@ public class Joueur {
     public List<Route> verfierRoute(){ // verifie carte ET bon nombre de pions
         List<Route> routesValides = new ArrayList<>();
         for (Route route: jeu.getRoutesLibres() ) {
-            if(route instanceof RouteTerrestre || route instanceof RoutePaire){
+            if(route instanceof RouteTerrestre){
                 if(peutPayerRouteTerrestre(route)){
                     routesValides.add(route);
                 }
             }
-            if(route instanceof RouteMaritime){
+            else if(route instanceof RouteMaritime){
                 if(peutPayerRouteMaritime(route)){
+                    routesValides.add(route);
+                }
+            }
+            else if(route instanceof RoutePaire){
+                if(peutPayerRoutePaire(route)){
                     routesValides.add(route);
                 }
             }
@@ -659,8 +664,41 @@ public class Joueur {
         return routesValides;
     }
 
+
+    // A TESTER AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
     public boolean peutPayerRoutePaire(Route route){
-        throw new RuntimeException("Méthode non implémentée");
+        int[] nbParCouleur = {0, 0, 0, 0, 0, 0};
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
+        int nbPairesPossibles = 0;
+        int nbJokers = 0;
+        boolean peutPayer = false;
+        int longueurRoute = route.getLongueur();
+
+
+        // Compte combien de wagons de chaque couleur le joueur a en main, ainsi que le nombre de jokers
+        for(CarteTransport carte : cartesTransport){
+            if(carte.getType().equals(TypeCarteTransport.JOKER)){
+                nbJokers++;
+            } else if (carte.getType().equals(TypeCarteTransport.WAGON)) {
+                for(int i = 0; i < couleurs.length; i++){
+                    if(carte.getCouleur().equals(couleurs[i])){
+                        nbParCouleur[i]++;
+                    }   }   }   }
+        // Compte le nombre de paires que le joueur peut faire avec sa main
+        // D'abord on fait des paires sans joker, puis si besoin on en ajoute un pour faire une paire
+        for(int nb : nbParCouleur){
+            while(nb > 1){
+                nb -= 2;
+                nbPairesPossibles++;
+                if(nb == 1 && nbJokers != 0){
+                    nb--;
+                    nbJokers--;
+                    nbPairesPossibles++;
+                }
+            }
+        }
+
+        return nbPairesPossibles >= longueurRoute;
     }
 
     public boolean peutPayerRouteTerrestre(Route route){
@@ -675,7 +713,7 @@ public class Joueur {
         int compteurCartesValides = 0;
 
         if(getNbPionsWagon() >= tailleRoute) {
-            if (couleurRoute.equals(Couleur.GRIS)) {
+            if (couleurRoute.equals(Couleur.GRIS) && !(route instanceof RoutePaire)) {
                 for (Couleur couleur : couleurs) {
                     for (CarteTransport carte : cartesTransport) {
                         estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
@@ -686,10 +724,7 @@ public class Joueur {
                     }
                     if ((compteurCartesValides >= tailleRoute) && route instanceof RouteTerrestre) {
                         valide = true;
-                    } else if ((compteurCartesValides >= 2 * tailleRoute) && route instanceof RoutePaire) {
-                        valide = true;
                     }
-
                     compteurCartesValides = 0;
                 }
             } else {
