@@ -287,7 +287,8 @@ public class Joueur {
                         // La deuxième carte est valide si elle est de la même couleur de la précédente ou si c'est un joker
                         // ou si la précédente est un joker et la courant est valide
                         else if (compteur == 1) {
-                            if(estJoker || (cartesPourPort.get(0).getCouleur().equals(carteChoisie.getCouleur())) || (cartesPourPort.get(0).getType() == TypeCarteTransport.JOKER)){
+                            if(estJoker || (cartesPourPort.get(0).getCouleur().equals(carteChoisie.getCouleur()))
+                                    || ((cartesPourPort.get(0).getType().equals(TypeCarteTransport.JOKER) && listeCouleursPossibles.contains(couleurCarteChoisie)))){
                                 if (carteChoisie.getType().equals(TypeCarteTransport.BATEAU)){
                                     nombreBateaux++;
                                 }
@@ -312,7 +313,7 @@ public class Joueur {
                                     queDesJokers = false;
                                 }
                             }
-                            if(queDesJokers && listeCouleursPossibles.contains(couleurCarteChoisie)){
+                            if((queDesJokers && listeCouleursPossibles.contains(couleurCarteChoisie)) || estJoker){
                                 if (carteChoisie.getType().equals(TypeCarteTransport.BATEAU)){
                                     nombreBateaux++;
                                 }
@@ -327,7 +328,6 @@ public class Joueur {
                             // s'il n'y a pas que des jokers on teste les conditions dites plus haut
                             if(!queDesJokers) {
                                 for (CarteTransport carte : cartesPourPort) {
-                                    System.out.println(carte.getCouleur() + " =? " + carteChoisie.getCouleur());
                                     if (!carte.getCouleur().equals(carteChoisie.getCouleur())) {
                                         preteAVerifier = false;
                                     }
@@ -335,7 +335,6 @@ public class Joueur {
                                         preteAVerifier = true;
                                     }
                                 }
-                                System.out.println("Prete à verif : " + preteAVerifier);
                                 if (estJoker) {
                                     carteValide = true;
                                     cartesPourPort.add(carteChoisie);
@@ -364,9 +363,9 @@ public class Joueur {
                     }
                 }
                 compteur ++;
-                System.out.println(compteur);
+
             }
-            System.out.println("est sorti de la boucle");
+
             Ville villechoisie=jeu.nomVilleToVille(choix);
             ports.add(villechoisie);
             jeu.retireVilleDePortsLibres(villechoisie);
