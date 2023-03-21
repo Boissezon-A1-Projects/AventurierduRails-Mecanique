@@ -646,12 +646,21 @@ public class Joueur {
         List<Route> routesValides = new ArrayList<>();
         for (Route route: jeu.getRoutesLibres() ) {
             if(route instanceof RouteTerrestre || route instanceof RoutePaire){
-                if(peutPayerRouteTerrestre(route) ){
+                if(peutPayerRouteTerrestre(route)){
+                    routesValides.add(route);
+                }
+            }
+            if(route instanceof RouteMaritime){
+                if(peutPayerRouteMaritime(route)){
                     routesValides.add(route);
                 }
             }
         }
         return routesValides;
+    }
+
+    public boolean peutPayerRoutePaire(Route route){
+        throw new RuntimeException("Méthode non implémentée");
     }
 
     public boolean peutPayerRouteTerrestre(Route route){
@@ -699,228 +708,69 @@ public class Joueur {
         return valide;
     }
 
-    /*public boolean peutPayerRouteTerrestre(RouteTerrestre route){
-        boolean peutPayer = false;
+    public boolean peutPayerRouteMaritime(Route route){
         Couleur couleurRoute = route.getCouleur();
         int tailleRoute = route.getLongueur();
-        List<Integer> compteWagonsParCouleur = compteTypeCarParCouleur(cartesTransport, TypeCarteTransport.WAGON);
-        if(couleurRoute.equals(Couleur.JAUNE)){
-            if(compteWagonsParCouleur.get(0)>=tailleRoute){ //a completer
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.NOIR)){
-            if(compteWagonsParCouleur.get(1)>=tailleRoute){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.BLANC)){
-            if(compteWagonsParCouleur.get(2)>=tailleRoute){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.ROUGE)){
-            if(compteWagonsParCouleur.get(3)>=tailleRoute){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.VERT)){
-            if(compteWagonsParCouleur.get(4)>=tailleRoute){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.VIOLET)){
-            if(compteWagonsParCouleur.get(5)>=tailleRoute){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.GRIS)){
-            for (int i = 0; i < compteWagonsParCouleur.size(); i++) {
-                if(compteWagonsParCouleur.get(i)>=tailleRoute){
-                    peutPayer = true;
-                }
-            }
-        }
-        return peutPayer;
-    }
-    public boolean peutPayerRoutePaire(RoutePaire route){
-        boolean peutPayer = false;
-        Couleur couleurRoute = route.getCouleur();
-        int aPayer = 2*route.getLongueur();
-        List<Integer> compteWagonsParCouleur = compteTypeCarParCouleur(cartesTransport, TypeCarteTransport.WAGON);
-        if(couleurRoute.equals(Couleur.JAUNE)){
-            if(compteWagonsParCouleur.get(0)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.NOIR)){
-            if(compteWagonsParCouleur.get(1)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.BLANC)){
-            if(compteWagonsParCouleur.get(2)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.ROUGE)){
-            if(compteWagonsParCouleur.get(3)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.VERT)){
-            if(compteWagonsParCouleur.get(4)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.VIOLET)){
-            if(compteWagonsParCouleur.get(5)>=aPayer){
-                peutPayer = true;
-            }
-        }
-        else if(couleurRoute.equals(Couleur.GRIS)){
-            for (int i = 0; i < compteWagonsParCouleur.size(); i++) {
-                if(compteWagonsParCouleur.get(i)>=aPayer){
-                    peutPayer = true;
-                }
-            }
-        }
-        return peutPayer;
-    }
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
 
-    public boolean peutPayerRouteMaritime(RouteMaritime route){
-        return false;
-    }
+        boolean estBateau;
+        boolean estBateauDouble;
+        boolean estJoker;
+        boolean valide = false;
 
-    public List<Integer> compteTypeCarParCouleur(List<CarteTransport> listeAVerifier, TypeCarteTransport typeAVerifier){
-        List<Integer> res = new ArrayList<>();
-        List<Couleur> couleurs = Arrays.asList(Couleur.JAUNE, Couleur.NOIR, Couleur.BLANC, Couleur.ROUGE, Couleur.VERT, Couleur.VIOLET);
-        if(typeAVerifier.equals("WAGON")){
-            int wagonJaune = 0;
-            int wagonNoir = 0;
-            int wagonBlanc = 0;
-            int wagonRouge = 0;
-            int wagonVert = 0;
-            int wagonViolet = 0;
-            for (CarteTransport carte :  listeAVerifier) {
-                for (int i = 0; i < couleurs.size(); i++) {
-                    Couleur couleurCourante = couleurs.get(i);
-                    if (carte.getCouleur().equals(couleurCourante)) {
-                        if (carte.getType().equals(TypeCarteTransport.WAGON)) {
-                            if (i == 0) {
-                                wagonJaune++;
-                                break;
-                            } else if (i == 1) {
-                                wagonNoir++;
-                                break;
-                            } else if (i == 2) {
-                                wagonBlanc++;
-                                break;
-                            } else if (i == 3) {
-                                wagonRouge++;
-                                break;
-                            } else if (i == 4) {
-                                wagonVert++;
-                                break;
-                            } else {
-                                wagonViolet++;
-                                break;
+        int compteurCartesValides = 0;
+
+        if(getNbPionsBateau() >= tailleRoute) {
+            if (couleurRoute.equals(Couleur.GRIS)) {
+                for (Couleur couleur : couleurs) {
+                    for (CarteTransport carte : cartesTransport) {
+                        estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
+                        estBateau = carte.getType().equals(TypeCarteTransport.BATEAU);
+                        estBateauDouble = carte.estDouble();
+                        if (estJoker || (estBateau && carte.getCouleur().equals(couleur))) {
+                            if(estBateauDouble){
+                                compteurCartesValides++;
                             }
+                            compteurCartesValides++;
                         }
                     }
-                }
-            }
-            res.add(wagonJaune); res.add(wagonNoir); res.add(wagonBlanc); res.add(wagonRouge); res.add(wagonVert); res.add(wagonViolet);
-        }
-        if(typeAVerifier.equals("BATEAU")) {
-            int bateauJaune = 0;
-            int doubleBateauJaune = 0;
-            int bateauNoir = 0;
-            int doubleBateauNoir = 0;
-            int bateauBlanc = 0;
-            int doubleBateauBlanc = 0;
-            int bateauRouge = 0;
-            int doubleBateauRouge = 0;
-            int bateauVert = 0;
-            int doubleBateauVert = 0;
-            int bateauViolet = 0;
-            int doubleBateauViolet = 0;
-            for (CarteTransport carte : listeAVerifier) {
-                for (int i = 0; i < couleurs.size(); i++) {
-                    Couleur couleurCourante = couleurs.get(i);
-                    if (carte.getCouleur().equals(couleurCourante)) {
-
-                        if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
-                            if (carte.estDouble()) {
-                                if (i == 0) {
-                                    doubleBateauJaune++;
-                                    break;
-                                } else if (i == 1) {
-                                    doubleBateauNoir++;
-                                    break;
-                                } else if (i == 2) {
-                                    doubleBateauBlanc++;
-                                    break;
-                                } else if (i == 3) {
-                                    doubleBateauRouge++;
-                                    break;
-                                } else if (i == 4) {
-                                    doubleBateauVert++;
-                                    break;
-                                } else {
-                                    doubleBateauViolet++;
-                                    break;
-                                }
-                            }
-                            if (i == 0) {
-                                bateauJaune++;
-                                break;
-                            } else if (i == 1) {
-                                bateauNoir++;
-                                break;
-                            } else if (i == 2) {
-                                bateauBlanc++;
-                                break;
-                            } else if (i == 3) {
-                                bateauRouge++;
-                                break;
-                            } else if (i == 4) {
-                                bateauVert++;
-                                break;
-                            } else {
-                                bateauViolet++;
-                                break;
-                            }
-                        }
+                    if ((compteurCartesValides >= tailleRoute)){
+                        valide = true;
                     }
-
+                    compteurCartesValides = 0;
                 }
-            }
-                res.add(bateauJaune);
-                res.add(bateauNoir);
-                res.add(bateauBlanc);
-                res.add(bateauRouge);
-                res.add(bateauVert);
-                res.add(bateauViolet);
-                res.add(doubleBateauJaune);
-                res.add(doubleBateauNoir);
-                res.add(doubleBateauBlanc);
-                res.add(doubleBateauRouge);
-                res.add(doubleBateauVert);
-                res.add(doubleBateauViolet);
-            }
-            if (typeAVerifier.equals("JOKER")) {
-                int nombreJoker = 0;
+            } else {
                 for (CarteTransport carte : cartesTransport) {
-                    if (carte.getType().equals(TypeCarteTransport.JOKER)) {
-                        nombreJoker++;
+                    estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
+                    estBateau = carte.getType().equals(TypeCarteTransport.BATEAU);
+                    estBateauDouble = carte.estDouble();
+                    if (estJoker || (estBateau && carte.getCouleur().equals(couleurRoute))) {
+                        if(estBateauDouble){
+                            compteurCartesValides++;
+                        }
+                        compteurCartesValides++;
                     }
                 }
-                res.add(nombreJoker);
+                if (compteurCartesValides >= tailleRoute) {
+                    valide = true;
+                }
             }
-            return res;
+        }
+        System.out.println(compteurCartesValides);
+        return valide;
+    }
 
-    }*/
+    public void payerRouteTerrestre(Route route){
+        throw new RuntimeException("Methode pas encore implémentée");
+    }
+
+
+
+
+
+
+
+
 
     /** FAIT PAS NOUS
      * piocher carte destination: tire 4 destinations de la pioche et en garde au minimum une (et jusqu'à 4)
