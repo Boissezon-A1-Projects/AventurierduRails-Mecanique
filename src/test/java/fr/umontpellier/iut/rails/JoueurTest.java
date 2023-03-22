@@ -356,4 +356,72 @@ class JoueurTest {
         }
         assertTrue(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
     }
+
+    @Test
+    void test_couleursPossiblesPourRoutesGrises(){
+        RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
+        CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte2 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte3 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte4 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte5 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte6 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+
+        cartesJoueur1.add(carte1);cartesJoueur1.add(carte2);cartesJoueur1.add(carte3);cartesJoueur1.add(carte4);cartesJoueur1.add(carte5);cartesJoueur1.add(carte6);
+        ArrayList<Couleur> expected = new ArrayList<>(); expected.add(Couleur.JAUNE);
+        assertEquals(expected, joueur1.couleursPossiblesRouteGrise(route));
+    }
+
+    @Test
+    void test_couleursPossiblesPourRoutesGrises2(){
+        RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
+        CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte2 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte3 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte4 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte5 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte6 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+
+        cartesJoueur1.add(carte1);cartesJoueur1.add(carte2);cartesJoueur1.add(carte3);cartesJoueur1.add(carte4);cartesJoueur1.add(carte5);cartesJoueur1.add(carte6);
+        ArrayList<Couleur> expected = new ArrayList<>();
+        assertEquals(expected, joueur1.couleursPossiblesRouteGrise(route));
+    }
+
+    @Test
+    void test_couleursPossiblesPourRoutesGrises3(){
+        RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
+        CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VIOLET,false,true);
+        CarteTransport carte2 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte3 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VIOLET,false,true);
+        CarteTransport carte4 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte5 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte6 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte7 = new CarteTransport(TypeCarteTransport.JOKER,Couleur.GRIS,false,true);
+
+
+        cartesJoueur1.add(carte1);cartesJoueur1.add(carte2);cartesJoueur1.add(carte3);cartesJoueur1.add(carte4);cartesJoueur1.add(carte5);cartesJoueur1.add(carte6);
+        cartesJoueur1.add(carte7);
+        ArrayList<Couleur> expected = new ArrayList<>(); expected.add(Couleur.VERT);
+        assertEquals(expected, joueur1.couleursPossiblesRouteGrise(route));
+    }
+    @Test
+    void test_couleursPossiblesPourRoutesGrises4(){
+        RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
+        CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VIOLET,false,true);
+        CarteTransport carte2 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte3 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VIOLET,false,true);
+        CarteTransport carte4 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte5 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.VERT,false,true);
+        CarteTransport carte6 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
+        CarteTransport carte7 = new CarteTransport(TypeCarteTransport.JOKER,Couleur.GRIS,false,true);
+        CarteTransport carte8 = new CarteTransport(TypeCarteTransport.JOKER,Couleur.GRIS,false,true);
+        CarteTransport carte9 = new CarteTransport(TypeCarteTransport.JOKER,Couleur.GRIS,false,true);
+
+        cartesJoueur1.add(carte1);cartesJoueur1.add(carte2);cartesJoueur1.add(carte3);cartesJoueur1.add(carte4);cartesJoueur1.add(carte5);cartesJoueur1.add(carte6);
+        cartesJoueur1.add(carte7);cartesJoueur1.add(carte8);cartesJoueur1.add(carte9);
+        ArrayList<Couleur> expected = new ArrayList<>(); expected.add(Couleur.VERT); expected.add(Couleur.JAUNE); expected.add(Couleur.VIOLET);
+        assertTrue(expected.containsAll(joueur1.couleursPossiblesRouteGrise(route)) && joueur1.couleursPossiblesRouteGrise(route).containsAll(expected));
+    }
+
+
 }

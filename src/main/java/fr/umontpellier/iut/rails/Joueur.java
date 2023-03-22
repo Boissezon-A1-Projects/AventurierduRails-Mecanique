@@ -894,6 +894,30 @@ public class Joueur {
         throw new RuntimeException("Methode pas encore implémentée");
     }
 
+    public ArrayList<Couleur> couleursPossiblesRouteGrise(Route route){
+        int tailleRoute = route.getLongueur();
+        ArrayList<Couleur> couleursPossibles = new ArrayList<>();
+        int[] nbParCouleur = {0, 0, 0, 0, 0, 0};
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
+        int nbJokers = 0;
+        for(CarteTransport carte : cartesTransport){
+            if(carte.getType().equals(TypeCarteTransport.JOKER)){
+                nbJokers++;
+            } else if (carte.getType().equals(TypeCarteTransport.WAGON)) {
+                for(int i = 0; i < couleurs.length; i++){
+                    if(carte.getCouleur().equals(couleurs[i])){
+                        nbParCouleur[i]++;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < nbParCouleur.length; i++) {
+            if(nbParCouleur[i]+nbJokers>=tailleRoute){
+                couleursPossibles.add(couleurs[i]);
+            }
+        }
+        return couleursPossibles;
+    }
 
 
 
