@@ -753,17 +753,22 @@ public class Joueur {
         // Compte le nombre de paires que le joueur peut faire avec sa main
         // D'abord on fait des paires sans joker, puis si besoin on en ajoute un pour faire une paire
         for(int nb : nbParCouleur){
-            while(nb > 1){
-                nb -= 2;
-                nbPairesPossibles++;
+            while(nb >= 1){
+                while(nb > 1) {
+                    nb -= 2;
+                    nbPairesPossibles++;
+                }
                 if(nb == 1 && nbJokers != 0){
                     nb--;
                     nbJokers--;
                     nbPairesPossibles++;
                 }
+                else{
+                    break;
+                }
             }
         }
-
+        System.out.println(nbPairesPossibles);
         return nbPairesPossibles >= longueurRoute;
     }
 
@@ -857,7 +862,6 @@ public class Joueur {
                 }
             }
         }
-        System.out.println(compteurCartesValides);
         return valide;
     }
 
