@@ -730,8 +730,11 @@ public class Joueur {
         return routesValides;
     }
 
-
-    // A TESTER AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+    /**
+     * Vérifie si, à partir de son jeu, le joueur peut payer pour construire la route paire passée en paramètre
+     * @param route paire
+     * @return si le joueur peut payer la route
+     */
     public boolean peutPayerRoutePaire(Route route){
         int[] nbParCouleur = {0, 0, 0, 0, 0, 0};
         Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
@@ -772,6 +775,11 @@ public class Joueur {
         return nbPairesPossibles >= longueurRoute;
     }
 
+    /**
+     * Vérifie si, à partir de son jeu, le joueur peut payer pour construire la route terrestre passée en paramètre
+     * @param route terrestre
+     * @return si le joueur peut payer la route
+     */
     public boolean peutPayerRouteTerrestre(Route route){
         Couleur couleurRoute = route.getCouleur();
         int tailleRoute = route.getLongueur();
@@ -783,7 +791,9 @@ public class Joueur {
 
         int compteurCartesValides = 0;
 
+        // Vérifie si le joueur a assez de pions pour capturer la route
         if(getNbPionsWagon() >= tailleRoute) {
+            // Si la route est une grise non paire on vérifie si le joueur peut la capturer avec au moins une de ses couleurs + jokers
             if (couleurRoute.equals(Couleur.GRIS) && !(route instanceof RoutePaire)) {
                 for (Couleur couleur : couleurs) {
                     for (CarteTransport carte : cartesTransport) {
@@ -798,7 +808,9 @@ public class Joueur {
                     }
                     compteurCartesValides = 0;
                 }
-            } else {
+            }
+            // Si la route a une couleur, vérifie si a assez de wagons de la couleur / jokers pour le capturer
+            else {
                 for (CarteTransport carte : cartesTransport) {
                     estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
                     estWagon = carte.getType().equals(TypeCarteTransport.WAGON);
@@ -814,6 +826,11 @@ public class Joueur {
         return valide;
     }
 
+    /**
+     * Vérifie si, à partir de son jeu, le joueur peut payer pour construire la route maritime passée en paramètre
+     * @param route maritime
+     * @return si le joueur peut payer la route
+     */
     public boolean peutPayerRouteMaritime(Route route){
         Couleur couleurRoute = route.getCouleur();
         int tailleRoute = route.getLongueur();
