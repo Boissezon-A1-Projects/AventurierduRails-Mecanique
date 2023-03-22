@@ -886,6 +886,14 @@ public class Joueur {
         throw new RuntimeException("Methode pas encore implémentée");
     }
 
+    public void payerRoutePaire(Route route){
+        throw new RuntimeException("Methode pas encore implémentée");
+    }
+
+    public void payerRouteMaritime(Route route){
+        throw new RuntimeException("Methode pas encore implémentée");
+    }
+
 
 
 
