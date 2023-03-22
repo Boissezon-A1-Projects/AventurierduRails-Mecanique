@@ -225,6 +225,19 @@ public class Jeu implements Runnable {
         portsLibres.remove(ville);
     }
 
+    public Route nomRouteToRoute(String nomRoute){
+        for (Route route:routesLibres) {
+            if(route.getNom().equals(nomRoute)){
+                return route;
+            }
+        }
+        return null;
+    }
+
+    public void retireRouteDeRouteLibres(Route route){
+        routesLibres.remove(route);
+    }
+
     public boolean verfierReserve(Joueur joueur){
         if(joueur.getNbPionsBateau() + joueur.getNbPionsWagon() <= 6){
             return true;

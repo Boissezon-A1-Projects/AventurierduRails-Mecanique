@@ -220,12 +220,16 @@ public class Joueur {
         else if(choix.charAt(0)=='R' && isDigit(choix.charAt(1))) {
             //demander au joueur la route qu'il veut prendre via map
             //appeler fonction prendre possession route
-            List<String> listRoutes = new ArrayList<String>() ;
-            for (Route route: jeu.getRoutesLibres()) {
-                listRoutes.add(route.getNom());
-            }
-            String choixRoute = choisir("ivyuv", listRoutes, null, false);
-            log(String.format(choixRoute, toLog()));
+           Route routeChoisie = jeu.nomRouteToRoute(choix);
+           if(routeChoisie instanceof RouteTerrestre){
+               if(routeChoisie.getCouleur().equals(Couleur.GRIS)){
+                   payerRouteTerrestreGrise(routeChoisie);
+               }
+               else{
+                   payerRouteTerrestre(routeChoisie);
+               }
+           }
+
             log(String.format("%s route", toLog()));
         }
         else if(choix.equals("DESTINATION")) {
@@ -880,32 +884,79 @@ public class Joueur {
     public void payerRouteTerrestre(Route route){
         int tailleRoute= route.getLongueur();
         List<String> carteEnMain = new ArrayList<>();
-        for (CarteTransport carte : cartesTransportPosees) {
+        for (CarteTransport carte : cartesTransport) {
             carteEnMain.add(carte.getNom());
         }
-        String choix = "";
+
         boolean valide = false;
         while(cartesTransportPosees.size() < tailleRoute){
-            choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
+            String choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
             CarteTransport carteChoisie = carteTransportNomVersCarte(choix);
             boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
             if(estJoker){
                 cartesTransportPosees.add(carteChoisie);
                 cartesTransport.remove(carteChoisie);
             }
-            if(carteChoisie.getType().equals(TypeCarteTransport.WAGON) && carteChoisie.getCouleur().equals(route.getCouleur())){
-                cartesTransportPosees.add(carteChoisie);
-                cartesTransport.remove(carteChoisie);
+            else {
+                if (carteChoisie.getType().equals(TypeCarteTransport.WAGON) && carteChoisie.getCouleur().equals(route.getCouleur())) {
+                    cartesTransportPosees.add(carteChoisie);
+                    cartesTransport.remove(carteChoisie);
+                }
             }
         }
+        routes.add(route);
+        jeu.retireRouteDeRouteLibres(route);
+        defausserCarteDansBonPaquet(cartesTransportPosees);
+        score += route.getScore();
+        nbPionsWagon-=route.getLongueur();
     }
     public void payerRouteTerrestreGrise(Route route){
         ArrayList<Couleur> couleursPossible = couleursPossiblesRouteGrise(route);
         int tailleRoute = route.getLongueur();
-        String choix = "";
-        while(cartesTransportPosees.size() <tailleRoute){
-            //
+        List<String> carteEnMain = new ArrayList<>();
+        Couleur nvlCouleurRoute = null;
+        for (CarteTransport carte : cartesTransport) {
+            carteEnMain.add(carte.getNom());
         }
+        String choix = "";
+        CarteTransport carteChoisie = null;
+        boolean estBonWagon= false;
+
+        while(cartesTransportPosees.size() <tailleRoute && !estBonWagon){
+            choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
+            carteChoisie = carteTransportNomVersCarte(choix);
+            boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
+            if(estJoker){
+                cartesTransportPosees.add(carteChoisie);
+                cartesTransport.remove(carteChoisie);
+            }
+            else if (carteChoisie.getType().equals(TypeCarteTransport.WAGON)){
+                if(couleursPossible.contains(carteChoisie.getCouleur())) {
+                    estBonWagon = true;
+                    nvlCouleurRoute = carteChoisie.getCouleur();
+                    cartesTransportPosees.add(carteChoisie);
+                    cartesTransport.remove(carteChoisie);
+                }
+            }
+        }
+        while(cartesTransportPosees.size() <tailleRoute){
+            choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
+            carteChoisie = carteTransportNomVersCarte(choix);
+            boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
+            if(estJoker){
+                cartesTransportPosees.add(carteChoisie);
+                cartesTransport.remove(carteChoisie);
+            }
+            else if(carteChoisie.getType().equals(TypeCarteTransport.WAGON) && carteChoisie.getCouleur().equals(nvlCouleurRoute)){
+                    cartesTransportPosees.add(carteChoisie);
+                    cartesTransport.remove(carteChoisie);
+            }
+        }
+        routes.add(route);
+        jeu.retireRouteDeRouteLibres(route);
+        defausserCarteDansBonPaquet(cartesTransportPosees);
+        score += route.getScore();
+        nbPionsWagon-=route.getLongueur();
     }
 
 
