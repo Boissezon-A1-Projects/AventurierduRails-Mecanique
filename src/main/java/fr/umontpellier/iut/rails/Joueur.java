@@ -238,15 +238,10 @@ public class Joueur {
         } else if (choix.equals("PIONS BATEAU")) {
             log(String.format("%s Echanger Pions bateaux", toLog()));
             echangerPions(choix);
-        } else {
+        }
+        else {
             /**CONSTRUCTION PORT*/
             log(String.format(choix, toLog()));
-
-
-
-            //il faut add les cartes qu'il choisit dans cartesTransportPosees puis apres les defausser
-            //GROS BUG je sais po quoi faire pour qu'il donne les bonnes cartes (je sais pas si on considere qu'il est pas con)
-            //pour ajouter un port dans la liste des ports du joueur : ports.add(la ville qu'il a choisi donc choix)
             ArrayList<String> listeChoixPossibles = new ArrayList<>();
             ArrayList<Couleur> listeCouleursPossibles = verificationCarteConstruirePort(cartesTransport);
             CarteTransport carteChoisie;
@@ -883,8 +878,36 @@ public class Joueur {
     }
 
     public void payerRouteTerrestre(Route route){
-        throw new RuntimeException("Methode pas encore implémentée");
+        int tailleRoute= route.getLongueur();
+        List<String> carteEnMain = new ArrayList<>();
+        for (CarteTransport carte : cartesTransportPosees) {
+            carteEnMain.add(carte.getNom());
+        }
+        String choix = "";
+        boolean valide = false;
+        while(cartesTransportPosees.size() < tailleRoute){
+            choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
+            CarteTransport carteChoisie = carteTransportNomVersCarte(choix);
+            boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
+            if(estJoker){
+                cartesTransportPosees.add(carteChoisie);
+                cartesTransport.remove(carteChoisie);
+            }
+            if(carteChoisie.getType().equals(TypeCarteTransport.WAGON) && carteChoisie.getCouleur().equals(route.getCouleur())){
+                cartesTransportPosees.add(carteChoisie);
+                cartesTransport.remove(carteChoisie);
+            }
+        }
     }
+    public void payerRouteTerrestreGrise(Route route){
+        ArrayList<Couleur> couleursPossible = couleursPossiblesRouteGrise(route);
+        int tailleRoute = route.getLongueur();
+        String choix = "";
+        while(cartesTransportPosees.size() <tailleRoute){
+            //
+        }
+    }
+
 
     public void payerRoutePaire(Route route){
         throw new RuntimeException("Methode pas encore implémentée");
@@ -913,6 +936,8 @@ public class Joueur {
             }
         }
     }
+
+
 
     public ArrayList<Couleur> couleursPossiblesRouteGrise(Route route){
         int tailleRoute = route.getLongueur();
