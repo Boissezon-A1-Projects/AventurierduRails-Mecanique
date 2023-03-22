@@ -891,7 +891,27 @@ public class Joueur {
     }
 
     public void payerRouteMaritime(Route route){
-        throw new RuntimeException("Methode pas encore implémentée");
+        boolean estValide = false;
+        String nomCarteChoisie;
+        CarteTransport carteChoisie;
+        ArrayList<String> listeChoixPossibles = new ArrayList<>();
+        for(CarteTransport carte: cartesTransport){
+            listeChoixPossibles.add(carte.getNom());
+        }
+        for(int i = 0; i < route.getLongueur(); i++) {
+            while (!estValide) {
+                nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", listeChoixPossibles, null, false);
+                carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
+                boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
+                boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.BATEAU);
+                Couleur couleurCarteChoisie = carteChoisie.getCouleur();
+                if (couleurCarteChoisie.equals(route.getCouleur()) || estJoker) {
+                    cartesTransportPosees.add(carteChoisie);
+                    cartesTransport.remove(carteChoisie);
+                    estValide = true;
+                }
+            }
+        }
     }
 
     public ArrayList<Couleur> couleursPossiblesRouteGrise(Route route){

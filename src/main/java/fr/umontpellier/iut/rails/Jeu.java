@@ -282,50 +282,6 @@ public class Jeu implements Runnable {
         System.out.println(nombreWagons);
     }
 
-    // Fonction ratée qui fonctionne mais ne passe pas les tests, on va quand
-    // même pas la supprimmer après le travail fourni
-    /*
-
-    public void distribuerDestinations(){
-        // Donne les cartes destinations à chacun
-        ArrayList<Destination> listeDesPropositions = new ArrayList<>();
-        ArrayList<Bouton> differentsChoix = new ArrayList<>();
-        for (Joueur joueurCourant : joueurs) {
-            // Créée la liste des 5 propositions pour le joueur et de la liste de boutons
-            listeDesPropositions.clear();
-            differentsChoix.clear();
-            for (int i = 1; i <= 5; i++) {
-                Bouton boutonVariable = new Bouton("" + (i));
-                differentsChoix.add(boutonVariable);
-                listeDesPropositions.add(piocherDestination());
-            }
-
-            // Fait faire choisir les 3 premières cartes au joueur (obligatoire) puis un choix entre les 2 dernières (facultatif)
-            for (int nbChoixFaits = 0; nbChoixFaits < 5; nbChoixFaits++) {
-                String valeurCarteChoisie;
-                if (nbChoixFaits < 3) {
-                    valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " : Choisissez une carte à garder (encore " + (3 - nbChoixFaits) + ")", null, differentsChoix, false);
-                } else {
-                    if (nbChoixFaits == 3) {
-                        Bouton BoutonPasser = new Bouton("Passer");
-                        differentsChoix.add(BoutonPasser);
-                    }
-                    valeurCarteChoisie = joueurCourant.choisir("Joueur " + joueurCourant.getNom() + " :Vous pouvez choisir une carte en plus, ou passer", null, differentsChoix, false);
-                }
-
-
-                if (valeurCarteChoisie.equals("Passer")) {
-                    break;
-                }
-                else {
-                    int indice = enleverBoutonDeListeAvecValeur(differentsChoix, valeurCarteChoisie);
-                    joueurCourant.ajouterDestination(listeDesPropositions.get(indice));
-                    listeDesPropositions.remove(indice);
-                }
-            }
-        }
-    }
-    */
 
      /**
      * (Fonction faite par nous)
