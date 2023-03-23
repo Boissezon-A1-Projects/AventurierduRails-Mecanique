@@ -91,12 +91,12 @@ public class Destination {
         destinations.add(new Destination("Edinburgh", "Tokyo", 22)); // D15
         destinations.add(new Destination("Winnipeg", "Perth", 14)); // D16
         destinations.add(new Destination("Jakarta", "Sydney", 7)); // D17
-        destinations.add(new Destination("Caracas", "Al-Zahira", 13)); // D18
+        destinations.add(new Destination("Caracas", "Al-Qahira", 13)); // D18
         destinations.add(new Destination("Hong Kong", "Jakarta", 5)); // D19
         destinations.add(new Destination("Casablanca", "Vakutsk", 16)); // D20
         destinations.add(new Destination("Athina", "Manila", 14)); // D21
         destinations.add(new Destination("Cape Town", "Jakarta", 13)); // D22
-        destinations.add(new Destination("Marseille", "Al-Zahira", 5)); // D23
+        destinations.add(new Destination("Marseille", "Al-Qahira", 5)); // D23
         destinations.add(new Destination("Moskva", "Petropavlovsk", 15)); // D24
         destinations.add(new Destination("Hamburg", "Beijing", 13)); // D25
         destinations.add(new Destination("Moskva", "Toamasina", 11)); // D26
@@ -105,7 +105,7 @@ public class Destination {
         destinations.add(new Destination("Hamburg", "Dar Es Salaam", 8)); // D29
         destinations.add(new Destination("Caracas", "Athina", 12)); // D30
         destinations.add(new Destination("Tokyo", "Sydney", 11)); // D31
-        destinations.add(new Destination("Al-Zahira", "Sydney", 19)); // D32
+        destinations.add(new Destination("Al-Qahira", "Sydney", 19)); // D32
         destinations.add(new Destination("Los Angeles", "Jakarta", 11)); // D33
         destinations.add(new Destination("Marseille", "Jakarta", 18)); // D34
         destinations.add(new Destination("Miami", "Buenos Aires", 9)); // D35
