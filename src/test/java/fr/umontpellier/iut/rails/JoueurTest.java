@@ -424,24 +424,25 @@ class JoueurTest {
     }
 
     @Test
-    void testCapturerRoutePaireExemple7() {
+    void testCapturerRoutePaireDeuxJokersUtilisés() {
         cartesJoueur1.clear();
         CarteTransport c1 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.ROUGE, false, true); // C141
         CarteTransport c2 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.ROUGE, false, true); // C142
-        CarteTransport c3 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C143
+        CarteTransport c3 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VIOLET, false, true); // C143
         CarteTransport c4 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VERT, false, true); // C144
-        CarteTransport c5 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VIOLET, false, true); // C145
+        CarteTransport c5 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C145
         CarteTransport c6 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C146
         cartesJoueur1.addAll(List.of(c1, c2, c3, c4, c5, c6));
 
         jeu.setInput(
                 "R59", // route paire Dar Es Salaam - Luanda (longueur 2)
-                "C145", // (ok, on peut finir la paire avec le Joker)
-                "C144", // (invalide, pas de paire verte possible)
-                "C141", // (ok)
-                "C142", // (ok)
-                "C143", // (invalide, il faut compléter la paire violette)
-                "C146" // (ok, la route est payée)
+                "C146", // commence par un joker
+                "C144", // paire verte-joker finie
+                "C141", // (ok) paire rouge
+                "C142", // (ok) paire rouge
+                "C143" //invalide
+
+
         );
 
         joueur1.jouerTour();
@@ -449,11 +450,11 @@ class JoueurTest {
         assertEquals(4, defausseWagon.size());
         assertTrue(defausseWagon.contains(c1));
         assertTrue(defausseWagon.contains(c2));
-        assertTrue(defausseWagon.contains(c5));
         assertTrue(defausseWagon.contains(c6));
+        assertTrue(defausseWagon.contains(c4));
         assertEquals(2, cartesJoueur1.size());
+        assertTrue(cartesJoueur1.contains(c5));
         assertTrue(cartesJoueur1.contains(c3));
-        assertTrue(cartesJoueur1.contains(c4));
 
         assertEquals(1, routesJoueur1.size());
         assertEquals("R59", routesJoueur1.get(0).getNom());

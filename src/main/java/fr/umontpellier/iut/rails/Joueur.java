@@ -124,7 +124,7 @@ public class Joueur {
         List<String> listeChoixPossible= new ArrayList<>();
         //Piocher une carte transport // si les deux pioches sont vides il peut pas choisir piocher cartes transports A FAIRE
         List<CarteTransport> carteVisible = jeu.getCartesTransportVisibles();
-        System.out.println(carteVisible.toString());
+
         if(carteVisible.size()>=1) {
             for (CarteTransport carte : carteVisible) {
                 listeChoixPossible.add(carte.getNom());
@@ -993,46 +993,67 @@ public class Joueur {
                 boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
                 boolean estWagon = carteChoisie.getType().equals(TypeCarteTransport.WAGON);
                 Couleur couleurCarteChoisie = carteChoisie.getCouleur();
-
+                //si la carte est seule et qu'il y a pas de joker alors on peut pas la mettre
+                if(couleursCarteSeule.contains(couleurCarteChoisie) && nbJokers==0){
+                    break;
+                }
+                //ça c'est pour check si on a déjà joué une carte de la meme couleur
                 if(couleurCarteJouee.contains(couleurCarteChoisie) ){
                     estValide = true;
                     couleurCarteJouee.remove(carteChoisie.getCouleur());
-                    cartesTransport.remove(carteChoisie);
-                    cartesTransportPosees.add(carteChoisie);
+
                 }
+                // si y a une carte seule qui attend un joker
                 if(cartesSeules.size()>=1 && estJoker){
                     estValide = true;
                     CarteTransport carteCoupleJoker = cartesSeules.remove(0);
                     couleurCarteJouee.remove(carteCoupleJoker.getCouleur());
-                    cartesTransport.remove(carteChoisie);
-                    cartesTransportPosees.add(carteChoisie);
+                    couleursCarteSeule.remove(couleurCarteChoisie);
+
                 }
-                    if(nbPaires < tailleRoute) {
+                //si y a un joker qui a été joué et qu'il veut mtn poser une carte seule
+                if(couleurCarteJouee.contains(Couleur.GRIS) && couleursCarteSeule.contains(couleurCarteChoisie)){
+                    estValide = true;
+                    couleurCarteJouee.remove(Couleur.GRIS);
+
+                    nbPaires++;
+                }
+
+                else{
+                    if (nbPaires < tailleRoute) {
                         //Parcourt le jeu pour voir si le joueur peut completer la carte qu'il a choisie
                         for (CarteTransport carte : cartesTransport) {
                             if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) {
-                                if(estWagon && couleursCarteSeule.contains(couleurCarteChoisie)){
+                                if (estWagon && couleursCarteSeule.contains(couleurCarteChoisie)) {
                                     cartesSeules.add(carteChoisie);
+                                    nbPaires++;
                                 }
-                                cartesTransport.remove(carteChoisie);
-                                cartesTransportPosees.add(carteChoisie);
+                                if (estJoker) {
+                                    couleurCarteJouee.add(Couleur.GRIS);
+                                }
+
                                 nbJokersReserves++;
                                 estValide = true;
-                                nbPaires++;
+
                                 couleurCarteJouee.add(couleurCarteChoisie);
                                 break;
                             } else if (estWagon
                                     && carte.getCouleur().equals(couleurCarteChoisie)
-                                    && !carte.equals(carteChoisie) ) {
+                                    && !carte.equals(carteChoisie)) {
                                 estValide = true;
                                 nbPaires++;
-                                cartesTransport.remove(carteChoisie);
-                                cartesTransportPosees.add(carteChoisie);
+
                                 couleurCarteJouee.add(couleurCarteChoisie);
                                 break;
                             }
                         }
                     }
+                }
+                if(estValide){
+                    cartesTransport.remove(carteChoisie);
+                    cartesTransportPosees.add(carteChoisie);
+                }
+
             }
 
         }
