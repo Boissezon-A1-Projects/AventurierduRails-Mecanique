@@ -963,15 +963,57 @@ public class Joueur {
     }
 
 
-    public void payerRoutePaire(Route route){
-        int tailleRoute= route.getLongueur();
-        List<String> carteEnMain = new ArrayList<>();
-        for (CarteTransport carte : cartesTransport) {
-            carteEnMain.add(carte.getNom());
-        }
-        int compteurCarte =0;
+    public void payerRoutePaire(Route route) {
+        int tailleRoute = route.getLongueur();
+        ArrayList<String> cartesEnMain = new ArrayList<>();
+        boolean estValide = false;
+        int nbJokers = 0;
+        int nbJokersReserves = 0;
 
-        // si nbJoker engages (où il utilise carte seule) == nbJoker alors il ne plus posé de cartes où il en a une seule
+        String nomCarteChoisie;
+        CarteTransport carteChoisie;
+
+        for (CarteTransport carte : cartesTransport) {
+            if (carte.getType().equals(TypeCarteTransport.JOKER)) {
+                nbJokers++;
+            }
+            cartesEnMain.add(carte.getNom());
+        }
+
+        while (cartesTransportPosees.size() < route.getLongueur() * 2) {
+            estValide = false;
+            while (!estValide) {
+                nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", cartesEnMain, null, false);
+                carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
+                boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
+                boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.WAGON);
+                Couleur couleurCarteChoisie = carteChoisie.getCouleur();
+
+                //Parcourt le jeu pour voir si le joueur peut completer la carte qu'il a choisie
+                for (CarteTransport carte : cartesTransport) {
+                    if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) {
+                        nbJokersReserves++;
+                        estValide = true;
+                        cartesTransport.remove(carteChoisie);
+                        cartesTransportPosees.add(carteChoisie);
+                        break;
+                    } else if (carte.getType().equals(TypeCarteTransport.WAGON)
+                            && carte.getCouleur().equals(carteChoisie.getCouleur())
+                            && !carte.equals(carteChoisie)) {
+                        estValide = true;
+                        cartesTransport.remove(carteChoisie);
+                        cartesTransportPosees.add(carteChoisie);
+                        break;
+                    }
+                }
+            }
+
+        }
+        routes.add(route);
+        jeu.retireRouteDeRouteLibres(route);
+        defausserCarteDansBonPaquet(cartesTransportPosees);
+        score += route.getScore();
+        nbPionsWagon -= route.getLongueur();
     }
 
     public void payerRouteMaritime(Route route){
