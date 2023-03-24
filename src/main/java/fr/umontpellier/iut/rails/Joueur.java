@@ -1005,12 +1005,21 @@ public class Joueur {
                     skip=true; // pour ne pas passer la grosse boucle
 
                 }
+                if(estJoker){
+                    if(cartesSeules.size()>=1){
+                        estValide = true; // on met valide a true et on enleve la carte qui est seule et on eneleve sa couleur des cartes jouees et des cartes seules
+                        CarteTransport carteCoupleJoker = cartesSeules.remove(0);
+                        couleurCarteJouee.remove(carteCoupleJoker.getCouleur());
+                        couleursCarteSeule.remove(couleurCarteChoisie);
+                    }
+                    else{
+                        estValide = true;
+                        skip = true;
+                    }
+                }
                 // si y a une carte seule qui attend un joker
                 if(cartesSeules.size()>=1 && estJoker){
-                    estValide = true; // on met valide a true et on enleve la carte qui est seule et on eneleve sa couleur des cartes jouees et des cartes seules
-                    CarteTransport carteCoupleJoker = cartesSeules.remove(0);
-                    couleurCarteJouee.remove(carteCoupleJoker.getCouleur());
-                    couleursCarteSeule.remove(couleurCarteChoisie);
+
 
                 }
                 //si y a un joker qui a été joué et qu'il veut mtn poser une carte seule

@@ -462,4 +462,43 @@ class JoueurTest {
     }
 
 
+    @Test
+    void testCapturerRoutePaireDeuxJokersUtilisés2() {
+        cartesJoueur1.clear();
+        CarteTransport c1 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.ROUGE, false, true); // C141
+        CarteTransport c2 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.ROUGE, false, true); // C142
+        CarteTransport c3 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VIOLET, false, true); // C143
+        CarteTransport c4 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VERT, false, true); // C144
+        CarteTransport c5 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C145
+        CarteTransport c6 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C146
+        CarteTransport c7 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C147
+        cartesJoueur1.addAll(List.of(c1, c2, c3, c4, c5, c6, c7));
+
+        jeu.setInput(
+                "R59", // route paire Dar Es Salaam - Luanda (longueur 2)
+                "C142", // commence par un joker
+                "C141", // rouge
+                "C144", // (ok) joker
+                "C146", // (ok) joker
+                "C143" //invalide
+
+        );
+
+        joueur1.jouerTour();
+
+        assertEquals(4, defausseWagon.size());
+        assertTrue(defausseWagon.contains(c1));
+        assertTrue(defausseWagon.contains(c2));
+        assertTrue(defausseWagon.contains(c6));
+        assertTrue(defausseWagon.contains(c4));
+        assertEquals(3, cartesJoueur1.size());
+        assertTrue(cartesJoueur1.contains(c5));
+        assertTrue(cartesJoueur1.contains(c3));
+        assertTrue(cartesJoueur1.contains(c7));
+
+        assertEquals(1, routesJoueur1.size());
+        assertEquals("R59", routesJoueur1.get(0).getNom());
+        assertEquals(2, TestUtils.getScore(joueur1));
+    }
+
 }
