@@ -229,6 +229,9 @@ public class Joueur {
                    payerRouteTerrestre(routeChoisie);
                }
            }
+           else if (routeChoisie instanceof RouteMaritime){
+               payerRouteMaritime(routeChoisie);
+           }
 
             log(String.format("%s route", toLog()));
         }
@@ -986,13 +989,18 @@ public class Joueur {
                 boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
                 boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.BATEAU);
                 Couleur couleurCarteChoisie = carteChoisie.getCouleur();
-                if (couleurCarteChoisie.equals(route.getCouleur()) || estJoker) {
+                if ((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker) {
                     cartesTransportPosees.add(carteChoisie);
                     cartesTransport.remove(carteChoisie);
                     estValide = true;
                 }
             }
         }
+        routes.add(route);
+        jeu.retireRouteDeRouteLibres(route);
+        defausserCarteDansBonPaquet(cartesTransportPosees);
+        score += route.getScore();
+        nbPionsBateau-=route.getLongueur();
     }
 
 

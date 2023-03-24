@@ -453,6 +453,7 @@ public class JoueurProfTest {
         assertTrue(defausseBateau.contains(c1));
         assertTrue(defausseBateau.contains(c3));
         assertTrue(defausseWagon.contains(c4));
+
         assertEquals(1, routesJoueur1.size());
         assertEquals("R114", routesJoueur1.get(0).getNom());
         assertEquals(7, TestUtils.getScore(joueur1));
