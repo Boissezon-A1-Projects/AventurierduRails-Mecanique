@@ -232,7 +232,9 @@ public class Joueur {
            else if (routeChoisie instanceof RouteMaritime){
                payerRouteMaritime(routeChoisie);
            }
-
+           else{
+                payerRoutePaire(routeChoisie);
+           }
             log(String.format("%s route", toLog()));
         }
         else if(choix.equals("DESTINATION")) {
@@ -969,10 +971,12 @@ public class Joueur {
         boolean estValide = false;
         int nbJokers = 0;
         int nbJokersReserves = 0;
-
-        String nomCarteChoisie;
-        CarteTransport carteChoisie;
-
+        List<Couleur> couleurCarteJouee = new ArrayList<>();
+        List<Couleur> couleursCarteSeule = couleurCarteSeule();
+        List<CarteTransport> cartesSeules=  new ArrayList<>();
+        String nomCarteChoisie="";
+        CarteTransport carteChoisie=null;
+        int nbPaires =0;
         for (CarteTransport carte : cartesTransport) {
             if (carte.getType().equals(TypeCarteTransport.JOKER)) {
                 nbJokers++;
@@ -980,32 +984,55 @@ public class Joueur {
             cartesEnMain.add(carte.getNom());
         }
 
+
         while (cartesTransportPosees.size() < route.getLongueur() * 2) {
             estValide = false;
             while (!estValide) {
                 nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", cartesEnMain, null, false);
                 carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
                 boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
-                boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.WAGON);
+                boolean estWagon = carteChoisie.getType().equals(TypeCarteTransport.WAGON);
                 Couleur couleurCarteChoisie = carteChoisie.getCouleur();
 
-                //Parcourt le jeu pour voir si le joueur peut completer la carte qu'il a choisie
-                for (CarteTransport carte : cartesTransport) {
-                    if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) {
-                        nbJokersReserves++;
-                        estValide = true;
-                        cartesTransport.remove(carteChoisie);
-                        cartesTransportPosees.add(carteChoisie);
-                        break;
-                    } else if (carte.getType().equals(TypeCarteTransport.WAGON)
-                            && carte.getCouleur().equals(carteChoisie.getCouleur())
-                            && !carte.equals(carteChoisie)) {
-                        estValide = true;
-                        cartesTransport.remove(carteChoisie);
-                        cartesTransportPosees.add(carteChoisie);
-                        break;
-                    }
+                if(couleurCarteJouee.contains(couleurCarteChoisie) ){
+                    estValide = true;
+                    couleurCarteJouee.remove(carteChoisie.getCouleur());
+                    cartesTransport.remove(carteChoisie);
+                    cartesTransportPosees.add(carteChoisie);
                 }
+                if(cartesSeules.size()>=1 && estJoker){
+                    estValide = true;
+                    CarteTransport carteCoupleJoker = cartesSeules.remove(0);
+                    couleurCarteJouee.remove(carteCoupleJoker.getCouleur());
+                    cartesTransport.remove(carteChoisie);
+                    cartesTransportPosees.add(carteChoisie);
+                }
+                    if(nbPaires < tailleRoute) {
+                        //Parcourt le jeu pour voir si le joueur peut completer la carte qu'il a choisie
+                        for (CarteTransport carte : cartesTransport) {
+                            if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) {
+                                if(estWagon && couleursCarteSeule.contains(couleurCarteChoisie)){
+                                    cartesSeules.add(carteChoisie);
+                                }
+                                cartesTransport.remove(carteChoisie);
+                                cartesTransportPosees.add(carteChoisie);
+                                nbJokersReserves++;
+                                estValide = true;
+                                nbPaires++;
+                                couleurCarteJouee.add(couleurCarteChoisie);
+                                break;
+                            } else if (estWagon
+                                    && carte.getCouleur().equals(couleurCarteChoisie)
+                                    && !carte.equals(carteChoisie) ) {
+                                estValide = true;
+                                nbPaires++;
+                                cartesTransport.remove(carteChoisie);
+                                cartesTransportPosees.add(carteChoisie);
+                                couleurCarteJouee.add(couleurCarteChoisie);
+                                break;
+                            }
+                        }
+                    }
             }
 
         }
@@ -1078,7 +1105,26 @@ public class Joueur {
         return couleursPossibles;
     }
 
-
+    public List<Couleur> couleurCarteSeule(){
+        int[] nbParCouleur= {0,0,0,0,0,0};
+        List<Couleur> couleurCarteSeule = new ArrayList<>();
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
+        for (CarteTransport carte :cartesTransport) {
+            if(carte.getType().equals(TypeCarteTransport.WAGON)){
+                for(int i = 0; i < couleurs.length; i++){
+                    if(carte.getCouleur().equals(couleurs[i])){
+                        nbParCouleur[i]++;
+                    }
+                }
+            }
+        }
+        for (int i = 0; i < nbParCouleur.length; i++) {
+            if(nbParCouleur[i]==1){
+                couleurCarteSeule.add(couleurs[i]);
+            }
+        }
+        return couleurCarteSeule;
+    }
 
 
 
