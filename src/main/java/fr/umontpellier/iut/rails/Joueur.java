@@ -982,7 +982,8 @@ public class Joueur {
         for(CarteTransport carte: cartesTransport){
             listeChoixPossibles.add(carte.getNom());
         }
-        for(int i = 0; i < route.getLongueur(); i++) {
+        int compteTailleCartePosees = 0;
+        while(compteTailleCartePosees < route.getLongueur()){
             while (!estValide) {
                 nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", listeChoixPossibles, null, false);
                 carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
@@ -990,11 +991,16 @@ public class Joueur {
                 boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.BATEAU);
                 Couleur couleurCarteChoisie = carteChoisie.getCouleur();
                 if ((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker) {
+                    if(carteChoisie.estDouble()){
+                        compteTailleCartePosees++;
+                    }
+                    compteTailleCartePosees++;
                     cartesTransportPosees.add(carteChoisie);
                     cartesTransport.remove(carteChoisie);
                     estValide = true;
                 }
             }
+            estValide = false;
         }
         routes.add(route);
         jeu.retireRouteDeRouteLibres(route);
