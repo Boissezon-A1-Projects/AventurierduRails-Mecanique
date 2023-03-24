@@ -984,9 +984,10 @@ public class Joueur {
             cartesEnMain.add(carte.getNom());
         }
 
-
+        boolean skip = false;
         while (cartesTransportPosees.size() < route.getLongueur() * 2) {
             estValide = false;
+            skip = false;
             while (!estValide) {
                 nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", cartesEnMain, null, false);
                 carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
@@ -999,13 +1000,14 @@ public class Joueur {
                 }
                 //ça c'est pour check si on a déjà joué une carte de la meme couleur
                 if(couleurCarteJouee.contains(couleurCarteChoisie) ){
-                    estValide = true;
+                    estValide = true; // on met valide à true et on enleve la couleur de carteJouee( qui est une liste avec les couleurs des cartes qui ont deja ete jouee)
                     couleurCarteJouee.remove(carteChoisie.getCouleur());
+                    skip=true; // pour ne pas passer la grosse boucle
 
                 }
                 // si y a une carte seule qui attend un joker
                 if(cartesSeules.size()>=1 && estJoker){
-                    estValide = true;
+                    estValide = true; // on met valide a true et on enleve la carte qui est seule et on eneleve sa couleur des cartes jouees et des cartes seules
                     CarteTransport carteCoupleJoker = cartesSeules.remove(0);
                     couleurCarteJouee.remove(carteCoupleJoker.getCouleur());
                     couleursCarteSeule.remove(couleurCarteChoisie);
@@ -1013,43 +1015,43 @@ public class Joueur {
                 }
                 //si y a un joker qui a été joué et qu'il veut mtn poser une carte seule
                 if(couleurCarteJouee.contains(Couleur.GRIS) && couleursCarteSeule.contains(couleurCarteChoisie)){
-                    estValide = true;
+                    estValide = true; // on met valide a true et on enleve la couleur grise des couleurs des cartes jouees
                     couleurCarteJouee.remove(Couleur.GRIS);
-
                     nbPaires++;
+                    skip = true; // on passe la boucle d'apres
                 }
 
-                else{
-                    if (nbPaires < tailleRoute) {
+                    if (nbPaires < tailleRoute && !skip) {
                         //Parcourt le jeu pour voir si le joueur peut completer la carte qu'il a choisie
                         for (CarteTransport carte : cartesTransport) {
-                            if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) {
-                                if (estWagon && couleursCarteSeule.contains(couleurCarteChoisie)) {
-                                    cartesSeules.add(carteChoisie);
-                                    nbPaires++;
+                            if (carte.getType().equals(TypeCarteTransport.JOKER) && nbJokersReserves < nbJokers) { // si la carte des cartes du joueur est un joker
+                                // et que le nombre de joker utilisé n'est pas depasser
+                                if (estWagon && couleursCarteSeule.contains(couleurCarteChoisie)) { // si la carte choisie est un wagon et qu'elle est seule
+                                    cartesSeules.add(carteChoisie); // on l'ajoute aux cartes seules (à qui il manque un joker)
+                                    nbPaires++; // et on augmente le  nbPair parce qu'on sait qu'elle va aps pouvoir etre finie
                                 }
-                                if (estJoker) {
+                                if (estJoker) { // si la carte choisie est un joker on met la couleur grise dans les cartes qui sont jouees
                                     couleurCarteJouee.add(Couleur.GRIS);
                                 }
 
-                                nbJokersReserves++;
+                                nbJokersReserves++; // on augmente le nbdeJoker qui est use
                                 estValide = true;
 
-                                couleurCarteJouee.add(couleurCarteChoisie);
+                                couleurCarteJouee.add(couleurCarteChoisie); // on ajoute la carte dans les cartesJouees
                                 break;
                             } else if (estWagon
                                     && carte.getCouleur().equals(couleurCarteChoisie)
-                                    && !carte.equals(carteChoisie)) {
+                                    && !carte.equals(carteChoisie)) { // si la carte choisie est un wagon, que la carte parcourue à la meme couleur mais que c'est pas la meme carte
                                 estValide = true;
-                                nbPaires++;
+                                nbPaires++; // on ajoute le nbPaire car on sait que ça va etre complete
 
-                                couleurCarteJouee.add(couleurCarteChoisie);
+                                couleurCarteJouee.add(couleurCarteChoisie); // on l'ajoute au carte jouée
                                 break;
                             }
                         }
-                    }
+
                 }
-                if(estValide){
+                if(estValide){ // si on peut l'ajoute alros on l'a suppr des cartes transport et on l'enleve des cartes Transports posees
                     cartesTransport.remove(carteChoisie);
                     cartesTransportPosees.add(carteChoisie);
                 }
