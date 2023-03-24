@@ -888,7 +888,7 @@ public class Joueur {
             carteEnMain.add(carte.getNom());
         }
 
-        boolean valide = false;
+
         while(cartesTransportPosees.size() < tailleRoute){
             String choix = choisir("Choisir une carte à utiliser: ", carteEnMain, null,false);
             CarteTransport carteChoisie = carteTransportNomVersCarte(choix);
@@ -961,7 +961,14 @@ public class Joueur {
 
 
     public void payerRoutePaire(Route route){
-        throw new RuntimeException("Methode pas encore implémentée");
+        int tailleRoute= route.getLongueur();
+        List<String> carteEnMain = new ArrayList<>();
+        for (CarteTransport carte : cartesTransport) {
+            carteEnMain.add(carte.getNom());
+        }
+        int compteurCarte =0;
+
+        // si nbJoker engages (où il utilise carte seule) == nbJoker alors il ne plus posé de cartes où il en a une seule
     }
 
     public void payerRouteMaritime(Route route){
