@@ -140,11 +140,13 @@ public class Joueur {
         }
         //nouvelles destination
         listeChoixPossible.add("DESTINATION");
-        //Construction port // EST CE QUON VERIFIE AUSSI SI SA LISTE DE PORTS EST PAS COMPLETE ?
-        if(!verificationCarteConstruirePort(cartesTransport).isEmpty()){ // seulement s'il a les cartes pour construire un port
-           for (Ville ville: villeLibreReliéesParRoute()) { // parcours les villes où le joueur a une route où elle est //IMP A ADD
-                listeChoixPossible.add(ville.toString());
-           }
+        //Construction port
+        if(ports.size()!=3) { // seulement s'il a pas déjà ses trois ports
+            if (!verificationCarteConstruirePort(cartesTransport).isEmpty()) { // seulement s'il a les cartes pour construire un port
+                for (Ville ville : villeLibreReliéesParRoute()) { // parcours les villes où le joueur a une route où elle est //IMP A ADD
+                    listeChoixPossible.add(ville.toString());
+                }
+            }
         }
         //echanger pions
         listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
@@ -501,6 +503,7 @@ public class Joueur {
         return fils;
     }
 
+    //fonction comme pour le tp6
     public void mettreAJour(List<Ville> frontiere, List<Ville> dejaVus, Ville villeActuelle){
         List<Ville> filsCourant = genererFils(villeActuelle);
         for (int i = 0; i < filsCourant.size(); i++) {
@@ -513,7 +516,7 @@ public class Joueur {
         }
 
     }
-
+    //fonction comme pour le tp6
     public boolean resoudre(Destination d){
         //on peut eliminer direct si une des villes est pas dans les routes
         List<Ville> listeAverifier = new ArrayList<>();
@@ -533,14 +536,14 @@ public class Joueur {
         List<Ville> dejaVus = new ArrayList<>(); dejaVus.add(villeCourant);
 
         while(!dejaVus.containsAll(listeAverifier) && !frontieres.isEmpty()){
-            //ne sait pas quoi mettre ici
+
             Ville villecourante = frontieres.remove(0);
             mettreAJour(frontieres,dejaVus,villecourante);
 
         }
         return  dejaVus.containsAll(listeAverifier);
     }
-
+    //renvoie la ville en fonction de ce nom (vu qu'on s'en sert pour destinations, on parcourt en fonction des routes du joueur)
     public Ville nomVilleToVille(String nomVille){
         for (Route route: routes) {
             if(route.getVille1().toString().equals(nomVille)){
@@ -552,16 +555,75 @@ public class Joueur {
         }
         return null;
     }
-
+    //calcul score final
     public int calculerScoreFinal() {
-        /**à faire*/
-        throw new RuntimeException("Méthode pas encore implémentée !");
+
+        return score + calculScoreFinalPort() + calculScoreFinDestination();
     }
 
+    //calcule le score des destinations, enleve la penalité si elle est pas complete rajoute la valeur simple si elle est complete
+    public int calculScoreFinDestination(){
+        int scoreDestination =0;
+        for (Destination d: destinations) {
+            if(destinationEstComplete(d)){
+                scoreDestination+=d.getValeurSimple();
+            }
+            else{
+                scoreDestination-=d.getPenalite();
+            }
+        }
+        return scoreDestination;
+    }
+    //retourne toutes les destinations completes du joueur en fin de jeu
+    public List<Destination> renvoieDestinationsCompleteFinJeu(){
+        List<Destination> destinationsReussie = new ArrayList<>();
+        for (Destination d: destinations   ) {
+            if(destinationEstComplete(d)){
+                destinationsReussie.add(d);
+            }
+        }
+        return destinationsReussie;
+    }
+    //calcul le score pour le ports
+    public int calculScoreFinalPort(){
+        int scorePortsReussis = 0;
+        if(ports.size()!=0){
+            for (Ville port: ports) { // on parcourt les ports
+                int frequencePort =0;
+                String nomPort = port.toString();
+                for (Destination d: renvoieDestinationsCompleteFinJeu()) { // on parcourt les destination
+                    //et si une des villes correspond au port alors on augment la frequence du port dans les destinations
+                    for (String ville: d.getVilles()) {
+                        if(ville.equals(nomPort)){
+                            frequencePort++;
+                        }
+                    }
+                }
+                //calcul bonus du port
+                if(frequencePort==1){
+                    scorePortsReussis+=20;
+                } else if (frequencePort ==2) {
+                    scorePortsReussis +=30;
+                }
+                else{
+                    scorePortsReussis +=40;
+                }
+            }
+        }
+        //bonus-malus
+        return scorePortsReussis - calculScorePortNonReussi();
+    }
+
+    //calcul le malus des ports non construits
+    public int calculScorePortNonReussi(){
+        return 12- 4*ports.size();
+    }
+
+    //ajoute une destination à la liste des destinations
     public void ajouterDestination(Destination destination){
         this.destinations.add(destination);
     }
-
+    //retire une destination au joueur en fonction de son id
     public void enleverDestinationId(String destinationId){
         for (int i = 0; i < destinations.size(); i++) {
             if(destinations.get(i).getNom().equals(destinationId)){
@@ -570,10 +632,12 @@ public class Joueur {
         }
     }
 
+    //ajoute une carte a la main du joueur
     public void ajouterCarteEnMain(CarteTransport carte){
         this.cartesTransport.add(carte);
     }
 
+    //retourne la carte en fonction de son nom (par les cartes qu'il a dans la main)
     public CarteTransport carteTransportNomVersCarte(String nom){
 
         for (CarteTransport carte: cartesTransport) {
@@ -657,6 +721,9 @@ public class Joueur {
         }
     }
 
+    /**FAIT PAR NOUS
+     * Fait passé le deuxieme tour des cartes
+     */
     public boolean deuxiemeTourPiocherCarteTransport(){
         List<String> choixPaquet2 = choixPiocherPaquetOuCarteVisible(2);
         String choixPaquetJoueur2= choisir("Veuillez cliquer sur la carte ou le paquet voulu", choixPaquet2, null, true);
@@ -706,11 +773,7 @@ public class Joueur {
     * 2. route paire : doit utiliser deux fois plus de cartes; ex: une route paire à deux wagons peut etre prise avec quatres wagons
     * 3. route double : un joueur peut prendre que l'une des deux routes pas les deux
     * 4. cartes double-bateau : prend pour deux bateaux; ex: une route à 4 bateaux peut prendre 2 doubles bateaux ou encore 2 simple 1 double
-    * METHODE : lit quelle route prend le joueur et prend son type, verifie si les cartes qu'il veut mettre sont bonnes,
-    * pose les pions dont le joueur a besoin (enleve de la main du joueur en gros),
-    * les cartes qu'il a choisit s'enlevent de sa main et sont défaussées (dans la bonne defausse)
-    * le score s'ajoute en fonction de la longueur de la route (vf fonction get score de route)
-    * pareil je sais pas ce qu'elle doit rnvoyer mais le score ig ou elle fait tout et renvoie rien
+    *
     */
     public List<Route> verfierRoute(){ // verifie carte ET bon nombre de pions
         List<Route> routesValides = new ArrayList<>();

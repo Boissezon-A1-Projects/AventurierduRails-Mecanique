@@ -69,6 +69,14 @@ public class Destination {
         return villes;
     }
 
+    public int getValeurSimple() {
+        return valeurSimple;
+    }
+
+    public int getPenalite() {
+        return penalite;
+    }
+
     /**
      * @return une liste contenant toutes les destinations du jeu
      */
