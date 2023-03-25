@@ -1112,6 +1112,17 @@ public class Joueur {
         CarteTransport carteChoisie;
         ArrayList<String> listeChoixPossibles = new ArrayList<>();
 
+
+        ArrayList<Couleur> couleursPossiblesGrise = new ArrayList<>();
+        boolean routeEstGrise = route.getCouleur().equals(Couleur.GRIS);
+        boolean aChoisiUneCouleur = false;
+        Couleur couleurChoisieRouteGrise = Couleur.GRIS;
+        if(routeEstGrise){
+            couleursPossiblesGrise = couleursPossiblesRouteMaritimeGrise(route);
+        }
+
+
+
         int nbSimplesPoses = 0;
         int nbJokersPoses = 0;
 
@@ -1135,7 +1146,12 @@ public class Joueur {
 
                 for(CarteTransport carte : cartesTransport){
                     if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
-                        if (carte.getCouleur().equals(route.getCouleur())) {
+                        if(routeEstGrise && carte.getCouleur().equals(couleurCarteChoisie) && !estJoker){
+                            if (!carte.estDouble()) {
+                                nbSimples++;
+                            }
+                        }
+                        else if (carte.getCouleur().equals(route.getCouleur())) {
                             if (!carte.estDouble()) {
                                 nbSimples++;
                             }
@@ -1148,7 +1164,9 @@ public class Joueur {
 
 
                 // Si on a un nombre pair de simples poses et qu'on veut en poser un sur une route de longueur paire, il faut qu'on en ait un deuxieme ou un joker
-                if((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker){
+                if((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker
+                        || (routeEstGrise && !aChoisiUneCouleur && couleursPossiblesGrise.contains(couleurCarteChoisie))
+                        || (routeEstGrise && aChoisiUneCouleur && couleurCarteChoisie.equals(couleurChoisieRouteGrise))){
                     if(!carteChoisie.estDouble()){
                         if(nbSimplesPoses + nbJokersPoses % 2 == 0 && longueurPaire){
                             if(nbSimples + nbJokers >= 2){
@@ -1156,6 +1174,10 @@ public class Joueur {
                                     nbJokersPoses++;
                                 }
                                 else {
+                                    if(!aChoisiUneCouleur){
+                                        aChoisiUneCouleur = true;
+                                        couleurChoisieRouteGrise = couleurCarteChoisie;
+                                    }
                                     nbSimplesPoses++;
                                 }
                                 estValide = true;
@@ -1169,6 +1191,10 @@ public class Joueur {
                                     nbJokersPoses++;
                                 }
                                 else {
+                                    if(!aChoisiUneCouleur){
+                                        aChoisiUneCouleur = true;
+                                        couleurChoisieRouteGrise = couleurCarteChoisie;
+                                    }
                                     nbSimplesPoses++;
                                 }
                                 estValide = true;
@@ -1181,16 +1207,31 @@ public class Joueur {
                                 nbJokersPoses++;
                             }
                             else {
+                                if(!aChoisiUneCouleur){
+                                    aChoisiUneCouleur = true;
+                                    couleurChoisieRouteGrise = couleurCarteChoisie;
+                                }
                                 nbSimplesPoses++;
                             }
                             valeurPosee++;
                         }
                     }
                     else{
-                        if((nbSimplesPoses + nbJokersPoses >= 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
+                        if(routeEstGrise && aChoisiUneCouleur && couleurCarteChoisie.equals(couleurChoisieRouteGrise)){
+                            estValide = true;
+                            valeurPosee += 2;
+                        }
+                        else if(routeEstGrise && !aChoisiUneCouleur && couleursPossiblesGrise.contains(couleurCarteChoisie)){
+                            estValide = true;
+                            valeurPosee += 2;
+                            aChoisiUneCouleur = true;
+                            couleurChoisieRouteGrise = couleurCarteChoisie;
+                        }
+                        else if((nbSimplesPoses + nbJokersPoses >= 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
                             estValide = false;
                         }
                         else{
+
                             estValide = true;
                             valeurPosee += 2;
                         }
