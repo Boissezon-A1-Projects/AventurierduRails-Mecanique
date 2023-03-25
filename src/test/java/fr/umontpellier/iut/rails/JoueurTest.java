@@ -358,6 +358,17 @@ class JoueurTest {
     }
 
     @Test
+    void destination_est_complete_true_longue(){
+        destinationJoueur1.add( new Destination(List.of( "Lagos","Cape Town","Perth", "Hong Kong"), 14,17,45));
+        for (Route route: routes) {
+            if(route.getNom().equals("R86") ||route.getNom().equals("R85") ||route.getNom().equals("R41")||route.getNom().equals("R116")||route.getNom().equals("R35") ||route.getNom().equals("R16") ||route.getNom().equals("R14") ||route.getNom().equals("R37")  ||route.getNom().equals("R121")) {
+                routesJoueur1.add(route);
+            }
+        }
+        assertTrue(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
+    }
+
+    @Test
     void test_couleursPossiblesPourRoutesGrises(){
         RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
         CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
