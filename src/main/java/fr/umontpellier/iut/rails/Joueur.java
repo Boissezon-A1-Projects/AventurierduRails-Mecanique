@@ -1073,6 +1073,39 @@ public class Joueur {
         nbPionsWagon -= route.getLongueur();
     }
 
+    public ArrayList<Couleur> couleursPossiblesRouteMaritimeGrise(Route route){
+        int tailleRoute = route.getLongueur();
+        Couleur[] couleurs = {Couleur.BLANC, Couleur.JAUNE, Couleur.VERT, Couleur.ROUGE, Couleur.VIOLET, Couleur.NOIR};
+
+        boolean estBateau;
+        boolean estBateauDouble;
+        boolean estJoker;
+
+        ArrayList<Couleur> couleursPossibles = new ArrayList<>();
+
+        int compteurCartesValides = 0;
+
+        for (Couleur couleur : couleurs) {
+            for (CarteTransport carte : cartesTransport) {
+                estJoker = carte.getType().equals(TypeCarteTransport.JOKER);
+                estBateau = carte.getType().equals(TypeCarteTransport.BATEAU);
+                estBateauDouble = carte.estDouble();
+                if (estJoker || (estBateau && carte.getCouleur().equals(couleur))) {
+                    if(estBateauDouble){
+                        compteurCartesValides++;
+                    }
+                    compteurCartesValides++;
+                }
+            }
+            if ((compteurCartesValides >= tailleRoute)){
+                couleursPossibles.add(couleur);
+            }
+            compteurCartesValides = 0;
+        }
+        return couleursPossibles;
+    }
+
+
     public void payerRouteMaritime(Route route){
         boolean estValide = false;
         String nomCarteChoisie;
@@ -1154,7 +1187,7 @@ public class Joueur {
                         }
                     }
                     else{
-                        if((nbSimplesPoses + nbJokersPoses % 2 == 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
+                        if((nbSimplesPoses + nbJokersPoses >= 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
                             estValide = false;
                         }
                         else{
