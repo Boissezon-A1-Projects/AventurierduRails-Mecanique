@@ -1174,7 +1174,7 @@ public class Joueur {
         String nomCarteChoisie;
         CarteTransport carteChoisie;
         ArrayList<String> listeChoixPossibles = new ArrayList<>();
-
+        List<CarteTransport> carteTransportsPosees = cartesTransportPosees;
 
         ArrayList<Couleur> couleursPossiblesGrise = new ArrayList<>();
         boolean routeEstGrise = route.getCouleur().equals(Couleur.GRIS);
@@ -1280,7 +1280,10 @@ public class Joueur {
                         }
                     }
                     else{
-                        if(routeEstGrise && aChoisiUneCouleur && couleurCarteChoisie.equals(couleurChoisieRouteGrise)){
+                        if((nbSimplesPoses + nbJokersPoses >= 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
+                            estValide = false;
+                        }
+                        else if(routeEstGrise && aChoisiUneCouleur && couleurCarteChoisie.equals(couleurChoisieRouteGrise)){
                             estValide = true;
                             valeurPosee += 2;
                         }
@@ -1289,9 +1292,6 @@ public class Joueur {
                             valeurPosee += 2;
                             aChoisiUneCouleur = true;
                             couleurChoisieRouteGrise = couleurCarteChoisie;
-                        }
-                        else if((nbSimplesPoses + nbJokersPoses >= 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
-                            estValide = false;
                         }
                         else{
 

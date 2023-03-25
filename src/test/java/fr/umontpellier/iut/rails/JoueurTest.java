@@ -746,4 +746,91 @@ class JoueurTest {
         assertEquals("R51", routesJoueur1.get(0).getNom());
         assertEquals(18, TestUtils.getScore(joueur1));
     }
+
+    @Test
+    void testCapturerRouteMaritimeGrise() {
+        cartesJoueur1.clear();
+        CarteTransport c1 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C141
+        CarteTransport c2 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, false, true); // C142
+        CarteTransport c3 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, false); // C143
+        CarteTransport c4 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C144
+        CarteTransport c5 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C145
+        CarteTransport c6 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, true, true); // C146
+        CarteTransport c7 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C147
+        cartesJoueur1.addAll(List.of(c1, c2, c3, c4, c5,c6,c7));
+
+        jeu.setInput(
+                "R105", // longueur 6
+                "C141", // oui
+                "C142", // oui
+                "C143", // oui
+                "C145", //oui
+                "C146"// oui
+
+
+        );
+
+        joueur1.jouerTour();
+
+        assertEquals(2, defausseBateau.size());
+        assertTrue(defausseBateau.contains(c2));
+        assertTrue(defausseBateau.contains(c6));
+        assertEquals(3,defausseWagon.size());
+        assertTrue(defausseWagon.contains(c3));
+        assertTrue(defausseWagon.contains(c1));
+
+        assertEquals(2, cartesJoueur1.size());
+        assertTrue(cartesJoueur1.contains(c4));
+        assertTrue(cartesJoueur1.contains(c7));
+
+
+        assertEquals(1, routesJoueur1.size());
+        assertEquals("R105", routesJoueur1.get(0).getNom());
+        assertEquals(15, TestUtils.getScore(joueur1));
+    }
+
+    @Test
+    void testCapturerRouteMaritimeGrise2() {
+        cartesJoueur1.clear();
+        CarteTransport c1 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C141
+        CarteTransport c2 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, false, true); // C142
+        CarteTransport c3 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, true, false); // C143
+        CarteTransport c4 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C144
+        CarteTransport c5 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C145
+        CarteTransport c6 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, true, true); // C146
+        CarteTransport c7 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.VERT, false, true); // C147
+        cartesJoueur1.addAll(List.of(c1, c2, c3, c4, c5,c6,c7));
+
+        jeu.setInput(
+                "R105", // longueur 6
+                "C142", // oui (S VERT)
+                "C141", // oui (JOKER)
+                "C143", // oui (double vert)
+                "C145", //oui (joker)
+                "C147", // oui (simple vert)
+                "C146",// non (double vert)
+                "C144"//non (joker)
+
+
+        );
+
+        joueur1.jouerTour();
+
+        assertEquals(3, defausseBateau.size());
+        assertTrue(defausseBateau.contains(c3));
+        assertTrue(defausseBateau.contains(c2));
+        assertEquals(2,defausseWagon.size());
+        assertTrue(defausseWagon.contains(c1));
+        assertTrue(defausseWagon.contains(c5));
+
+        assertEquals(2, cartesJoueur1.size());
+        assertTrue(cartesJoueur1.contains(c4));
+        assertTrue(cartesJoueur1.contains(c6));
+
+
+        assertEquals(1, routesJoueur1.size());
+        assertEquals("R105", routesJoueur1.get(0).getNom());
+        assertEquals(15, TestUtils.getScore(joueur1));
+    }
+
 }
