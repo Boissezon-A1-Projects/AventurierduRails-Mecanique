@@ -964,7 +964,6 @@ public class Joueur {
         nbPionsWagon-=route.getLongueur();
     }
 
-
     public void payerRoutePaire(Route route) {
         int tailleRoute = route.getLongueur();
         ArrayList<String> cartesEnMain = new ArrayList<>();
@@ -1064,7 +1063,6 @@ public class Joueur {
                     cartesTransport.remove(carteChoisie);
                     cartesTransportPosees.add(carteChoisie);
                 }
-
             }
 
         }
@@ -1080,25 +1078,94 @@ public class Joueur {
         String nomCarteChoisie;
         CarteTransport carteChoisie;
         ArrayList<String> listeChoixPossibles = new ArrayList<>();
+
+        int nbSimplesPoses = 0;
+        int nbJokersPoses = 0;
+
         for(CarteTransport carte: cartesTransport){
             listeChoixPossibles.add(carte.getNom());
         }
-        int compteTailleCartePosees = 0;
-        while(compteTailleCartePosees < route.getLongueur()){
+
+        int valeurPosee = 0;
+        while(valeurPosee < route.getLongueur()){
             while (!estValide) {
                 nomCarteChoisie = choisir("Choisissez vos cartes à utiliser pour construire la route :", listeChoixPossibles, null, false);
                 carteChoisie = carteTransportNomVersCarte(nomCarteChoisie);
                 boolean estJoker = carteChoisie.getType().equals(TypeCarteTransport.JOKER);
                 boolean estBateau = carteChoisie.getType().equals(TypeCarteTransport.BATEAU);
                 Couleur couleurCarteChoisie = carteChoisie.getCouleur();
-                if ((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker) {
-                    if(carteChoisie.estDouble()){
-                        compteTailleCartePosees++;
+                boolean longueurPaire = route.getLongueur() % 2 == 0;
+
+
+                int nbJokers = 0;
+                int nbSimples = 0;
+
+                for(CarteTransport carte : cartesTransport){
+                    if (carte.getType().equals(TypeCarteTransport.BATEAU)) {
+                        if (carte.getCouleur().equals(route.getCouleur())) {
+                            if (!carte.estDouble()) {
+                                nbSimples++;
+                            }
+                        }
                     }
-                    compteTailleCartePosees++;
+                    else if (!carte.getType().equals(TypeCarteTransport.WAGON)) {
+                        nbJokers++;
+                    }
+                }
+
+
+                // Si on a un nombre pair de simples poses et qu'on veut en poser un sur une route de longueur paire, il faut qu'on en ait un deuxieme ou un joker
+                if((couleurCarteChoisie.equals(route.getCouleur()) && estBateau) || estJoker){
+                    if(!carteChoisie.estDouble()){
+                        if(nbSimplesPoses + nbJokersPoses % 2 == 0 && longueurPaire){
+                            if(nbSimples + nbJokers >= 2){
+                                if(estJoker){
+                                    nbJokersPoses++;
+                                }
+                                else {
+                                    nbSimplesPoses++;
+                                }
+                                estValide = true;
+                                valeurPosee++;
+                            }
+                        }
+                // Si on a un nombre impair de simples poses et qu'on veut en poser un sur une route de longueur impaire, il faut qu'on en ait un deuxieme ou un joker
+                        else if(nbSimplesPoses + nbJokersPoses % 2 == 1 && !longueurPaire){
+                            if(nbSimples + nbJokers >= 2){
+                                if(estJoker){
+                                    nbJokersPoses++;
+                                }
+                                else {
+                                    nbSimplesPoses++;
+                                }
+                                estValide = true;
+                                valeurPosee++;
+                            }
+                        }
+                        else{
+                            estValide = true;
+                            if(estJoker){
+                                nbJokersPoses++;
+                            }
+                            else {
+                                nbSimplesPoses++;
+                            }
+                            valeurPosee++;
+                        }
+                    }
+                    else{
+                        if((nbSimplesPoses + nbJokersPoses % 2 == 1 && (nbSimples + nbJokers >0) && (valeurPosee + 1 == route.getLongueur()))){
+                            estValide = false;
+                        }
+                        else{
+                            estValide = true;
+                            valeurPosee += 2;
+                        }
+                    }
+                }
+                if(estValide){
                     cartesTransportPosees.add(carteChoisie);
                     cartesTransport.remove(carteChoisie);
-                    estValide = true;
                 }
             }
             estValide = false;
@@ -1108,6 +1175,7 @@ public class Joueur {
         defausserCarteDansBonPaquet(cartesTransportPosees);
         score += route.getScore();
         nbPionsBateau-=route.getLongueur();
+
     }
 
 
