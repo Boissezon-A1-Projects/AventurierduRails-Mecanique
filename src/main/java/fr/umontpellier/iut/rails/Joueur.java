@@ -316,7 +316,7 @@ public class Joueur {
 
                         // La troisième/quatrième carte est valide si elle est de la même couleur que les deux précédentes, qu'elle est un Joker, ou alors
                         // si il n'y a pas déjà deux cartes du même type qui ont été choisies
-                        else if (compteur == 2 | compteur == 3) {
+                        else if (compteur == 3 | compteur == 2) {
 
                             // Si toutes les cartes précédentes sont des jokers alors si la cartes fait partie des couleurs possibles elle est valide.
                             boolean queDesJokers = true;
