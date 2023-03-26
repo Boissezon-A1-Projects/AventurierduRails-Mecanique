@@ -399,7 +399,7 @@ public class Jeu implements Runnable {
     }
 
     //ajoute 3 cartes de chaque paquet dans carteVisible
-    public void ajout3CarteWagon3CarteBateauCarteVisible(String paquet, int nombreVoulu){
+    public void ajouteUnNombreCarteWagonOuBateauCarteVisible(String paquet, int nombreVoulu){
         if(paquet.equals("WAGON")){
             for (int i = 0; i < nombreVoulu; i++) {
 
@@ -439,10 +439,45 @@ public class Jeu implements Runnable {
         //si les deux =3 on enleve tout
         //si les deux ont + de 3 alors 3 de chaque
         //tout ça à faire tant que y a 3 jokers mais ATTENTION y a des cas où ça peut etre infini (à traiter)
+        int nbJokers = 0;
+        for(CarteTransport carte : pilesDeCartesWagon.getCartes()){
+            if(carte.getType().equals(TypeCarteTransport.JOKER)){
+                nbJokers++;
+            }
+        }
 
 
+        while(verifieCompteJokerCarteVisible()){
+            //Si il y a 3+ jokers et que il n'y a pas plus de 6 cartes différentes à mettre
+            if(nbJokers >= 3 && taillePiocheWagon + taillePiocheBateau <= 3 + nbJokers){
+                break;
+            }
+            if(taillePiocheWagon + taillePiocheBateau == 0){
+                break;
+            }
+            retireCarteVisibleEtDefausseDansBonPaquet();
+            // Si les deux pioches ont plus de 3 on en met 3 de chaque
+            if(taillePiocheBateau >= 3 && taillePiocheWagon >= 3){
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("BATEAU", 3);
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("WAGON", 3);
 
-
+            }
+            // Si pioche bateau a moins de 3 et l'autre peut compléter
+            else if(taillePiocheBateau < 3 && taillePiocheWagon >= 6 - taillePiocheBateau){
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("BATEAU", taillePiocheBateau);
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("WAGON", 6 - taillePiocheBateau);
+            }
+            // Si pioche wagon a moins de 3 et l'autre peut compléter
+            else if(taillePiocheWagon < 3 && taillePiocheBateau >= 6 - taillePiocheWagon){
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("WAGON", taillePiocheWagon);
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("BATEAU", 6 - taillePiocheWagon);
+            }
+            // Si les deux ont moins de 3 ont met tout
+            else if(taillePiocheWagon + taillePiocheBateau < 6){
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("BATEAU", taillePiocheBateau);
+                ajouteUnNombreCarteWagonOuBateauCarteVisible("WAGON", taillePiocheWagon);
+            }
+        }
     }
 
 

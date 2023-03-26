@@ -152,4 +152,34 @@ class JeuTest {
         assertEquals(4, wagon);
         assertEquals(2, bateau);
     }
+
+    @Test
+    public void changeCarteVisible_3jokers_3jokersdansWagon_2CartesDansBato(){
+        CarteTransport c1 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.ROUGE, false, true);; // C141
+        CarteTransport c2 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VERT, false, true); // C142
+        CarteTransport c3 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true); // C143
+        CarteTransport c4 = new CarteTransport(TypeCarteTransport.BATEAU, Couleur.ROUGE, false, true);; // C144
+        CarteTransport c5 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true);  // C145
+        CarteTransport c6 = new CarteTransport(TypeCarteTransport.JOKER, Couleur.GRIS, false, true);  // C146
+        cartesTransportVisibles.clear();
+        cartesTransportVisibles.addAll(List.of(c1, c2, c3, c4, c5, c6));
+        piocheBateau.clear();
+        piocheWagon.clear();
+        piocheWagon.addAll(List.of(c3, c5, c6));
+        defausseBateau.clear();
+        defausseWagon.clear();
+        jeu.changeCarteVisibleSiTropJoker();
+        int wagon =0;
+        int bateau =0;
+        for (CarteTransport carte: cartesTransportVisibles) {
+            if(carte.getType().equals(TypeCarteTransport.JOKER) || carte.getType().equals(TypeCarteTransport.WAGON)){
+                wagon++;
+            }
+            if(carte.getType().equals(TypeCarteTransport.BATEAU)){
+                bateau++;
+            }
+        }
+        assertEquals(4, wagon);
+        assertEquals(2, bateau);
+    }
 }
