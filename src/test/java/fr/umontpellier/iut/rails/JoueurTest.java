@@ -71,7 +71,7 @@ class JoueurTest {
     }
 
 
-    /*@Test
+   /* @Test
     void verificationCarteConstructionPort_2WAGONSJAUNE_2BATEAUJAUNE() {
         String[] joueurs = {"d"};
         Joueur j = new Joueur("d",new Jeu(joueurs), Joueur.CouleurJouer.BLEU);
@@ -368,7 +368,7 @@ class JoueurTest {
         assertTrue(joueur1.destinationEstComplete(destinationJoueur1.get(0)));
     }
 
-    @Test
+    /*@Test
     void test_couleursPossiblesPourRoutesGrises(){
         RouteTerrestre route = new RouteTerrestre(new Ville("bkbki",false),new Ville("qkdgbc",false),Couleur.GRIS,4);
         CarteTransport carte1 = new CarteTransport(TypeCarteTransport.WAGON,Couleur.JAUNE,false,true);
@@ -432,7 +432,7 @@ class JoueurTest {
         cartesJoueur1.add(carte7);cartesJoueur1.add(carte8);cartesJoueur1.add(carte9);
         ArrayList<Couleur> expected = new ArrayList<>(); expected.add(Couleur.VERT); expected.add(Couleur.JAUNE); expected.add(Couleur.VIOLET);
         assertTrue(expected.containsAll(joueur1.couleursPossiblesRouteGrise(route)) && joueur1.couleursPossiblesRouteGrise(route).containsAll(expected));
-    }
+    }*/
 
     @Test
     void testCapturerRoutePaireDeuxJokersUtilisés() {
@@ -832,5 +832,35 @@ class JoueurTest {
         assertEquals("R105", routesJoueur1.get(0).getNom());
         assertEquals(15, TestUtils.getScore(joueur1));
     }
+
+    @Test
+    void test_joueur_nepeutpasprendrelautredouble(){
+        cartesJoueur1.clear();
+        CarteTransport c1 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.JAUNE, false, true); // C141
+        CarteTransport c2 = new CarteTransport(TypeCarteTransport.WAGON, Couleur.VIOLET, false, true); // C142
+        cartesJoueur1.addAll(List.of(c1,c2));
+
+        jeu.setInput(
+                "R86", //marche
+                "C141"
+
+        );
+
+        joueur1.jouerTour();
+        jeu.setInput(
+                "R87", // ne marche car déjà l'autre double
+                "R15",
+                "C142"
+        );
+        joueur1.jouerTour();
+        assertEquals(2, routesJoueur1.size());
+        assertEquals("R86", routesJoueur1.get(0).getNom());
+        assertEquals("R15", routesJoueur1.get(1).getNom());
+
+
+
+
+    }
+
 
 }

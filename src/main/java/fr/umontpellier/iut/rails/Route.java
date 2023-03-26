@@ -37,12 +37,16 @@ public abstract class Route {
      */
     static private int compteur = 1;
 
+    /**joueur propriétaire de la route*/
+    private Joueur proprio;
+
     public Route(Ville ville1, Ville ville2, Couleur couleur, int longueur) {
         this.ville1 = ville1;
         this.ville2 = ville2;
         this.couleur = couleur;
         this.longueur = longueur;
         this.nom = "R" + compteur++;
+        proprio = null;
     }
 
     public Ville getVille1() {
@@ -70,7 +74,15 @@ public abstract class Route {
             default -> 0;
         };
     }
-    
+
+    public void setProprio(Joueur proprio) {
+        this.proprio = proprio;
+    }
+
+    public Joueur getProprio() {
+        return proprio;
+    }
+
     public Couleur getCouleur() {
         return couleur;
     }
@@ -97,4 +109,9 @@ public abstract class Route {
     public String toString() {
         return String.format("%s - %s", ville1.nom(), ville2.nom());
     }
+
+    public abstract boolean peutPayerRoute(Joueur joueur);
+
+    public abstract void payerRoute(Joueur joueur);
+
 }
