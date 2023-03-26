@@ -191,11 +191,6 @@ public class Jeu implements Runnable {
         }
 
 
-
-
-
-
-
         // Fin de la partie
         prompt("Fin de la partie.", new ArrayList<>(), true);
     }
