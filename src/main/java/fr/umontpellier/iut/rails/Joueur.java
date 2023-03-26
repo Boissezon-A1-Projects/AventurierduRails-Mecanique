@@ -147,7 +147,9 @@ public class Joueur {
             listeChoixPossible.add(route.getNom());
         }
         //nouvelles destination
-        listeChoixPossible.add("DESTINATION");
+        if(!jeu.piocheDestinationEstVide()) {
+            listeChoixPossible.add("DESTINATION");
+        }
         //Construction port
         if(ports.size()!=3) { // seulement s'il a pas déjà ses trois ports
             if (!verificationCarteConstruirePort(cartesTransport).isEmpty()) { // seulement s'il a les cartes pour construire un port
@@ -157,7 +159,12 @@ public class Joueur {
             }
         }
         //echanger pions
-        listeChoixPossible.add("PIONS WAGON"); listeChoixPossible.add("PIONS BATEAU");
+        if(nbPionsBateauEnReserve!=0){
+            listeChoixPossible.add("PIONS WAGON");
+        }
+        if(nbPionsWagonEnReserve!=0) {
+            listeChoixPossible.add("PIONS BATEAU");
+        }
 
         String choix = choisir("Que voulez-vous faire ?", listeChoixPossible, null, true);
 
@@ -1058,7 +1065,7 @@ public class Joueur {
         System.out.println(nombre.toString());
         String choixNombreARecevoir = choisir("Rentrez le nombre de pions à recevoir",nombre,null,false);
 
-        pionsARecevoir(type,Integer.valueOf(choixNombreARecevoir));// appel fonction qui gere l'echange
+        pionsARecevoir(type,Integer.parseInt(choixNombreARecevoir));// appel fonction qui gere l'echange
     }
 
     public void pionsARecevoir(String type, int nombreEchanges){

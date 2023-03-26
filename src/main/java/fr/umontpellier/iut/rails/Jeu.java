@@ -320,6 +320,10 @@ public class Jeu implements Runnable {
         return desti;
     }
 
+    public boolean piocheDestinationEstVide(){
+        return pileDestinations.size()==0;
+    }
+
     public void defausserDestination(Destination desti){
         pileDestinations.add(desti);
     }
