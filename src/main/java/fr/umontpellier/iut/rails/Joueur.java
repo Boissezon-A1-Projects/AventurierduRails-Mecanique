@@ -331,7 +331,7 @@ public class Joueur {
                                 cartesTransport.remove(carteChoisie);
                             }
                             // s'il n'y a pas que des jokers on teste les conditions dites plus haut
-                            if(!queDesJokers) {
+                            if(!queDesJokers && !estJoker) {
                                 for (CarteTransport carte : cartesPourPort) {
                                     if (!carte.getCouleur().equals(carteChoisie.getCouleur())) {
                                         preteAVerifier = false;
