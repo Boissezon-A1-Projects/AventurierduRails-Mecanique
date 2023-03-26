@@ -66,6 +66,10 @@ public class PilesCartesTransport {
         return cartes;
     }
 
+    public int getTaillePilePioche() {
+        return pilePioche.size();
+    }
+
     public Map<String, Object> dataMap() {
         return Map.ofEntries(
                 Map.entry("pioche", pilePioche.size()),

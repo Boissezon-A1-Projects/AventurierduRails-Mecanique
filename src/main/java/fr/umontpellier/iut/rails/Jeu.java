@@ -399,15 +399,15 @@ public class Jeu implements Runnable {
     }
 
     //ajoute 3 cartes de chaque paquet dans carteVisible
-    public void ajout3CarteWagon3CarteBateauCarteVisible(String paquet){
+    public void ajout3CarteWagon3CarteBateauCarteVisible(String paquet, int nombreVoulu){
         if(paquet.equals("WAGON")){
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < nombreVoulu; i++) {
 
                 cartesTransportVisibles.add(piocherCarteWagon());
             }
         }
         else{
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < nombreVoulu; i++) {
                 cartesTransportVisibles.add(piocherCarteBateau());
 
             }
@@ -432,27 +432,13 @@ public class Jeu implements Runnable {
     }
 
     public void changeCarteVisibleSiTropJoker(){
-        if(!piocheWagonEstVide() && !piocheBateauEstVide()){
-            while(verifieCompteJokerCarteVisible()){
-                retireCarteVisibleEtDefausseDansBonPaquet();
-                ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
-                ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
-            }
-        } else if (!(piocheBateauEstVide() && piocheWagonEstVide())) {
-            if (piocheWagonEstVide()) {
-                while (verifieCompteJokerCarteVisible()) {
-                    retireCarteVisibleEtDefausseDansBonPaquet();
-                    ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
-                    ajout3CarteWagon3CarteBateauCarteVisible("BATEAU");
-                }
-            } else if (piocheBateauEstVide()) {
-                while (verifieCompteJokerCarteVisible()) {
-                    retireCarteVisibleEtDefausseDansBonPaquet();
-                    ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
-                    ajout3CarteWagon3CarteBateauCarteVisible("WAGON");
-                }
-            }
-        }
+        int taillePiocheBateau=pilesDeCartesBateau.getTaillePilePioche();
+        int taillePiocheWagon = pilesDeCartesWagon.getTaillePilePioche();
+        //si 2 pioches moins de 3 cartes : toutes les cartes de chaque pioche
+        // si somme des deux pioches >6 toutes retournées
+        //si les deux =3 on enleve tout
+        //si les deux ont + de 3 alors 3 de chaque
+        //tout ça à faire tant que y a 3 jokers mais ATTENTION y a des cas où ça peut etre infini (à traiter)
 
 
 
