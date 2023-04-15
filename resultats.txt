@@ -1,0 +1,127 @@
+fr.umontpellier.iut.rails.JeuProfTest
+ ✓  testPionsWagonEtBateau
+ ✓  testInitialisationCartesVisibles
+ ✓  testCartesWagon
+ ✓  testDestinationsInitialesJoueursDefaussent
+ ✓  testDestinationsInitialesTousLesJoueursPassent
+fr.umontpellier.iut.rails.JoueurProfTest
+ ✓  testCaptureRouteTerrestre
+ ✓  testCapturerRouteTerrestreGriseExemple2
+ ✓  testPrendreCartesTransportVisibleEnWagonPiocheWagon
+ ✓  testPrendrePionsWagon
+ ✓  testCaptureRouteTerrestreBis
+ ✓  testCaptureRouteMaritimeGrise
+ ✓  testCaptureRouteMaritime
+ ✓  testPrendreCartesTransportVisiblePilesVides
+ ✓  testPrendreCartesTransportVisibleEnBateauVisibleEnWagon
+ ✓  testPiocherDestinationsDefausser0
+ ✓  testPiocherDestinationsDefausser2
+ ✓  testPiocherDestinationsDefausser3
+ ✓  testCapturerRouteTerrestreColoreeExemple1
+ ✓  testPrendreCartesTransportPiocheWagonPiocheWagon
+ ✓  testPrendreCartesTransportJokerEnBateau
+ ✓  testConstruirePort
+ ✓  testPrendreCartesTransportVisibleEnBateauPasse
+ ✓  testCapturerRouteMaritimeExemple3
+ ✓  testCapturerRouteMaritimeExemple4
+ ✓  testCapturerRouteMaritimeExemple5
+ ✓  testPrendreCartesTransportPiocheWagonPiocheBateau
+ ✓  testPrendrePionsBateau
+ ✓  testPrendreCartesTransportPiocheBateauPasse
+fr.umontpellier.iut.rails.ScenarioProfTest
+ ✓  testCalculerScoreFinalDebutDePartie
+ ✓  testCalculerScoreFinalApresUnTour
+ ✓  testCalculerScoreFinalPorts
+ ✓  testCalculerScoreFinalDestinationValidee
+ ✓  testCalculerScoreFinalItineraireValide
+fr.umontpellier.iut.rails.SecretCasSpeciauxTest
+  ✗ testRemplirCartesVisiblesEnDebutDeTour1
+  ✗ testRemplirCartesVisiblesEnDebutDeTour2
+ ✓  testPiocherPileBateauVide
+ ✓  testPreparation3Jokers1Fois
+ ✓  testPreparation3Jokers2Fois
+ ✓  testPiocherPileWagonVide
+ ✓  testPiocherPileWagonEtPileBateauVides
+fr.umontpellier.iut.rails.SecretDestinationRealiseeTest
+ ✓  testDestinationComplete3
+ ✓  testDestinationCompleteSimple1
+ ✓  testDestinationCompleteSimple2
+ ✓  testItineraireComplet1
+ ✓  testDestinationNonComplete
+fr.umontpellier.iut.rails.SecretEchangePionsTest
+  ✗ testEchangerPionsQuandPasDePionsBateauADonner
+  ✗ testEchangerPionsQuandAucunPionAEchanger
+  ✗ testEchangerPionsQuandPasDePionsWagonAPrendre
+ ✓  testEchangerPionsWagon
+  ✗ testEchangerPionsQuandPasDePionsBateauAPrendre
+  ✗ testEchangerPionsQuandPasDePionsWagonADonner
+fr.umontpellier.iut.rails.SecretMiseEnPlaceJeuTest
+ ✓  testPreparation3Joueurs
+ ✓  testPreparation4Joueurs
+ ✓  testPreparation2Joueurs
+ ✓  testPreparation5Joueurs
+fr.umontpellier.iut.rails.SecretPartieCompleteTest
+  ✗ testPartieAleatoire2Joueurs
+  ✗ testPartieAleatoire5Joueurs
+  ✗ testPartieSimple2Joueurs
+fr.umontpellier.iut.rails.SecretPiocherCartesTest
+ ✓  testPiocherVisibleEnBateauPuisBateau
+ ✓  testPiocherVisibleEnBateauPuisVisibleEnBateau
+ ✓  testPiocherVisibleEnWagonPuisPasse
+ ✓  testPiocherVisibleEnWagonPuisVisibleEnBateau
+ ✓  testBateauPuisJokerVisibleIgnorePuisVisibleEnWagon
+ ✓  testPiocherJokerVisibleEnBateau
+ ✓  testPiocherJokerCachePuisJokerCache
+ ✓  testPiocherBateauPuisWagon
+fr.umontpellier.iut.rails.SecretPiocherDestinationTest
+  ✗ testPrendreDestinationsPileContient2DestinationsDefausseAucune
+ ✓  testPrendreDestinationsDefausseAucune
+ ✓  testPrendreDestinationsPileVide
+  ✗ testPrendreDestinationsPileContient3DestinationsDefausseUne
+  ✗ testPrendreDestinationsPileContient3DestinationsDefausseAucune
+ ✓  testPrendreDestinationsDefausseMaximum
+ ✓  testPrendreDestinationsPileContient4DestinationsDefausseAucune
+ ✓  testPrendreDestinationsPileContient1DestinationDefausseAucune
+ ✓  testPrendreDestinationsDefausse2
+fr.umontpellier.iut.rails.SecretPortTest
+ ✓  testConstructionSiPortDejaOccupe
+ ✓  testConstructionPortSiPasDeRouteCaptureeAdjacente
+ ✓  testConstructionPortAvecCartesAncreUniquement
+ ✓  testConstructionSi3PortsOntDejaEteConstruits
+ ✓  testConstructionPortCartesInsuffisantes1
+ ✓  testConstructionPortCartesInsuffisantes2
+ ✓  testConstructionPortSiRouteMaritimeAdjacente
+ ✓  testConstructionPortSiRouteTerrestreAdjacente
+ ✓  testConstructionPortPaiement1
+ ✓  testConstructionPortPaiement2
+fr.umontpellier.iut.rails.SecretRouteMaritimeTest
+ ✓  testCapturerRouteMaritimeSimple
+ ✓  testCapturerRouteMaritimeSimple2
+ ✓  testCapturerRouteMaritimeNonDisponible
+ ✓  testCapturerRouteMaritimeDepassement2
+ ✓  testCapturerRouteMaritimeDepassement3
+ ✓  testCapturerRouteMaritimeDepassement
+fr.umontpellier.iut.rails.SecretRoutePaireTest
+ ✓  testCaptureRoutePaire
+  ✗ testCapturerRoutePaireNonOrdonneAvecJokers
+ ✓  testCapturerRoutePaireDeuxTriplets
+ ✓  testCapturerRoutePaireSimpleCartesInutiles
+  ✗ testCaptureRoutePaireSimple1
+ ✓  testCapturerRoutePaireNonOrdonne
+ ✓  testCapturerRoutePairePions
+ ✓  testCapturerRoutePaireExemple6
+ ✓  testCapturerRoutePaireExemple7
+ ✓  testCapturerRoutePaireSimple2
+  ✗ testCapturerRoutePaireNonOrdonneAvecJokers2
+  ✗ testCapturerRoutePaireNonOrdonneAvecJokers3
+  ✗ testCapturerRoutePaireNonOrdonneAvecJokers4
+fr.umontpellier.iut.rails.SecretRouteTerrestreTest
+  ✗ testCapturerRouteTerrestreSimple
+ ✓  testCapturerRouteTerrestreToutEnJoker
+ ✓  testCapturerRouteTerrestreGrisDeuxCouleursPossibles2
+ ✓  testCapturerRouteTerrestreGriseDeuxCouleursPossibles
+ ✓  testCapturerRouteTerrestrePionsDisponibles
+
+90 / 109 tests réussis
+Note: 14.41 / 19
+Remarque: La note ne tient pas compte de la participation de chaque membre de l'équipe. Les notes individuelles seront communiquées ultérieurement.
